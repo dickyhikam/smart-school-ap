@@ -79,7 +79,7 @@
                                                 <path d="M16 5l3 3" />
                                             </svg>
                                         </button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus Guru">
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus Guru" hidden>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M4 7l16 0" />
