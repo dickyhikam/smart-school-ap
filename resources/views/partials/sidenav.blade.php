@@ -4,13 +4,13 @@
     <!-- Brand Logo -->
     <a href="index.php" class="logo">
         <span class="logo-light">
-            <span class="logo-lg"><img src="assets/images/logo.png" alt="logo sekolah"></span>
-            <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="small logo sekolah"></span>
+            <span class="logo-lg"><img src="{{ asset('assets/images/logo.png') }}" alt="logo sekolah"></span>
+            <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo sekolah"></span>
         </span>
 
         <span class="logo-dark">
-            <span class="logo-lg"><img src="assets/images/logo-dark.png" alt="dark logo sekolah"></span>
-            <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="small logo sekolah"></span>
+            <span class="logo-lg"><img src="{{ asset('assets/images/logo-dark.png') }}" alt="dark logo sekolah"></span>
+            <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo sekolah"></span>
         </span>
     </a>
 
@@ -71,7 +71,7 @@
                             <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                         </svg>
                     </span>
-                    <span class="menu-text"> Orang Tua </span>
+                    <span class="menu-text"> Orang Tua/Wali </span>
                 </a>
             </li>
             <li class="side-nav-item">

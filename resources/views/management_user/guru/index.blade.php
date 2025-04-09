@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-container">
 
-    <!-- Tabel Data -->
+    <!-- Tabel Data Orang Tua/Wali -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -13,6 +13,10 @@
                     <h4 class="mb-0">
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
+
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormGuru') }}">
+                        <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
+                    </a>
                 </div>
                 <div class="card-body">
                     <!-- Bagian Search dan Show Entries -->
@@ -44,34 +48,30 @@
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
+                                    <th>NIP</th>
                                     <th>Nama</th>
-                                    <th>Sebagai</th>
                                     <th>Email</th>
-                                    <th>Nama Siswa</th>
-                                    <th>Wali</th>
+                                    <th>JK</th>
+                                    <th>Kepegawaian</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($list_data as $wali)
-                                <tr>
-                                    <td>{{ $wali['nama_lengkap'] }}</td>
-                                    <td>{{ $wali['jenis_orang_tua'] }}</td>
-                                    <td>{{ $wali['email'] }}</td>
-                                    <td>
-                                        @foreach ($wali['siswa'] as $siswa)
-                                        <p>{{ $siswa['nama'] }}</p>
-                                        @endforeach
-                                    </td>
+                                @foreach ($list_data as $guru)
+                                <tr data-tahun="">
+                                    <td>{{ $guru['nip'] }}</td>
+                                    <td>{{ $guru['nama_lengkap'] }}</td>
+                                    <td>{{ $guru['email'] }}</td>
+                                    <td>{{ $guru['jenis_kelamin'] == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
+                                    <td>{{ $guru['status_kepegawaian'] }}</td>
                                     <td class="text-center">
-                                        <span class="badge {{ $wali['status_wali'] == 'Ya' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $wali['status_wali'] }}
+                                        <span class="badge {{ $guru['status_kepegawaian'] == 'PNS' ? 'bg-success' : 'bg-warning' }}">
+                                            {{ $guru['status_kepegawaian'] }}
                                         </span>
                                     </td>
-                                    <td></td>
                                     <td class="text-center">
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Wali">
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Guru" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $guru['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -79,7 +79,7 @@
                                                 <path d="M16 5l3 3" />
                                             </svg>
                                         </button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus Wali">
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus Guru">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M4 7l16 0" />

@@ -8,15 +8,16 @@
 
     <h4 class="fw-semibold mb-3 fs-18">Log in ke akun Anda</h4>
 
-    <form action="index.php" class="text-start mb-3">
+    <form action="{{ route('actionLogin') }}" method="POST" class="text-start mb-3">
+        @csrf
         <div class="mb-3">
-            <label class="form-label" for="example-email">NIP/NIS</label>
-            <input id="example-email" name="example-email" class="form-control" placeholder="Masukkan NIP/NIS anda">
+            <label class="form-label" for="username">NIP/NIS</label>
+            <input id="username" name="username" class="form-control" placeholder="Masukkan NIP/NIS anda">
         </div>
 
         <div class="mb-3">
             <div class="input-group">
-                <input type="password" id="example-password" class="form-control" placeholder="Masukkan password anda">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password anda">
                 <button class="btn btn-light" type="button"><i class="ri-eye-off-fill"></i></button>
             </div>
         </div>
@@ -38,4 +39,59 @@
     </p>
 
 </div>
+@endsection
+
+@section('javascript_custom')
+<script>
+    // Menangani submit form dengan fetch
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Mencegah form submit secara default
+
+        // Ambil data form
+        const formData = new FormData(this); // Ambil semua data dari form
+        const formObject = {};
+
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+
+        // Tentukan URL endpoint (untuk create atau update)
+        const apiUrl = 'https://service-smartschool.bina-inspirasi.id/api/user';
+        // Tentukan method berdasarkan _method field (POST atau PUT)
+        const method = 'POST';
+
+        //check method ketika PUT
+        const formDataNew = {
+            username: formObject.username,
+            password: formObject.password
+        };
+
+        // Kirim request dengan fetch
+        fetch(apiUrl, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formDataNew),
+            })
+            .then(response => {
+                if (!response.ok) { // Cek jika status response bukan OK (200)
+                    throw new Error('Network response was not ok ' + response.status);
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.errors) {
+                    alert('Data gagal disimpan.');
+                } else {
+                    alert('Data berhasil disimpan.');
+                }
+            })
+            .catch(error => {
+                console.error('Fetch Error:', error);
+                alert('Terjadi kesalahan saat mengirim permintaan.');
+            });
+    });
+</script>
 @endsection

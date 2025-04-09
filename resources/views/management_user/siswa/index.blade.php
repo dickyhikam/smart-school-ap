@@ -51,31 +51,34 @@
                         <i class="mdi mdi-account-group me-2"></i> Data Siswa
                     </h4>
 
-                    <button class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1">
-                        <i class="mdi mdi-plus"></i> Tambah Siswa
-                    </button>
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormSiswa') }}">
+                        <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
+                    </a>
                 </div>
                 <div class="card-body">
                     <!-- Bagian Search dan Show Entries -->
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             <div class="d-flex">
-                                <label class="d-flex align-items-center fw-semibold">Tampilkan </label>
-                                <select class="form-select d-inline-block ms-2">
-                                    <option value="10">10</option>
-                                    <option value="30">30</option>
-                                    <option value="50">50</option>
-                                    <option value="70">70</option>
-                                    <option value="100">100</option>
-                                </select>
+                                <label class="d-flex align-items-center text-muted">Tampilkan </label>
+                                <form method="GET" action="{{ url()->current() }}" class="d-flex">
+                                    <select name="per_page" class="form-select d-inline-block ms-2" onchange="this.form.submit()">
+                                        <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                                        <option value="30" {{ request('per_page') == '30' ? 'selected' : '' }}>30</option>
+                                        <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                                        <option value="70" {{ request('per_page') == '70' ? 'selected' : '' }}>70</option>
+                                        <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                                    </select>
+                                </form>
                             </div>
                         </div>
                         <div>
                             <!-- Search Input -->
-                            <div class="d-flex align-items-start flex-wrap">
+                            <form method="GET" action="{{ url()->current() }}" class="d-flex align-items-start flex-wrap">
                                 <label for="membersearch-input" class="visually-hidden">Search</label>
-                                <input type="search" class="form-control border-light bg-light bg-opacity-50" id="membersearch-input" placeholder="Search...">
-                            </div>
+                                <input type="search" name="search" id="membersearch-input" class="form-control border-light bg-light bg-opacity-50"
+                                    value="{{ request('search') }}" placeholder="Search..." onchange="this.form.submit()">
+                            </form>
                         </div>
                     </div>
                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
@@ -92,21 +95,34 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Contoh Data Siswa -->
-                                <tr data-tahun="2023/2024">
-                                    <td>1</td>
-                                    <td>1234567890</td>
-                                    <td>Ahmad Fadilah</td>
-                                    <td>10 IPA 1</td>
+                                @foreach ($list_data as $index => $siswa)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $siswa['nisn'] }}</td>
+                                    <td>{{ $siswa['nama_lengkap'] }}</td>
+                                    <td>{{ $siswa['kelas'] ?? 'N/A' }}</td>
                                     <td>
                                         <ul class="m-0 p-0 list-unstyled">
-                                            <li>- Budi Santoso</li>
-                                            <li>- Rina Sari</li>
+                                            @foreach ($siswa['orang_tua'] as $ortu)
+                                            <li>- {{ $ortu['nama_lengkap'] }} ({{ $ortu['jenis_orang_tua'] }})</li>
+                                            @endforeach
                                         </ul>
                                     </td>
-                                    <td><span class="badge bg-success">Aktif</span></td>
+                                    <td>
+                                        @if($siswa['status_pendidikan'] == 'Aktif')
+                                        <span class="badge bg-success">{{ $siswa['status_pendidikan'] }}</span>
+                                        @elseif($siswa['status_pendidikan'] == 'Lulus')
+                                        <span class="badge bg-primary">{{ $siswa['status_pendidikan'] }}</span>
+                                        @elseif($siswa['status_pendidikan'] == 'Pindah')
+                                        <span class="badge bg-warning">{{ $siswa['status_pendidikan'] }}</span>
+                                        @elseif($siswa['status_pendidikan'] == 'Tidak Aktif')
+                                        <span class="badge bg-danger">{{ $siswa['status_pendidikan'] }}</span>
+                                        @else
+                                        <span class="badge bg-secondary">{{ $siswa['status_pendidikan'] }}</span>
+                                        @endif
+                                    </td>
                                     <td class="text-center">
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Siswa">
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Siswa" onclick="window.location.href='{{ route('pageFormEditSiswa', ['id' => $siswa['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -126,41 +142,43 @@
                                         </button>
                                     </td>
                                 </tr>
-                                <!-- Data siswa lainnya -->
+                                @endforeach
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->
 
-                    <div class="row align-items-center mb-3">
+                    <div class="row align-items-center mb-3 mt-2">
                         <div class="col-sm-6">
                             <div>
-                                <p class="fs-14 m-0 text-body text-muted">Menampilkan <span class="text-body fw-semibold">10</span> dari <span class="text-body fw-semibold">52</span> data</p>
+                                <p class="fs-14 m-0 text-body text-muted">
+                                    Menampilkan <span class="text-body fw-semibold">{{ count($list_data) }}</span> dari <span class="text-body fw-semibold">{{ $pagination['total'] }}</span> data
+                                </p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="float-sm-end">
                                 <ul class="pagination pagination-boxed mb-sm-0">
-                                    <li class="page-item disabled">
-                                        <a href="#" class="page-link"><i class="ti ti-chevron-left"></i></a>
-                                    </li>
-                                    <li class="page-item active">
-                                        <a href="#" class="page-link">1</a>
-                                    </li>
+                                    @if ($pagination['current_page'] > 1)
                                     <li class="page-item">
-                                        <a href="#" class="page-link">2</a>
+                                        <a href="{{ $pagination['prev_page_url'] }}" class="page-link">
+                                            <i class="ti ti-chevron-left"></i>
+                                        </a>
                                     </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">3</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">4</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">5</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link"><i class="ti ti-chevron-right"></i></a>
-                                    </li>
+                                    @endif
+
+                                    @for ($i = 1; $i <= $pagination['last_page']; $i++)
+                                        <li class="page-item {{ $i == $pagination['current_page'] ? 'active' : '' }}">
+                                        <a href="?page={{ $i }}" class="page-link">{{ $i }}</a>
+                                        </li>
+                                        @endfor
+
+                                        @if ($pagination['current_page'] < $pagination['last_page'])
+                                            <li class="page-item">
+                                            <a href="{{ $pagination['next_page_url'] }}" class="page-link">
+                                                <i class="ti ti-chevron-right"></i>
+                                            </a>
+                                            </li>
+                                            @endif
                                 </ul>
                             </div>
                         </div>

@@ -48,7 +48,7 @@
         <!-- Tahun Ajaran -->
         <div class="col">
             <div class="card card-anim border-0">
-                <div class="d-flex card-header bg-white border-0 align-items-center">
+                <div class="d-flex card-header  border-0 align-items-center">
                     <div class="icon-circle text-blue">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -80,7 +80,7 @@
         <!-- Guru -->
         <div class="col">
             <div class="card card-anim border-0">
-                <div class="d-flex card-header bg-white border-0 align-items-center">
+                <div class="d-flex card-header  border-0 align-items-center">
                     <div class="icon-circle text-green">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -103,7 +103,7 @@
         <!-- Siswa -->
         <div class="col">
             <div class="card card-anim border-0">
-                <div class="d-flex card-header bg-white border-0 align-items-center">
+                <div class="d-flex card-header  border-0 align-items-center">
                     <div class="icon-circle text-orange">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -130,7 +130,7 @@
         <!-- Orang Tua/Wali -->
         <div class="col">
             <div class="card card-anim border-0">
-                <div class="d-flex card-header bg-white border-0 align-items-center">
+                <div class="d-flex card-header  border-0 align-items-center">
                     <div class="icon-circle text-purple">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -155,7 +155,7 @@
     </div><!-- end row -->
 
     <div class="row">
-        <div class="col-xxl-12 col-xl-12">
+        <div class="col-xxl-7 col-xl-8">
             <div class="card">
                 <div class="d-flex card-header justify-content-between align-items-center border-bottom border-dashed">
                     <h4 class="header-title">Data Siswa Tahunan</h4>
@@ -165,6 +165,18 @@
                     <div dir="ltr" class="px-1">
                         <div id="statistics-chart" class="apex-charts" data-colors="#188ae2"></div>
                     </div>
+                </div>
+            </div> <!-- end card-->
+        </div> <!-- end col-->
+
+        <div class="col-xxl-5 col-xl-4">
+            <div class="card">
+                <div class="d-flex card-header justify-content-between align-items-center border-bottom border-dashed">
+                    <h4 class="header-title">Kalender Akademik</h4>
+                </div>
+
+                <div class="card-body p-0 pt-1 mb-2">
+                    <div id="calendar"></div>
                 </div>
             </div> <!-- end card-->
         </div> <!-- end col-->

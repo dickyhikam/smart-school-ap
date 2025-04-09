@@ -1,4 +1,21 @@
-class ChatApp{constructor(){this.messagesScrollWrapper=document.querySelector('[data-apps-chat="messages-scroll-wrapper"]'),this.messagesList=document.querySelector('[data-apps-chat="messages-list"]'),this.messagesSimplebar=null,this.chatForm=document.querySelector("#chat-form"),this.chatForm&&(this.chatInput=this.chatForm.querySelector("input")),this.messagesScrollWrapper&&(this.messagesSimplebar=new SimpleBar(this.messagesScrollWrapper))}getMessageHTML=s=>`<li class="chat-group odd" id="odd-1">
+class ChatApp {
+    constructor() {
+        (this.messagesScrollWrapper = document.querySelector(
+            '[data-apps-chat="messages-scroll-wrapper"]'
+        )),
+            (this.messagesList = document.querySelector(
+                '[data-apps-chat="messages-list"]'
+            )),
+            (this.messagesSimplebar = null),
+            (this.chatForm = document.querySelector("#chat-form")),
+            this.chatForm &&
+                (this.chatInput = this.chatForm.querySelector("input")),
+            this.messagesScrollWrapper &&
+                (this.messagesSimplebar = new SimpleBar(
+                    this.messagesScrollWrapper
+                ));
+    }
+    getMessageHTML = (s) => `<li class="chat-group odd" id="odd-1">
                     <img src="assets/images/users/avatar-1.jpg" class="avatar-sm rounded-circle" alt="avatar-1" />
 
                     <div class="chat-body">
@@ -25,4 +42,35 @@ class ChatApp{constructor(){this.messagesScrollWrapper=document.querySelector('[
                             </div>
                         </div>
                     </div>
-                </li>`;addNewMessage=s=>{this.messagesList&&(this.messagesList.innerHTML+=this.getMessageHTML(s),this.scrollToBottom(!0))};initForm=()=>{this.chatForm?.addEventListener("submit",s=>{s.preventDefault(),(s=Object.fromEntries(new FormData(s.target).entries())).message&&(0===s.message.trim().length?this.chatForm.reset():(this.chatInput.value=" ",this.addNewMessage(s.message)))})};scrollToBottom=(s=!1)=>{var e;this.messagesSimplebar&&this.messagesSimplebar.getScrollElement()&&(e=this.messagesSimplebar.getScrollElement().scrollHeight,s&&(this.messagesSimplebar.getScrollElement().style.scrollBehavior="smooth"),this.messagesSimplebar.getScrollElement().scrollTop=e)};init=()=>{this.scrollToBottom(),this.initForm()}}(new ChatApp).init();
+                </li>`;
+    addNewMessage = (s) => {
+        this.messagesList &&
+            ((this.messagesList.innerHTML += this.getMessageHTML(s)),
+            this.scrollToBottom(!0));
+    };
+    initForm = () => {
+        this.chatForm?.addEventListener("submit", (s) => {
+            s.preventDefault(),
+                (s = Object.fromEntries(new FormData(s.target).entries()))
+                    .message &&
+                    (0 === s.message.trim().length
+                        ? this.chatForm.reset()
+                        : ((this.chatInput.value = " "),
+                          this.addNewMessage(s.message)));
+        });
+    };
+    scrollToBottom = (s = !1) => {
+        var e;
+        this.messagesSimplebar &&
+            this.messagesSimplebar.getScrollElement() &&
+            ((e = this.messagesSimplebar.getScrollElement().scrollHeight),
+            s &&
+                (this.messagesSimplebar.getScrollElement().style.scrollBehavior =
+                    "smooth"),
+            (this.messagesSimplebar.getScrollElement().scrollTop = e));
+    };
+    init = () => {
+        this.scrollToBottom(), this.initForm();
+    };
+}
+new ChatApp().init();
