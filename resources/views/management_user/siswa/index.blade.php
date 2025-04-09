@@ -85,7 +85,6 @@
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
-                                    <th>#</th>
                                     <th>NISN</th>
                                     <th>Nama</th>
                                     <th>Kelas</th>
@@ -97,7 +96,6 @@
                             <tbody>
                                 @foreach ($list_data as $index => $siswa)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
                                     <td>{{ $siswa['nisn'] }}</td>
                                     <td>{{ $siswa['nama_lengkap'] }}</td>
                                     <td>{{ $siswa['kelas'] ?? 'N/A' }}</td>
