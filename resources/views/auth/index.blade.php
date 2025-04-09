@@ -12,13 +12,13 @@
         @csrf
         <div class="mb-3">
             <label class="form-label" for="username">NIP/NIS</label>
-            <input id="username" name="username" class="form-control" placeholder="Masukkan NIP/NIS anda">
+            <input id="username" name="username" class="form-control" placeholder="Masukkan NIP/NIS anda" value="{{ old('username') }}" required>
         </div>
 
         <div class="mb-3">
             <div class="input-group">
-                <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password anda">
-                <button class="btn btn-light" type="button"><i class="ri-eye-off-fill"></i></button>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password anda" value="{{ old('password') }}" required>
+                <button class="btn btn-light" type="button" onclick="togglePassword()"><i class="ri-eye-off-fill" id="eyeIcon"></i></button>
             </div>
         </div>
 
@@ -43,55 +43,20 @@
 
 @section('javascript_custom')
 <script>
-    // Menangani submit form dengan fetch
-    document.getElementById('login-form').addEventListener('submit', function(event) {
-        event.preventDefault(); // Mencegah form submit secara default
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
 
-        // Ambil data form
-        const formData = new FormData(this); // Ambil semua data dari form
-        const formObject = {};
-
-        formData.forEach((value, key) => {
-            formObject[key] = value;
-        });
-
-        // Tentukan URL endpoint (untuk create atau update)
-        const apiUrl = 'https://service-smartschool.bina-inspirasi.id/api/user';
-        // Tentukan method berdasarkan _method field (POST atau PUT)
-        const method = 'POST';
-
-        //check method ketika PUT
-        const formDataNew = {
-            username: formObject.username,
-            password: formObject.password
-        };
-
-        // Kirim request dengan fetch
-        fetch(apiUrl, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(formDataNew),
-            })
-            .then(response => {
-                if (!response.ok) { // Cek jika status response bukan OK (200)
-                    throw new Error('Network response was not ok ' + response.status);
-                }
-                return response.json();
-            })
-            .then(result => {
-                if (result.errors) {
-                    alert('Data gagal disimpan.');
-                } else {
-                    alert('Data berhasil disimpan.');
-                }
-            })
-            .catch(error => {
-                console.error('Fetch Error:', error);
-                alert('Terjadi kesalahan saat mengirim permintaan.');
-            });
-    });
+        // Cek tipe input password
+        if (passwordField.type === "password") {
+            passwordField.type = "text"; // Ubah jadi text agar bisa terlihat
+            eyeIcon.classList.remove('ri-eye-off-fill'); // Ganti ikon
+            eyeIcon.classList.add('ri-eye-fill'); // Tampilkan ikon mata terbuka
+        } else {
+            passwordField.type = "password"; // Kembali ke password
+            eyeIcon.classList.remove('ri-eye-fill'); // Ganti ikon
+            eyeIcon.classList.add('ri-eye-off-fill'); // Tampilkan ikon mata tertutup
+        }
+    }
 </script>
 @endsection

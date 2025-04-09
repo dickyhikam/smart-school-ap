@@ -41,7 +41,8 @@ class AuthController extends Controller
             return redirect()->route('pageDashboard');
         }
 
-        // Jika login gagal, kembalikan ke form dengan pesan error
-        return back()->withErrors(['error' => 'Login failed! Invalid username or password.']);
+        // Menampilkan pesan error dari API
+        $errorMessage = $response->json()['message'] ?? 'NIP/NIS atau Password Salah';
+        return back()->with(['alert-type' => 'error', 'message' => $errorMessage])->withInput();
     }
 }

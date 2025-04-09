@@ -144,9 +144,12 @@ class SiswaController extends Controller
                 'nomor_telepon' => $request->nomor_telepon_ayah,     // Nomor Telepon Ayah
                 'email' => $request->email_ayah ?? null,             // Email Ayah (jika ada)
                 'jenis_orang_tua' => 'Ayah',                          // Jenis Orang Tua
-                'status_wali' => $request->wali != 'Ayah' ? 'Ya' : 'Tidak',  // Status Wali (misalnya jika Ayah jadi wali)
+                'status_wali' => $request->wali == 'Ayah' ? 'Ya' : 'Tidak',  // Status Wali (misalnya jika Ayah jadi wali)
                 'siswa' => [
-                    'siswa_id' => $siswaId,
+                    [
+                        'siswa_id' => $siswaId,
+                        'hubungan' => 'Ayah',
+                    ]
                 ],
             ];
 
@@ -157,9 +160,12 @@ class SiswaController extends Controller
                 'nomor_telepon' => $request->nomor_telepon_ibu,
                 'email' => $request->email_ibu ?? null,
                 'jenis_orang_tua' => 'Ibu',
-                'status_wali' => $request->wali != 'Ibu' ? 'Ya' : 'Tidak',
+                'status_wali' => $request->wali == 'Ibu' ? 'Ya' : 'Tidak',
                 'siswa' => [
-                    'siswa_id' => $siswaId,
+                    [
+                        'siswa_id' => $siswaId,
+                        'hubungan' => 'Ibu',
+                    ]
                 ],
             ];
 
@@ -168,10 +174,24 @@ class SiswaController extends Controller
             $responseAyah = Http::withToken(session('token'))
                 ->post($apiUrlAyah, $dataAyah);
 
+            // Cek jika response untuk ibu berhasil atau gagal
+            if ($responseAyah->failed()) {
+                // Menampilkan pesan error dari API
+                $errorMessage = $responseAyah->json()['message'] . '(Data Ayah)' ?? 'Gagal menyimpan data ayah';
+                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+            }
+
             // Kirim data ibu ke API
             $apiUrlIbu = env('API_URL') . '/api/orangtua'; // URL API orangtua eksternal Anda
             $responseIbu = Http::withToken(session('token'))
                 ->post($apiUrlIbu, $dataIbu);
+
+            // Cek jika response untuk ibu berhasil atau gagal
+            if ($responseIbu->failed()) {
+                // Menampilkan pesan error dari API
+                $errorMessage = $responseIbu->json()['message'] . '(Data Ibu)' ?? 'Gagal menyimpan data ibu';
+                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+            }
 
             // Jika ada wali yang perlu ditambahkan
             if ($request->has('wali') && $request->wali == 'Lain-lain') {
@@ -181,9 +201,13 @@ class SiswaController extends Controller
                     'alamat' => $request->alamat_wali,
                     'nomor_telepon' => $request->nomor_telepon_wali,
                     'email' => $request->email_wali ?? null,
-                    'status_wali' => $request->wali != 'Lain-lain' ? 'Ya' : 'Tidak',
+                    'jenis_orang_tua' => 'Wali',
+                    'status_wali' => $request->wali == 'Lain-lain' ? 'Ya' : 'Tidak',
                     'siswa' => [
-                        'siswa_id' => $siswaId,
+                        [
+                            'siswa_id' => $siswaId,
+                            'hubungan' => 'Wali',
+                        ]
                     ],
                 ];
 
@@ -191,17 +215,21 @@ class SiswaController extends Controller
                 $apiUrlWali = env('API_URL') . '/api/orangtua'; // URL API orangtua eksternal Anda
                 $responseWali = Http::withToken(session('token'))
                     ->post($apiUrlWali, $dataWali);
+
+                // Cek jika response untuk ibu berhasil atau gagal
+                if ($responseWali->failed()) {
+                    // Menampilkan pesan error dari API
+                    $errorMessage = $responseWali->json()['message'] . '(Data Wali)' ?? 'Gagal menyimpan data wali';
+                    return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                }
             }
 
             // Jika data siswa dan orangtua berhasil disimpan
             return redirect()->route('pageSiswa')->with(['alert-type' => 'success', 'message' => 'Data Siswa berhasil disimpan!']);
         }
 
-        // Cek alasan kegagalan
-        $errorMessage = $responseSiswa->body();  // Mengambil pesan error dari response body
-
         // Jika gagal menyimpan data siswa
-        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        return back()->with(['alert-type' => 'error', 'message' => $responseSiswa->json()['message']]);
     }
 
     public function store_update(Request $request)
@@ -247,9 +275,12 @@ class SiswaController extends Controller
                 'nomor_telepon' => $request->nomor_telepon_ayah,     // Nomor Telepon Ayah
                 'email' => $request->email_ayah ?? null,             // Email Ayah (jika ada)
                 'jenis_orang_tua' => 'Ayah',                          // Jenis Orang Tua
-                'status_wali' => $request->wali != 'Ayah' ? 'Ya' : 'Tidak',  // Status Wali (misalnya jika Ayah jadi wali)
+                'status_wali' => $request->wali == 'Ayah' ? 'Ya' : 'Tidak',  // Status Wali (misalnya jika Ayah jadi wali)
                 'siswa' => [
-                    'siswa_id' => $siswaId,
+                    [
+                        'siswa_id' => $siswaId,
+                        'hubungan' => 'Ayah',
+                    ]
                 ],
             ];
 
@@ -260,9 +291,12 @@ class SiswaController extends Controller
                 'nomor_telepon' => $request->nomor_telepon_ibu,
                 'email' => $request->email_ibu ?? null,
                 'jenis_orang_tua' => 'Ibu',
-                'status_wali' => $request->wali != 'Ibu' ? 'Ya' : 'Tidak',
+                'status_wali' => $request->wali == 'Ibu' ? 'Ya' : 'Tidak',
                 'siswa' => [
-                    'siswa_id' => $siswaId,
+                    [
+                        'siswa_id' => $siswaId,
+                        'hubungan' => 'Ibu',
+                    ]
                 ],
             ];
 
@@ -274,7 +308,7 @@ class SiswaController extends Controller
             // Cek jika response untuk ayah berhasil atau gagal
             if ($responseAyah->failed()) {
                 // Menampilkan pesan error dari API
-                $errorMessage = $responseAyah->json()['message'] ?? 'Gagal menyimpan data ayah';
+                $errorMessage = $responseAyah->json()['message'] . '(Data Ayah)' ?? 'Gagal menyimpan data ayah';
                 return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
 
@@ -286,7 +320,7 @@ class SiswaController extends Controller
             // Cek jika response untuk ibu berhasil atau gagal
             if ($responseIbu->failed()) {
                 // Menampilkan pesan error dari API
-                $errorMessage = $responseIbu->json()['message'] ?? 'Gagal menyimpan data ibu';
+                $errorMessage = $responseIbu->json()['message'] . '(Data Ibu)' ?? 'Gagal menyimpan data ibu';
                 return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
 
@@ -299,9 +333,13 @@ class SiswaController extends Controller
                     'alamat' => $request->alamat_wali,
                     'nomor_telepon' => $request->nomor_telepon_wali,
                     'email' => $request->email_wali ?? null,
-                    'status_wali' => $request->wali != 'Lain-lain' ? 'Ya' : 'Tidak',
+                    'jenis_orang_tua' => 'Wali',
+                    'status_wali' => $request->wali == 'Lain-lain' ? 'Ya' : 'Tidak',
                     'siswa' => [
-                        'siswa_id' => $siswaId,
+                        [
+                            'siswa_id' => $siswaId,
+                            'hubungan' => 'Wali',
+                        ]
                     ],
                 ];
 
@@ -313,7 +351,7 @@ class SiswaController extends Controller
                 // Cek jika response untuk wali berhasil atau gagal
                 if ($responseWali->failed()) {
                     // Menampilkan pesan error dari API
-                    $errorMessage = $responseWali->json()['message'] ?? 'Gagal menyimpan data wali';
+                    $errorMessage = $responseWali->json()['message'] . '(Data Wali)' ?? 'Gagal menyimpan data wali';
                     return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
                 }
             }
@@ -322,10 +360,7 @@ class SiswaController extends Controller
             return redirect()->route('pageSiswa')->with(['alert-type' => 'success', 'message' => 'Data Siswa berhasil disimpan!']);
         }
 
-        // Cek alasan kegagalan
-        $errorMessage = $responseSiswa->body();  // Mengambil pesan error dari response body
-
         // Jika gagal menyimpan data siswa
-        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        return back()->with(['alert-type' => 'error', 'message' => $responseSiswa->json()['message']]);
     }
 }

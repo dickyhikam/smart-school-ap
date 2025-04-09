@@ -605,21 +605,21 @@
             pekerjaan_ayah: "PNS",
             alamat_ayah: "Jl. Ayah No. 10, Jakarta",
             nomor_telepon_ayah: "(+62) 812 1234 5678",
-            email_ayah: "ayahd@example.com",
+            email_ayah: "ayahd@yahoo.com",
 
             nama_lengkap_ibu: "Ibu Doe",
             pekerjaan_ibu: "Guru",
             alamat_ibu: "Jl. Ibu No. 5, Jakarta",
             nomor_telepon_ibu: "(+62) 812 8765 4321",
-            email_ibu: "ibud@example.com",
+            email_ibu: "ibud@yahoo.com",
 
             // Wali (Dummy, bisa dikosongkan jika tidak ada)
-            type: "Lain-lain",
+            type: "Ayah",
             nama_lengkap_wali: "Wali Dummy",
             pekerjaan_wali: "Pengusaha",
             alamat_wali: "Jl. Wali No. 20, Jakarta",
             nomor_telepon_wali: "(+62) 812 1111 2222",
-            email_wali: "walidummy@example.com",
+            email_wali: "walidummy@yahoo.com",
         };
 
         // Mengisi form dengan data dummy
@@ -652,11 +652,11 @@
 
         // Jika ada wali
         document.getElementById("wali").value = dataDummy.type;
-        document.getElementById("nama_lengkap_wali").value = dataDummy.nama_lengkap_wali;
-        document.getElementById("pekerjaan_wali").value = dataDummy.pekerjaan_wali;
-        document.getElementById("alamat_wali").value = dataDummy.alamat_wali;
-        document.getElementById("nomor_telepon_wali").value = dataDummy.nomor_telepon_wali;
-        document.getElementById("email_wali").value = dataDummy.email_wali;
+        // document.getElementById("nama_lengkap_wali").value = dataDummy.nama_lengkap_wali;
+        // document.getElementById("pekerjaan_wali").value = dataDummy.pekerjaan_wali;
+        // document.getElementById("alamat_wali").value = dataDummy.alamat_wali;
+        // document.getElementById("nomor_telepon_wali").value = dataDummy.nomor_telepon_wali;
+        // document.getElementById("email_wali").value = dataDummy.email_wali;
     });
 </script>
 @endsection
