@@ -5,7 +5,7 @@
 @section('content')
 <div class="page-container">
 
-    <!-- Tabel Data -->
+    <!-- Tabel Data Orang Tua/Wali -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -45,50 +45,37 @@
                             <thead class="table-primary sticky-top">
                                 <tr>
                                     <th>Nama</th>
-                                    <th>Hubungan</th>
-                                    <th>Email</th>
-                                    <th>Nama Siswa</th>
-                                    <th>Wali</th>
+                                    <th>Role</th>
+                                    <th>Platform</th>
+                                    <th>Akses</th>
                                     <th class="text-center">Status</th>
-                                    <th class="text-center" hidden>Aksi</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($list_data as $wali)
-                                <tr>
-                                    <td>{{ $wali['nama_lengkap'] }}</td>
-                                    <td>{{ $wali['jenis_orang_tua'] }}</td>
-                                    <td>{{ $wali['email'] }}</td>
+                                @foreach ($list_data as $row)
+                                <tr data-tahun="">
+                                    <td>{{ $row['name'] }}</td>
+                                    <td>{{ $row['pengguna']['type'] ?? '-' }}</td>
                                     <td>
-                                        @foreach ($wali['siswa'] as $siswa)
-                                        <p>{{ $siswa['nama_lengkap'] }}</p>
-                                        @endforeach
+                                        {{ $row['role']['allowed_platforms'] }}
+                                    </td>
+                                    <td>
+                                        <ul class="m-0 p-0 list-unstyled">
+                                            @foreach ($row['role']['permissions'] as $row3)
+                                            <li>- {{ $row3 }}</li>
+                                            @endforeach
+                                        </ul>
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge {{ $wali['status_wali'] == 'Ya' ? 'bg-success' : 'bg-danger' }}">
-                                            {{ $wali['status_wali'] }}
-                                        </span>
+                                        @if ($row['is_active'] == 'Aktif')
+                                        <span class="badge bg-success">Aktif</span>
+                                        @else
+                                        <span class="badge bg-danger">Tidak Aktif</span>
+                                        @endif
                                     </td>
-                                    <td></td>
-                                    <td class="text-center" hidden>
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Wali">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                <path d="M16 5l3 3" />
-                                            </svg>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus Wali">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M4 7l16 0" />
-                                                <path d="M10 11l0 6" />
-                                                <path d="M14 11l0 6" />
-                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                            </svg>
-                                        </button>
+                                    <td class="text-center">
+
                                     </td>
                                 </tr>
                                 @endforeach

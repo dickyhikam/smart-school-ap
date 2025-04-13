@@ -25,7 +25,7 @@ class ApiTokenAuth
         // Cek apakah token ada di session
         if (!$token) {
             // Jika tidak ada token, arahkan ke halaman login
-            return Redirect::route('login')->with('message', 'You must be logged in to access this page.');
+            return Redirect::route('login')->with('message', 'Anda harus login untuk mengakses halaman ini.');
         }
 
         // Verifikasi token dengan API

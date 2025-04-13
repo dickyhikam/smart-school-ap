@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -31,4 +32,6 @@ Route::middleware('APIAuth')->group(function () {
     Route::delete('/siswa/hapus/{id?}', [SiswaController::class, 'destroy'])->name('actionDeleteSiswa');
 
     Route::get('/orang-tua', [OrtuController::class, 'index'])->name('pageOrtu');
+
+    Route::get('/auth-user', [UsersController::class, 'index'])->name('pageUser');
 });

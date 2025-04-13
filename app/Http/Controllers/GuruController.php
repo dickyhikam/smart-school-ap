@@ -21,7 +21,7 @@ class GuruController extends Controller
         $response = Http::withToken(session('token'))
             ->get($apiUrl . '/api/guru', [
                 'page' => $page,
-                'per_page' => $perPage, // Kirim parameter per_page
+                'perPage' => $perPage, // Kirim parameter per_page
                 'search' => $search, // Kirim parameter pencarian
             ]);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
@@ -116,6 +116,31 @@ class GuruController extends Controller
 
         // Cek jika berhasil
         if ($response->successful()) {
+            // simpan ke table users
+            $guruData = $response->json();
+            $guruId = $guruData['data']['id']; // Ambil ID siswa dari respons API
+
+            // Persiapkan data untuk dikirim ke API
+            $dataUsers = [
+                'name' => $request->nama_lengkap,
+                'username' => $request->nip,
+                'email' => $request->email,
+                'pengguna_id' => $guruId,
+                'pengguna_type' => "guru",
+                'role' => "guru",
+            ];
+            // Kirim data ke API
+            $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
+            $responseUser = Http::withToken(session('token'))
+                ->post($apiUrlUser, $dataUsers);
+
+            // Cek jika response untuk ayah berhasil atau gagal
+            if ($responseUser->failed()) {
+                // Menampilkan pesan error dari API
+                $errorMessage = $responseUser->json()['message'] . ' (Data Login)' ?? 'Gagal menyimpan data login guru';
+                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+            }
+
             return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => 'Data Guru berhasil disimpan!']);
         }
 
