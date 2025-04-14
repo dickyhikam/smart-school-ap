@@ -136,7 +136,24 @@ class SiswaController extends Controller
             $siswaData = $responseSiswa->json();
             $siswaId = $siswaData['data']['id']; // Ambil ID siswa dari respons API
 
+            // Persiapkan data untuk dikirim ke API
+            $dataUsers = [
+                'name' => $request->nama_lengkap,
+                'username' => $request->nisn,
+                'email' => $request->email,
+                'pengguna_id' => $siswaId,
+                'pengguna_type' => "siswa",
+                'role' => "siswa",
+            ];
+            // Kirim data ke API
+            $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
+            Http::withToken(session('token'))
+                ->post($apiUrlUser, $dataUsers);
+
             // Persiapkan data orangtua (ayah, ibu, wali)
+            //=============================
+            // Bagian Ayah
+            //=============================
             $dataAyah = [
                 'nama_lengkap' => $request->nama_lengkap_ayah,       // Nama Lengkap Ayah
                 'pekerjaan' => $request->pekerjaan_ayah,             // Pekerjaan Ayah
@@ -153,6 +170,37 @@ class SiswaController extends Controller
                 ],
             ];
 
+            // Kirim data ayah ke API
+            $apiUrlAyah = env('API_URL') . '/api/orangtua'; // URL API orangtua eksternal Anda
+            $responseAyah = Http::withToken(session('token'))
+                ->post($apiUrlAyah, $dataAyah);
+
+            // Cek jika response untuk ibu berhasil atau gagal
+            if ($responseAyah->failed()) {
+                // Menampilkan pesan error dari API
+                $errorMessage = $responseAyah->json()['message'] . '(Data Ayah)' ?? 'Gagal menyimpan data ayah';
+                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+            }
+
+            // Persiapkan data untuk dikirim ke API
+            $dataUsersAyah = [
+                'name' => $request->nama_lengkap,
+                'username' => $request->nisn,
+                'email' => $request->email,
+                'pengguna_id' => $responseAyah['data']['id'],
+                'pengguna_type' => "ayah",
+                'role' => "ayah",
+            ];
+            // Kirim data ke API
+            Http::withToken(session('token'))
+                ->post($apiUrlUser, $dataUsersAyah);
+            //=============================
+            // Bagian Ayah
+            //=============================
+
+            //=============================
+            // Bagian Ibu
+            //=============================
             $dataIbu = [
                 'nama_lengkap' => $request->nama_lengkap_ibu,
                 'pekerjaan' => $request->pekerjaan_ibu,
@@ -169,18 +217,6 @@ class SiswaController extends Controller
                 ],
             ];
 
-            // Kirim data ayah ke API
-            $apiUrlAyah = env('API_URL') . '/api/orangtua'; // URL API orangtua eksternal Anda
-            $responseAyah = Http::withToken(session('token'))
-                ->post($apiUrlAyah, $dataAyah);
-
-            // Cek jika response untuk ibu berhasil atau gagal
-            if ($responseAyah->failed()) {
-                // Menampilkan pesan error dari API
-                $errorMessage = $responseAyah->json()['message'] . '(Data Ayah)' ?? 'Gagal menyimpan data ayah';
-                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
-            }
-
             // Kirim data ibu ke API
             $apiUrlIbu = env('API_URL') . '/api/orangtua'; // URL API orangtua eksternal Anda
             $responseIbu = Http::withToken(session('token'))
@@ -192,6 +228,22 @@ class SiswaController extends Controller
                 $errorMessage = $responseIbu->json()['message'] . '(Data Ibu)' ?? 'Gagal menyimpan data ibu';
                 return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
+
+            // Persiapkan data untuk dikirim ke API
+            $dataUsersIbu = [
+                'name' => $request->nama_lengkap,
+                'username' => $request->nisn,
+                'email' => $request->email,
+                'pengguna_id' => $responseIbu['data']['id'],
+                'pengguna_type' => "ayah",
+                'role' => "ayah",
+            ];
+            // Kirim data ke API
+            Http::withToken(session('token'))
+                ->post($apiUrlUser, $dataUsersIbu);
+            //=============================
+            // Bagian Ibu
+            //=============================
 
             // Jika ada wali yang perlu ditambahkan
             if ($request->has('wali') && $request->wali == 'Lain-lain') {
@@ -222,6 +274,19 @@ class SiswaController extends Controller
                     $errorMessage = $responseWali->json()['message'] . '(Data Wali)' ?? 'Gagal menyimpan data wali';
                     return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
                 }
+
+                // Persiapkan data untuk dikirim ke API
+                $dataUsersWali = [
+                    'name' => $request->nama_lengkap,
+                    'username' => $request->nisn,
+                    'email' => $request->email,
+                    'pengguna_id' => $responseWali['data']['id'],
+                    'pengguna_type' => "wali",
+                    'role' => "wali",
+                ];
+                // Kirim data ke API
+                Http::withToken(session('token'))
+                    ->post($apiUrlUser, $dataUsersWali);
             }
 
             // Jika data siswa dan orangtua berhasil disimpan
@@ -268,18 +333,18 @@ class SiswaController extends Controller
             $siswaId = $siswaData['data']['id']; // Ambil ID siswa dari respons API
 
             // Persiapkan data untuk dikirim ke API
-            $dataUsers = [
-                'name' => $request->nama_lengkap,
-                'username' => $request->nisn,
-                'email' => $request->email,
-                'pengguna_id' => $siswaId,
-                'pengguna_type' => "siswa",
-                'role' => "siswa",
-            ];
-            // Kirim data ke API
-            $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
-            $responseUser = Http::withToken(session('token'))
-                ->post($apiUrlUser, $dataUsers);
+            // $dataUsers = [
+            //     'name' => $request->nama_lengkap,
+            //     'username' => $request->nisn,
+            //     'email' => $request->email,
+            //     'pengguna_id' => $siswaId,
+            //     'pengguna_type' => "siswa",
+            //     'role' => "siswa",
+            // ];
+            // // Kirim data ke API
+            // $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
+            // Http::withToken(session('token'))
+            //     ->post($apiUrlUser, $dataUsers);
 
             // Persiapkan data orangtua (ayah, ibu, wali)
             //=============================
@@ -311,6 +376,19 @@ class SiswaController extends Controller
                 $errorMessage = $responseAyah->json()['message'] . ' (Data Ayah)' ?? 'Gagal menyimpan data ayah';
                 return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
+
+            // Persiapkan data untuk dikirim ke API
+            // $dataUsersAyah = [
+            //     'name' => $request->nama_lengkap,
+            //     'username' => $request->nisn,
+            //     'email' => $request->email,
+            //     'pengguna_id' => $responseAyah['data']['id'],
+            //     'pengguna_type' => "ayah",
+            //     'role' => "ayah",
+            // ];
+            // // Kirim data ke API
+            // Http::withToken(session('token'))
+            //     ->post($apiUrlUser, $dataUsersAyah);
             //=============================
             // Bagian Ayah
             //=============================
@@ -344,6 +422,19 @@ class SiswaController extends Controller
                 $errorMessage = $responseIbu->json()['message'] . ' (Data Ibu)' ?? 'Gagal menyimpan data ibu';
                 return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
+
+            // Persiapkan data untuk dikirim ke API
+            // $dataUsersIbu = [
+            //     'name' => $request->nama_lengkap,
+            //     'username' => $request->nisn,
+            //     'email' => $request->email,
+            //     'pengguna_id' => $responseIbu['data']['id'],
+            //     'pengguna_type' => "ayah",
+            //     'role' => "ayah",
+            // ];
+            // // Kirim data ke API
+            // Http::withToken(session('token'))
+            //     ->post($apiUrlUser, $dataUsersIbu);
             //=============================
             // Bagian Ibu
             //=============================
@@ -378,6 +469,19 @@ class SiswaController extends Controller
                     $errorMessage = $responseWali->json()['message'] . ' (Data Wali)' ?? 'Gagal menyimpan data wali';
                     return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
                 }
+
+                // Persiapkan data untuk dikirim ke API
+                // $dataUsersWali = [
+                //     'name' => $request->nama_lengkap,
+                //     'username' => $request->nisn,
+                //     'email' => $request->email,
+                //     'pengguna_id' => $responseWali['data']['id'],
+                //     'pengguna_type' => "wali",
+                //     'role' => "wali",
+                // ];
+                // // Kirim data ke API
+                // Http::withToken(session('token'))
+                //     ->post($apiUrlUser, $dataUsersWali);
             }
 
             // Jika data siswa dan orangtua berhasil disimpan
