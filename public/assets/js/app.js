@@ -112,56 +112,69 @@ class App {
                 },
             }),
             $(".side-nav a").each(function () {
-                var e = window.location.href.split(/[?#]/)[0];
-                this.href == e &&
-                    ($(this).addClass("active"),
-                    $(this).parent().addClass("active"),
-                    $(this).parent().parent().parent().addClass("show"),
-                    $(this)
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .addClass("active"),
-                    "sidebar-menu" !==
+                var currentUrl = window.location.href.split(/[?#]/)[0]; //currentUrl
+                var linkUrl = this.href.split(/[?#]/)[0];
+
+                if (currentUrl.includes("perpustakaan")) {
+                    // Memecah URL untuk hanya mengambil bagian yang lebih umum (misalnya, menghapus /tambah)
+                    var e = currentUrl.split("/").slice(0, 5).join("/"); // Mengambil hanya 'http://smart-school.test/perpustakaan'
+                } else {
+                    // Memecah URL untuk hanya mengambil bagian yang lebih umum (misalnya, menghapus /tambah)
+                    var e = currentUrl.split("/").slice(0, 4).join("/"); // Mengambil hanya 'http://smart-school.test/perpustakaan'
+                }
+
+                // Hanya cocokkan URL yang sesuai dengan bagian yang lebih spesifik
+                if (e.startsWith(linkUrl)) {
+                    this.href == e &&
+                        ($(this).addClass("active"),
+                        $(this).parent().addClass("active"),
+                        $(this).parent().parent().parent().addClass("show"),
+                        $(this)
+                            .parent()
+                            .parent()
+                            .parent()
+                            .parent()
+                            .addClass("active"),
+                        "sidebar-menu" !==
+                            (e = $(this)
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()).attr("id") && e.addClass("show"),
+                        $(this)
+                            .parent()
+                            .parent()
+                            .parent()
+                            .parent()
+                            .parent()
+                            .parent()
+                            .parent()
+                            .addClass("active"),
+                        "wrapper" !==
+                            (e = $(this)
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()
+                                .parent()).attr("id") && e.addClass("show"),
                         (e = $(this)
                             .parent()
                             .parent()
                             .parent()
                             .parent()
                             .parent()
-                            .parent()).attr("id") && e.addClass("show"),
-                    $(this)
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .addClass("active"),
-                    "wrapper" !==
-                        (e = $(this)
                             .parent()
                             .parent()
                             .parent()
                             .parent()
-                            .parent()
-                            .parent()
-                            .parent()
-                            .parent()
-                            .parent()).attr("id") && e.addClass("show"),
-                    (e = $(this)
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()
-                        .parent()).is("body") || e.addClass("active"));
+                            .parent()).is("body") || e.addClass("active"));
+                }
             }),
             setTimeout(function () {
                 var e,

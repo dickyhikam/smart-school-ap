@@ -4,6 +4,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\OrtuController;
+use App\Http\Controllers\PPBuku;
+use App\Http\Controllers\PPDashboard;
+use App\Http\Controllers\PPKategori;
+use App\Http\Controllers\PPPenerbit;
+use App\Http\Controllers\PPPengarang;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -34,4 +39,19 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/orang-tua', [OrtuController::class, 'index'])->name('pageOrtu');
 
     Route::get('/auth-user', [UsersController::class, 'index'])->name('pageUser');
+
+    //bagian perpustakaan
+    Route::get('/perpustakaan/dashboard', [PPDashboard::class, 'index'])->name('pagePerpusDashboard');
+
+    Route::get('/perpustakaan/kategori', [PPKategori::class, 'index'])->name('pagePerpusKategori');
+    Route::get('/perpustakaan/kategori/tambah', [PPKategori::class, 'index_form'])->name('pagePerpusFormKategori');
+
+    Route::get('/perpustakaan/pengarang', [PPPengarang::class, 'index'])->name('pagePerpusPengarang');
+    Route::get('/perpustakaan/pengarang/tambah', [PPPengarang::class, 'index_form'])->name('pagePerpusFormPengarang');
+
+    Route::get('/perpustakaan/penerbit', [PPPenerbit::class, 'index'])->name('pagePerpusPenerbit');
+    Route::get('/perpustakaan/penerbit/tambah', [PPPengarang::class, 'index_form'])->name('pagePerpusFormPenerbit');
+
+    Route::get('/perpustakaan/buku', [PPBuku::class, 'index'])->name('pagePerpusBuku');
+    Route::get('/perpustakaan/buku/tambah', [PPBuku::class, 'index_form'])->name('pagePerpusFormBuku');
 });

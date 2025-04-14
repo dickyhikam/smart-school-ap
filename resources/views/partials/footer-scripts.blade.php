@@ -16,9 +16,9 @@
 <script src="{{ asset('assets/js/components/form-fileupload.js') }}"></script>
 
 <!-- Bootstrap Wizard Form js -->
-<script src="{{ asset('assets/vendor/vanilla-wizard/js/wizard.min.js') }}"></script>
+<!-- <script src="{{ asset('assets/vendor/vanilla-wizard/js/wizard.min.js') }}"></script> -->
 <!-- Wizard Form Demo js -->
-<script src="{{ asset('assets/js/components/form-wizard.js') }}"></script>
+<!-- <script src="{{ asset('assets/js/components/form-wizard.js') }}"></script> -->
 
 <!-- Calendar App Demo js -->
-<!-- <script src="assets/js/pages/apps-calendar.js"></script> -->
+<!-- <script src="{{ asset('assets/js/pages/apps-calendar.js') }}"></script> -->
