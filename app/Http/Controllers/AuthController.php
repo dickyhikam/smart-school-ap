@@ -34,8 +34,12 @@ class AuthController extends Controller
         if ($response->successful()) {
             $data = $response->json();
 
-            // Simpan token ke session atau buat logika autentikasi di sini
-            session(['token' => $data['data']['token']['access_token']]); // Contoh menyimpan token
+            // Simpan token ke session
+            session(['token' => $data['data']['token']['access_token']]); // Menyimpan token
+
+            // Simpan role dan permissions ke session
+            session(['role' => $data['data']['user']['role']['name']]); // Menyimpan role
+            session(['permissions' => $data['data']['user']['role']['permissions']]); // Menyimpan permissions
 
             // Redirect ke halaman dashboard atau halaman lain setelah berhasil login
             return redirect()->route('pageDashboard');

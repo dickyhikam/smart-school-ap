@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class PPKategori extends Controller
+class PPAnggota extends Controller
 {
     public function index(Request $request)
     {
@@ -20,7 +20,7 @@ class PPKategori extends Controller
         // URL API dengan parameter halaman
         $apiUrl = env('API_URL'); // URL API Anda
         $response = Http::withToken(session('token'))
-            ->get($apiUrl . '/api/perpustakaan/kategori-buku', [
+            ->get($apiUrl . '/api/users', [
                 'page' => $page,
                 'perPage' => $perPage, // Kirim parameter per_page
                 'search' => $search, // Kirim parameter pencarian
@@ -38,18 +38,6 @@ class PPKategori extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('library.data_master.kategori.index', $data);
-    }
-
-    public function index_form($id = null)
-    {
-        $data['nama_menu'] = 'Kategori';
-        $data['nama_menu2'] = 'Form Kategori';
-        $data['con_menu'] = 'Perpustakaan';
-        // Jika tidak ada $id, berarti ini adalah halaman Create
-        $data['action'] = route('actionAddGuru'); // Arahkan ke store
-        $data['method'] = 'POST'; // Menggunakan metode POST untuk create
-
-        return view('library.data_master.kategori.form', $data);
+        return view('library.anggota.index', $data);
     }
 }

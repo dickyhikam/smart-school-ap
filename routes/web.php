@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\OrtuController;
+use App\Http\Controllers\PPAnggota;
 use App\Http\Controllers\PPBuku;
 use App\Http\Controllers\PPDashboard;
 use App\Http\Controllers\PPKategori;
@@ -54,4 +55,6 @@ Route::middleware('APIAuth')->group(function () {
 
     Route::get('/perpustakaan/buku', [PPBuku::class, 'index'])->name('pagePerpusBuku');
     Route::get('/perpustakaan/buku/tambah', [PPBuku::class, 'index_form'])->name('pagePerpusFormBuku');
+
+    Route::get('/perpustakaan/anggota', [PPAnggota::class, 'index'])->name('pagePerpusAnggota');
 });

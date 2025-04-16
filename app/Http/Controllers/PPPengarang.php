@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class PPPengarang extends Controller
 {
@@ -18,23 +19,23 @@ class PPPengarang extends Controller
 
         // URL API dengan parameter halaman
         $apiUrl = env('API_URL'); // URL API Anda
-        // $response = Http::withToken(session('token'))
-        //     ->get($apiUrl . '/api/perpustakaan/buku', [
-        //         'page' => $page,
-        //         'perPage' => $perPage, // Kirim parameter per_page
-        //         'search' => $search, // Kirim parameter pencarian
-        //     ]);
-        // $response = json_decode($response->body(), true); // Dekode response menjadi array
+        $response = Http::withToken(session('token'))
+            ->get($apiUrl . '/api/perpustakaan/pengarang', [
+                'page' => $page,
+                'perPage' => $perPage, // Kirim parameter per_page
+                'search' => $search, // Kirim parameter pencarian
+            ]);
+        $response = json_decode($response->body(), true); // Dekode response menjadi array
 
-        $data['list_data'] = []; // Mengambil data siswa
+        $data['list_data'] = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
         $data['pagination'] = [
-            'current_page' => 0,
-            'last_page' => 0,
-            'total' => 0,
-            'per_page' => 0,
-            'next_page_url' => null,
-            'prev_page_url' => null,
+            'current_page' => $response['data']['current_page'],
+            'last_page' => $response['data']['last_page'],
+            'total' => $response['data']['total'],
+            'per_page' => $response['data']['per_page'],
+            'next_page_url' => $response['data']['next_page_url'],
+            'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
         return view('library.data_master.pengarang.index', $data);

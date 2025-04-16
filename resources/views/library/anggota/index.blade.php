@@ -14,7 +14,7 @@
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
 
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pagePerpusFormPenerbit') }}">
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pagePerpusFormKategori') }}">
                         <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
                     </a>
                 </div>
@@ -55,7 +55,7 @@
                             <tbody>
                                 @foreach ($list_data as $row)
                                 <tr>
-                                    <td>{{ $row['nama'] }}</td>
+                                    <td>{{ $row['name'] }}</td>
                                     <td>
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
