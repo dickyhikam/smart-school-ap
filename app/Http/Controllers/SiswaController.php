@@ -29,6 +29,8 @@ class SiswaController extends Controller
         $data['list_data'] = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
         $data['pagination'] = [
+            'from' => $response['data']['from'],
+            'to' => $response['data']['to'],
             'current_page' => $response['data']['current_page'],
             'last_page' => $response['data']['last_page'],
             'total' => $response['data']['total'],
@@ -179,7 +181,7 @@ class SiswaController extends Controller
             if ($responseAyah->failed()) {
                 // Menampilkan pesan error dari API
                 $errorMessage = $responseAyah->json()['message'] . '(Data Ayah)' ?? 'Gagal menyimpan data ayah';
-                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
 
             // Persiapkan data untuk dikirim ke API
@@ -226,7 +228,7 @@ class SiswaController extends Controller
             if ($responseIbu->failed()) {
                 // Menampilkan pesan error dari API
                 $errorMessage = $responseIbu->json()['message'] . '(Data Ibu)' ?? 'Gagal menyimpan data ibu';
-                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
 
             // Persiapkan data untuk dikirim ke API
@@ -272,7 +274,7 @@ class SiswaController extends Controller
                 if ($responseWali->failed()) {
                     // Menampilkan pesan error dari API
                     $errorMessage = $responseWali->json()['message'] . '(Data Wali)' ?? 'Gagal menyimpan data wali';
-                    return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                    return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
                 }
 
                 // Persiapkan data untuk dikirim ke API
@@ -374,7 +376,7 @@ class SiswaController extends Controller
             if ($responseAyah->failed()) {
                 // Menampilkan pesan error dari API
                 $errorMessage = $responseAyah->json()['message'] . ' (Data Ayah)' ?? 'Gagal menyimpan data ayah';
-                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
 
             // Persiapkan data untuk dikirim ke API
@@ -420,7 +422,7 @@ class SiswaController extends Controller
             if ($responseIbu->failed()) {
                 // Menampilkan pesan error dari API
                 $errorMessage = $responseIbu->json()['message'] . ' (Data Ibu)' ?? 'Gagal menyimpan data ibu';
-                return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
             }
 
             // Persiapkan data untuk dikirim ke API
@@ -467,7 +469,7 @@ class SiswaController extends Controller
                 if ($responseWali->failed()) {
                     // Menampilkan pesan error dari API
                     $errorMessage = $responseWali->json()['message'] . ' (Data Wali)' ?? 'Gagal menyimpan data wali';
-                    return back()->with(['alert-type' => 'error', 'message' => $errorMessage]);
+                    return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
                 }
 
                 // Persiapkan data untuk dikirim ke API

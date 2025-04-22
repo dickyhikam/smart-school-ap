@@ -100,7 +100,7 @@
                         <div class="col-sm-6">
                             <div>
                                 <p class="fs-14 m-0 text-body text-muted">
-                                    Menampilkan <span class="text-body fw-semibold">{{ count($list_data) }}</span> dari <span class="text-body fw-semibold">{{ $pagination['total'] }}</span> data
+                                    Menampilkan <span class="text-body fw-semibold">{{ $pagination['from'] }}</span> hingga <span class="text-body fw-semibold">{{ $pagination['to'] }}</span> dari <span class="text-body fw-semibold">{{ $pagination['total'] }}</span> data
                                 </p>
                             </div>
                         </div>

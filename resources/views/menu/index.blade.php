@@ -5,53 +5,16 @@
 @section('content')
 <div class="page-container">
 
-    <!-- Informasi Jumlah Siswa dan Tahun Ajaran -->
-    <div class="row mb-3">
-        <!-- Card Jumlah Siswa -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 widget-flat">
-                <div class="d-flex card-header justify-content-between align-items-center bg-primary text-white">
-                    <h4 class="header-title mb-0">Jumlah Siswa</h4>
-                    <i class="mdi mdi-account-multiple widget-icon fs-2"></i>
-                </div>
-
-                <div class="card-body pt-3">
-                    <div class="text-center">
-                        <h2 class="fw-bold text-primary" data-plugin="counterup">200,000</h2>
-                        <p class="mb-0 text-muted">Jumlah siswa berdasarkan tahun akademik saat ini</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Tahun Ajaran -->
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 widget-flat">
-                <div class="d-flex card-header justify-content-between align-items-center bg-success text-white">
-                    <h4 class="header-title mb-0">Tahun Ajaran</h4>
-                    <i class="mdi mdi-calendar-month widget-icon fs-2"></i>
-                </div>
-
-                <div class="card-body pt-3">
-                    <div class="text-center">
-                        <h2 class="fw-bold text-success">2024/2025</h2>
-                        <p class="mb-0 text-muted">Tahun akademik saat ini</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tabel Data Siswa -->
+    <!-- Tabel Data Orang Tua/Wali -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
-                        <i class="mdi mdi-account-group me-2"></i> Data Siswa
+                        <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
 
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormSiswa') }}">
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormMenu') }}">
                         <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
                     </a>
                 </div>
@@ -85,42 +48,24 @@
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
-                                    <th>NISN</th>
                                     <th>Nama</th>
-                                    <th>Kelas</th>
-                                    <th>Orang Tua/Wali</th>
-                                    <th>Status</th>
-                                    <th class="text-center">Aksi</th>
+                                    <th>Icon</th>
+                                    <th>Link</th>
+                                    <th>Platform</th>
+                                    <th>Order</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($list_data as $index => $siswa)
+                                @foreach ($list_data as $row)
                                 <tr>
-                                    <td>{{ $siswa['nisn'] }}</td>
-                                    <td>{{ $siswa['nama_lengkap'] }}</td>
-                                    <td>{{ $siswa['kelas'] ?? 'N/A' }}</td>
+                                    <td>{{ $row['name'] }}</td>
+                                    <td><i class="{{ $row['icon'] }}"></i></td>
+                                    <td>{{ $row['route'] }}</td>
+                                    <td>{{ $row['platform'] }}</td>
+                                    <td>{{ $row['order'] }}</td>
                                     <td>
-                                        <ul class="m-0 p-0 list-unstyled">
-                                            @foreach ($siswa['orang_tua'] as $ortu)
-                                            <li>- {{ $ortu['nama_lengkap'] }} ({{ $ortu['jenis_orang_tua'] }})</li>
-                                            @endforeach
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        @if($siswa['status_pendidikan'] == 'Aktif')
-                                        <span class="badge bg-success">{{ $siswa['status_pendidikan'] }}</span>
-                                        @elseif($siswa['status_pendidikan'] == 'Lulus')
-                                        <span class="badge bg-primary">{{ $siswa['status_pendidikan'] }}</span>
-                                        @elseif($siswa['status_pendidikan'] == 'Pindah')
-                                        <span class="badge bg-warning">{{ $siswa['status_pendidikan'] }}</span>
-                                        @elseif($siswa['status_pendidikan'] == 'Tidak Aktif')
-                                        <span class="badge bg-danger">{{ $siswa['status_pendidikan'] }}</span>
-                                        @else
-                                        <span class="badge bg-secondary">{{ $siswa['status_pendidikan'] }}</span>
-                                        @endif
-                                    </td>
-                                    <td class="text-center">
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit Siswa" onclick="window.location.href='{{ route('pageFormEditSiswa', ['id' => $siswa['id']]) }}'">
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditMenu', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -128,7 +73,7 @@
                                                 <path d="M16 5l3 3" />
                                             </svg>
                                         </button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus Siswa" hidden>
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Hapus {{ $nama_menu }}" data-menu-id="{{ $row['id'] }}" data-menu-name="{{ $row['name'] }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M4 7l16 0" />
@@ -186,12 +131,47 @@
             </div> <!-- end card -->
         </div><!-- end col-->
     </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus menu ini <b id="deleteModalName"></b>?</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('actionDeleteMenu', ['id' => ':id']) }}" method="POST" id="deleteMenuForm">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div> <!-- container -->
 
 @endsection
 
 @section('javascript_custom')
 <script>
+    // Get all delete buttons
+    const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#deleteModal"]');
 
+    // Loop through each button and add an event listener
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const menuId = this.getAttribute('data-menu-id'); // Get menu ID from button's data-menu-id attribute
+            const menuName = this.getAttribute('data-menu-name');
+            const form = document.querySelector('#deleteModal form'); // Get the form in the modal
+            form.action = form.action.replace(':id', menuId); // Replace the route parameter with the actual ID
+            document.getElementById('deleteModalName').textContent = menuName; // Set the menu name in the modal
+        });
+    });
 </script>
 @endsection

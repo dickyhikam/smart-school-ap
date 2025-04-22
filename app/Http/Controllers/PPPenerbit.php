@@ -30,6 +30,8 @@ class PPPenerbit extends Controller
         $data['list_data'] = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
         $data['pagination'] = [
+            'from' => $response['data']['from'],
+            'to' => $response['data']['to'],
             'current_page' => $response['data']['current_page'],
             'last_page' => $response['data']['last_page'],
             'total' => $response['data']['total'],

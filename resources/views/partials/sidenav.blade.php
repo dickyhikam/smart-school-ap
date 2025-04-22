@@ -240,6 +240,53 @@
                     <span class="menu-text"> Users </span>
                 </a>
             </li>
+            <li class="side-nav-item">
+                <a href="{{ route('pageRole') }}" class="side-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-server-cog">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+                        <path d="M12 20h-6a3 3 0 0 1 -3 -3v-2a3 3 0 0 1 3 -3h10.5" />
+                        <path d="M18 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M18 14.5v1.5" />
+                        <path d="M18 20v1.5" />
+                        <path d="M21.032 16.25l-1.299 .75" />
+                        <path d="M16.27 19l-1.3 .75" />
+                        <path d="M14.97 16.25l1.3 .75" />
+                        <path d="M19.733 19l1.3 .75" />
+                        <path d="M7 8v.01" />
+                        <path d="M7 16v.01" />
+                    </svg>
+                    <span class="menu-text"> Role </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="{{ route('pagePermission') }}" class="side-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shield-cog">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M12 21a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3c.568 1.933 .635 3.957 .223 5.89" />
+                        <path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M19.001 15.5v1.5" />
+                        <path d="M19.001 21v1.5" />
+                        <path d="M22.032 17.25l-1.299 .75" />
+                        <path d="M17.27 20l-1.3 .75" />
+                        <path d="M15.97 17.25l1.3 .75" />
+                        <path d="M20.733 20l1.3 .75" />
+                    </svg>
+                    <span class="menu-text"> Permission </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="{{ route('pageMenu') }}" class="side-nav-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-category-2">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M14 4h6v6h-6z" />
+                        <path d="M4 14h6v6h-6z" />
+                        <path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                        <path d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                    </svg>
+                    <span class="menu-text"> Menu </span>
+                </a>
+            </li>
         </ul>
         @endif
 

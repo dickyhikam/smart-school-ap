@@ -75,7 +75,40 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-
+                                        @if ($row['is_active'] == 'Aktif')
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalUserStatus" data-status="Non-Aktif" data-id="{{ $row['id'] }}" title="Non-Aktif User">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M18 6l-12 12" />
+                                                <path d="M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                        @else
+                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalUserStatus" data-status="Aktif" data-id="{{ $row['id'] }}" title="Aktif User">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M5 12l5 5l10 -10" />
+                                            </svg>
+                                        </button>
+                                        @endif
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit User" onclick="window.location.href='{{ route('pageFormEditSiswa', ['id' => $row['id']]) }}'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                                <path d="M16 5l3 3" />
+                                            </svg>
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" title="Detil User" onclick="window.location.href='{{ route('pageFormEditSiswa', ['id' => $row['id']]) }}'">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-analytics">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                                                <path d="M9 17l0 -5" />
+                                                <path d="M12 17l0 -1" />
+                                                <path d="M15 17l0 -3" />
+                                            </svg>
+                                        </button>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -87,7 +120,7 @@
                         <div class="col-sm-6">
                             <div>
                                 <p class="fs-14 m-0 text-body text-muted">
-                                    Menampilkan <span class="text-body fw-semibold">{{ count($list_data) }}</span> dari <span class="text-body fw-semibold">{{ $pagination['total'] }}</span> data
+                                    Menampilkan <span class="text-body fw-semibold">{{ $pagination['from'] }}</span> hingga <span class="text-body fw-semibold">{{ $pagination['to'] }}</span> dari <span class="text-body fw-semibold">{{ $pagination['total'] }}</span> data
                                 </p>
                             </div>
                         </div>
@@ -126,10 +159,47 @@
     </div>
 </div> <!-- container -->
 
+<!-- Modal -->
+<div class="modal fade" id="modalUserStatus" tabindex="-1" aria-labelledby="modalUserStatusLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalUserStatusLabel">Change User Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="statusMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <form id="statusChangeForm" method="POST" action="{{ route('actionStatusUser') }}">
+                    @csrf
+                    <input type="text" name="id" id="id" hidden>
+                    <input type="text" name="is_active" id="is_active" hidden>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                    <button type="submit" class="btn btn-primary">Ya</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('javascript_custom')
 <script>
+    // Event listener to handle modal show
+    var myModal = document.getElementById('modalUserStatus');
+    myModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var status = button.getAttribute('data-status'); // Extract the status
+        var id = button.getAttribute('data-id'); // Extract the user id
 
+        document.getElementById('is_active').value = status;
+        document.getElementById('id').value = id; // Set the user id in the form
+
+        // Set the modal content dynamically
+        var statusMessage = document.getElementById('statusMessage');
+        statusMessage.textContent = 'Apakah Anda yakin ingin mengubah status user menjadi "' + status + '"?';
+    });
 </script>
 @endsection

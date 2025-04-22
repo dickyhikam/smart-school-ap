@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\PPAnggota;
 use App\Http\Controllers\PPBuku;
@@ -10,6 +11,7 @@ use App\Http\Controllers\PPDashboard;
 use App\Http\Controllers\PPKategori;
 use App\Http\Controllers\PPPenerbit;
 use App\Http\Controllers\PPPengarang;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,28 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/orang-tua', [OrtuController::class, 'index'])->name('pageOrtu');
 
     Route::get('/auth-user', [UsersController::class, 'index'])->name('pageUser');
+    Route::post('/auth-user/status', [UsersController::class, 'update_status'])->name('actionStatusUser');
+
+    Route::get('/role', [RoleController::class, 'index'])->name('pageRole');
+    Route::get('/role/tambah', [RoleController::class, 'index_form'])->name('pageFormRole');
+    Route::get('/role/edit/{id?}', [RoleController::class, 'index_form'])->name('pageFormEditRole');
+    Route::post('/role/tambah', [RoleController::class, 'store'])->name('actionAddRole');
+    Route::put('/role/edit/{id?}', [RoleController::class, 'store_update'])->name('actionEditRole');
+    Route::delete('/role/hapus/{id?}', [RoleController::class, 'destroy'])->name('actionDeleteRole');
+
+    Route::get('/permission', [RoleController::class, 'index'])->name('pagePermission');
+    Route::get('/permission/tambah', [RoleController::class, 'index_form'])->name('pageFormPermission');
+    Route::get('/permission/edit/{id?}', [RoleController::class, 'index_form'])->name('pageFormEditPermission');
+    Route::post('/permission/tambah', [RoleController::class, 'store'])->name('actionAddPermission');
+    Route::put('/permission/edit/{id?}', [RoleController::class, 'store_update'])->name('actionEditPermission');
+    Route::delete('/permission/hapus/{id?}', [RoleController::class, 'destroy'])->name('actionDeletePermission');
+
+    Route::get('/menu', [MenuController::class, 'index'])->name('pageMenu');
+    Route::get('/menu/tambah', [MenuController::class, 'index_form'])->name('pageFormMenu');
+    Route::get('/menu/edit/{id?}', [MenuController::class, 'index_form'])->name('pageFormEditMenu');
+    Route::post('/menu/tambah', [MenuController::class, 'store'])->name('actionAddMenu');
+    Route::put('/menu/edit/{id?}', [MenuController::class, 'store_update'])->name('actionEditMenu');
+    Route::delete('/menu/hapus/{id?}', [MenuController::class, 'destroy'])->name('actionDeleteMenu');
 
     //bagian perpustakaan
     Route::get('/perpustakaan/dashboard', [PPDashboard::class, 'index'])->name('pagePerpusDashboard');
