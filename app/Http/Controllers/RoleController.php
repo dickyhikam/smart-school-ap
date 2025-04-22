@@ -44,12 +44,103 @@ class RoleController extends Controller
 
     public function index_form($id = null)
     {
-        $data['nama_menu'] = 'Role';
-        $data['nama_menu2'] = 'Form Role';
-        // Jika tidak ada $id, berarti ini adalah halaman Create
-        $data['action'] = route('actionAddGuru'); // Arahkan ke store
-        $data['method'] = 'POST'; // Menggunakan metode POST untuk create
+        $menu = 'Role';
+        $data['nama_menu'] = $menu;
+
+        if ($id) {
+            // Jika $id ada, berarti ini adalah halaman Edit
+            // URL API dengan parameter halaman
+            $apiUrl = env('API_URL'); // URL API Anda
+            $response = Http::withToken(session('token'))->get($apiUrl . '/api/roles/' . $id);
+            $response = json_decode($response->body(), true); // Dekode response menjadi array
+
+            $data['nama_menu2'] = 'Form Edit ' . $menu;
+
+            $data['data_row'] = $response['data'];
+            $data['action'] = route('actionEditRole', $id); // Arahkan ke update
+            $data['method'] = 'PUT'; // Menggunakan metode PUT untuk update
+        } else {
+            $data['nama_menu2'] = 'Form Tambah ' . $menu;
+
+            // Jika tidak ada $id, berarti ini adalah halaman Create
+            $data['action'] = route('actionAddRole'); // Arahkan ke store
+            $data['method'] = 'POST'; // Menggunakan metode POST untuk create
+        }
 
         return view('role.form', $data);
+    }
+
+    public function store(Request $request)
+    {
+        // Prepare data for sending to the API
+        $data = [
+            'name' => $request->name, // Menu name
+            'allowed_platforms' => $request->allowed_platforms,
+        ];
+
+        // Send data to the external API
+        $apiUrl = env('API_URL') . '/api/roles'; // External API URL for the menu
+        $response = Http::withToken(session('token'))
+            ->post($apiUrl, $data);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pageRole')->with(['alert-type' => 'success', 'message' => 'Menu berhasil disimpan!']);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = $response->body();  // Capture the error message from the response body
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+    }
+
+    public function store_update(Request $request, $id)
+    {
+        // Prepare data for sending to the API
+        $data = [
+            'name' => $request->name, // Menu name
+            'allowed_platforms' => $request->allowed_platforms,
+        ];
+
+        // Send data to the external API using PUT (for updating)
+        $apiUrl = env('API_URL') . '/api/roles/' . $id; // API URL for updating the menu by ID
+        $response = Http::withToken(session('token'))
+            ->put($apiUrl, $data);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pageRole')->with(['alert-type' => 'success', 'message' => 'Menu berhasil diperbarui!']);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+    }
+
+    public function destroy($id)
+    {
+        // API URL to delete the menu by its ID
+        $apiUrl = env('API_URL') . '/api/roles/' . $id;
+
+        // Send DELETE request to the API
+        $response = Http::withToken(session('token'))->delete($apiUrl);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pageRole')->with(['alert-type' => 'success', 'message' => 'Menu berhasil dihapus!']);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+        // dd($response->body());
+
+        // If the request failed, redirect back with error message
+        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
     }
 }

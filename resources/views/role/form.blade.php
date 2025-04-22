@@ -25,19 +25,19 @@
                             <div class="col-sm-6">
                                 <!-- Nama -->
                                 <div class="mb-3">
-                                    <label class="col-form-label" for="nama">Nama <span class="text-danger">*</span></label>
-                                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan nama" required>
+                                    <label class="col-form-label" for="name">Nama <span class="text-danger">*</span></label>
+                                    <input type="text" id="name" name="name" value="{{ old('name', $data_row['name'] ?? '') }}" class="form-control" placeholder="Masukkan nama" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <!-- Platform -->
                                 <div class="mb-3">
-                                    <label class="col-form-label" for="platform">Platform <span class="text-danger">*</span></label>
-                                    <select id="platform" name="platform" class="form-select" required>
+                                    <label class="col-form-label" for="allowed_platforms">Platform <span class="text-danger">*</span></label>
+                                    <select id="allowed_platforms" name="allowed_platforms" class="form-select" required>
                                         <option value="" selected>Pilih Platform</option>
-                                        <option value="web" {{ (old('platform', $data_row['allowed_platforms'] ?? '') == 'web') ? 'selected' : '' }}>Web</option>
-                                        <option value="mobile" {{ (old('platform', $data_row['allowed_platforms'] ?? '') == 'mobile') ? 'selected' : '' }}>Mobile</option>
-                                        <option value="both" {{ (old('platform', $data_row['allowed_platforms'] ?? '') == 'both') ? 'selected' : '' }}>Both</option>
+                                        <option value="web" {{ (old('allowed_platforms', $data_row['allowed_platforms'] ?? '') == 'web') ? 'selected' : '' }}>Web</option>
+                                        <option value="mobile" {{ (old('allowed_platforms', $data_row['allowed_platforms'] ?? '') == 'mobile') ? 'selected' : '' }}>Mobile</option>
+                                        <option value="both" {{ (old('allowed_platforms', $data_row['allowed_platforms'] ?? '') == 'both') ? 'selected' : '' }}>Both</option>
                                     </select>
                                 </div>
                             </div>
