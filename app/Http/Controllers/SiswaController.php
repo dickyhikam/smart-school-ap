@@ -157,13 +157,14 @@ class SiswaController extends Controller
             // Bagian Ayah
             //=============================
             $dataAyah = [
-                'nama_lengkap' => $request->nama_lengkap_ayah,       // Nama Lengkap Ayah
-                'pekerjaan' => $request->pekerjaan_ayah,             // Pekerjaan Ayah
-                'alamat' => $request->alamat_ayah,                   // Alamat Ayah
-                'nomor_telepon' => $request->nomor_telepon_ayah,     // Nomor Telepon Ayah
-                'email' => $request->email_ayah ?? null,             // Email Ayah (jika ada)
-                'jenis_orang_tua' => 'Ayah',                          // Jenis Orang Tua
-                'status_wali' => $request->wali == 'Ayah' ? 'Ya' : 'Tidak',  // Status Wali (misalnya jika Ayah jadi wali)
+                'nik' => $request->nik_ayah,
+                'nama_lengkap' => $request->nama_lengkap_ayah,
+                'pekerjaan' => $request->pekerjaan_ayah,
+                'alamat' => $request->alamat_ayah,
+                'nomor_telepon' => $request->nomor_telepon_ayah,
+                'email' => $request->email_ayah ?? null,
+                'jenis_orang_tua' => 'Ayah',
+                'status_wali' => $request->wali == 'Ayah' ? 'Ya' : 'Tidak',
                 'siswa' => [
                     [
                         'siswa_id' => $siswaId,
@@ -186,12 +187,13 @@ class SiswaController extends Controller
 
             // Persiapkan data untuk dikirim ke API
             $dataUsersAyah = [
-                'name' => $request->nama_lengkap,
-                'username' => $request->nisn,
-                'email' => $request->email,
+                'name' => $request->nama_lengkap_ayah,
+                'username' => $request->nik_ayah,
+                'email' => $request->email_ayah ?? null,
+                'password' => "Smart_School2025",
                 'pengguna_id' => $responseAyah['data']['id'],
-                'pengguna_type' => "ayah",
-                'role' => "ayah",
+                'pengguna_type' => "orangtua",
+                'role' => "orangtua",
             ];
             // Kirim data ke API
             Http::withToken(session('token'))
@@ -204,6 +206,7 @@ class SiswaController extends Controller
             // Bagian Ibu
             //=============================
             $dataIbu = [
+                'nik' => $request->nik_ibu,
                 'nama_lengkap' => $request->nama_lengkap_ibu,
                 'pekerjaan' => $request->pekerjaan_ibu,
                 'alamat' => $request->alamat_ibu,
@@ -233,12 +236,13 @@ class SiswaController extends Controller
 
             // Persiapkan data untuk dikirim ke API
             $dataUsersIbu = [
-                'name' => $request->nama_lengkap,
-                'username' => $request->nisn,
-                'email' => $request->email,
+                'name' => $request->nama_lengkap_ibu,
+                'username' => $request->nik_ibu,
+                'email' => $request->email_ibu ?? null,
+                'password' => "Smart_School2025",
                 'pengguna_id' => $responseIbu['data']['id'],
-                'pengguna_type' => "ayah",
-                'role' => "ayah",
+                'pengguna_type' => "orangtua",
+                'role' => "orangtua",
             ];
             // Kirim data ke API
             Http::withToken(session('token'))
@@ -250,6 +254,7 @@ class SiswaController extends Controller
             // Jika ada wali yang perlu ditambahkan
             if ($request->has('wali') && $request->wali == 'Lain-lain') {
                 $dataWali = [
+                    'nik' => $request->nik_wali,
                     'nama_lengkap' => $request->nama_lengkap_wali,
                     'pekerjaan' => $request->pekerjaan_wali,
                     'alamat' => $request->alamat_wali,
@@ -260,7 +265,7 @@ class SiswaController extends Controller
                     'siswa' => [
                         [
                             'siswa_id' => $siswaId,
-                            'hubungan' => 'Wali',
+                            'hubungan' => $request->hubungan_wali,
                         ]
                     ],
                 ];
@@ -279,12 +284,13 @@ class SiswaController extends Controller
 
                 // Persiapkan data untuk dikirim ke API
                 $dataUsersWali = [
-                    'name' => $request->nama_lengkap,
-                    'username' => $request->nisn,
-                    'email' => $request->email,
+                    'name' => $request->nama_lengkap_wali,
+                    'username' => $request->nik_wali,
+                    'email' => $request->email_wali ?? null,
+                    'password' => "Smart_School2025",
                     'pengguna_id' => $responseWali['data']['id'],
-                    'pengguna_type' => "wali",
-                    'role' => "wali",
+                    'pengguna_type' => "orangtua",
+                    'role' => "orangtua",
                 ];
                 // Kirim data ke API
                 Http::withToken(session('token'))

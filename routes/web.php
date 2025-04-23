@@ -40,6 +40,7 @@ Route::middleware('APIAuth')->group(function () {
     Route::delete('/siswa/hapus/{id?}', [SiswaController::class, 'destroy'])->name('actionDeleteSiswa');
 
     Route::get('/orang-tua', [OrtuController::class, 'index'])->name('pageOrtu');
+    Route::get('/orang-tua/{id}', [OrtuController::class, 'show_data'])->name('actionShowOrtu');
 
     Route::get('/auth-user', [UsersController::class, 'index'])->name('pageUser');
     Route::post('/auth-user/status', [UsersController::class, 'update_status'])->name('actionStatusUser');

@@ -157,9 +157,9 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Tahun Masuk/Tahun Keluar -->
+                                            <!-- Tahun Masuk/Tahun Lulus -->
                                             <div class="row mb-3">
-                                                <label class="col-md-3 col-form-label" for="tahun_masuk">Tahun Masuk/Tahun Keluar</label>
+                                                <label class="col-md-3 col-form-label" for="tahun_masuk">Tahun Masuk/Tahun Lulus</label>
                                                 <div class="col-md-4">
                                                     <input type="number" id="tahun_masuk" name="tahun_masuk" class="form-control" placeholder="Tahun Masuk" value="{{ old('tahun_masuk', $data_row['tahun_masuk'] ?? '') }}" required>
                                                 </div>
@@ -214,6 +214,19 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="row mb-3">
+                                                <label for="nik_ayah" class="col-md-3 col-form-label">NIK Ayah <span class="text-danger">*</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" id="nik_ayah" name="nik_ayah" class="form-control" value="{{ old('nik_ayah', $data_row_ayah['nik'] ?? '') }}" placeholder="NIK Ayah" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="d-grid gap-2">
+                                                        <button type="button" class="btn btn-info" id="searchButtonAyah" onclick="cariDataAyah();">Cari</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input id="con_ayah" name="con_ayah" class="form-control" value="{{ old('con_ayah', 'new') }}" hidden readonly>
+
+                                            <div class="row mb-3">
                                                 <label for="nama_lengkap_ayah" class="col-md-3 col-form-label">Nama Lengkap Ayah <span class="text-danger">*</span></label>
                                                 <div class="col-md-9">
                                                     <input type="text" id="nama_lengkap_ayah" name="nama_lengkap_ayah" class="form-control" value="{{ old('nama_lengkap_ayah', $data_row_ayah['nama_lengkap'] ?? '') }}" placeholder="Nama Lengkap ayah" required>
@@ -254,6 +267,19 @@
                                 <div class="tab-pane" id="basictab3">
                                     <div class="row">
                                         <div class="col-12">
+                                            <div class="row mb-3">
+                                                <label for="nik_ibu" class="col-md-3 col-form-label">NIK Ibu <span class="text-danger">*</span></label>
+                                                <div class="col-md-7">
+                                                    <input type="text" id="nik_ibu" name="nik_ibu" class="form-control" value="{{ old('nik_ibu', $data_row_ibu['nik'] ?? '') }}" placeholder="NIK Ibu" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="d-grid gap-2">
+                                                        <button type="button" class="btn btn-info" id="searchButtonIbu" onclick="cariDataIbu();">Cari</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input id="con_ibu" name="con_ibu" class="form-control" value="{{ old('con_ibu', 'new') }}" hidden readonly>
+
                                             <div class="row mb-3">
                                                 <label for="nama_lengkap_ibu" class="col-md-3 col-form-label">Nama Lengkap Ibu <span class="text-danger">*</span></label>
                                                 <div class="col-md-9">
@@ -314,6 +340,19 @@
 
                                             <div id="wali_form">
                                                 <div class="row mb-3">
+                                                    <label for="nik_wali" class="col-md-3 col-form-label">NIK Wali <span class="text-danger">*</span></label>
+                                                    <div class="col-md-7">
+                                                        <input type="text" id="nik_wali" name="nik_wali" class="form-control" value="{{ old('nik_wali', $data_row_wali['nik'] ?? '') }}" placeholder="NIK Wali" required>
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="d-grid gap-2">
+                                                            <button type="button" class="btn btn-info" id="searchButtonWali">Cari</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input id="con_wali" name="con_wali" class="form-control" value="{{ old('con_wali', 'new') }}" hidden readonly>
+
+                                                <div class="row mb-3">
                                                     <label for="nama_lengkap_wali" class="col-md-3 col-form-label">Nama Lengkap Wali <span class="text-danger">*</span></label>
                                                     <div class="col-md-9">
                                                         <input type="text" id="nama_lengkap_wali" name="nama_lengkap_wali" class="form-control"
@@ -352,6 +391,14 @@
                                                             value="{{ old('email_wali', $data_row_wali['email'] ?? '') }}" placeholder="Email wali">
                                                     </div>
                                                 </div>
+
+                                                <div class="row mb-3">
+                                                    <label for="hubungan_wali" class="col-md-3 col-form-label">Hubungan dengan Siswa <span class="text-danger">*</span></label>
+                                                    <div class="col-md-9">
+                                                        <input type="text" id="hubungan_wali" name="hubungan_wali" class="form-control"
+                                                            value="{{ old('hubungan_wali', $data_row_wali['hubungan'] ?? '') }}" placeholder="Hubungan dengan siswa">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div> <!-- end col -->
                                     </div> <!-- end row -->
@@ -366,12 +413,12 @@
                                     <div class="d-flex flex-wrap gap-2">
                                         <div class="previous">
                                             <a href="javascript:void(0);" class="btn btn-primary">
-                                                <i class="bx bx-left-arrow-alt me-2"></i>Kembali ke Langkah Sebelumnya
+                                                Sebelumnya
                                             </a>
                                         </div>
                                         <div class="next">
                                             <a href="javascript:void(0);" class="btn btn-primary mt-3 mt-md-0">
-                                                Langkah Selanjutnya<i class="bx bx-right-arrow-alt ms-2"></i>
+                                                Selanjutnya
                                             </a>
                                         </div>
                                     </div>
@@ -541,6 +588,149 @@
 
 @section('javascript_custom')
 <script>
+    // Function untuk melakukan pencarian berdasarkan NIK Ayah
+    function cariDataAyah() {
+        var nikAyah = document.getElementById('nik_ayah').value; // Ambil NIK Ayah dari input
+        // validasi jika nikAyah kosong
+        if (nikAyah === '') {
+            showModal('warning', 'NIK ayah tidak boleh kosong');
+            return;
+        }
+
+        // Kirim permintaan AJAX ke controller
+        fetch(`/orang-tua/${nikAyah}`)
+            .then(response => response.json()) // Pastikan controller mengembalikan data dalam format JSON
+            .then(data => {
+                // Jika berhasil, isi form dengan data yang diterima
+                if (data.status == 'success') {
+                    //cek data jika jenis_orang_tua	itu ayah
+                    if (data.data.jenis_orang_tua == 'Ayah') {
+                        document.getElementById('nama_lengkap_ayah').value = data.data.nama_lengkap;
+                        document.getElementById('pekerjaan_ayah').value = data.data.pekerjaan;
+                        document.getElementById('alamat_ayah').value = data.data.alamat;
+                        document.getElementById('nomor_telepon_ayah').value = data.data.nomor_telepon;
+                        document.getElementById('email_ayah').value = data.data.email;
+                        document.getElementById('con_ayah').value = 'existing'; // Menandakan data sudah ada
+                    } else {
+                        showModal('warning', 'NIK yang dimasukkan bukan data NIK ayah.');
+                    }
+                } else {
+                    // Jika data tidak ditemukan
+                    showModal('error', 'Data ayah tidak ditemukan.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showModal('error', 'Terjadi kesalahan dalam mengambil data.');
+            });
+    }
+    // Function untuk melakukan pencarian berdasarkan NIK Ibu
+    function cariDataIbu() {
+        var nikIbu = document.getElementById('nik_ibu').value; // Ambil NIK Ibu dari input
+
+        // Validasi jika nikIbu kosong
+        if (nikIbu === '') {
+            showModal('warning', 'NIK ibu tidak boleh kosong');
+            return;
+        }
+
+        // Kirim permintaan AJAX ke controller
+        fetch(`/orang-tua/${nikIbu}`)
+            .then(response => response.json()) // Pastikan controller mengembalikan data dalam format JSON
+            .then(data => {
+                // Jika berhasil, isi form dengan data yang diterima
+                if (data.status == 'success') {
+
+                    // Cek apakah jenis_orang_tua adalah Ibu
+                    if (data.data.jenis_orang_tua == 'Ibu') {
+                        document.getElementById('nama_lengkap_ibu').value = data.data.nama_lengkap;
+                        document.getElementById('pekerjaan_ibu').value = data.data.pekerjaan;
+                        document.getElementById('alamat_ibu').value = data.data.alamat;
+                        document.getElementById('nomor_telepon_ibu').value = data.data.nomor_telepon;
+                        document.getElementById('email_ibu').value = data.data.email;
+                        document.getElementById('con_ibu').value = 'existing'; // Menandakan data sudah ada
+                    } else {
+                        showModal('warning', 'NIK yang dimasukkan bukan data NIK ibu.');
+                    }
+                } else {
+                    // Jika data tidak ditemukan
+                    showModal('error', 'Data ibu tidak ditemukan.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showModal('error', 'Terjadi kesalahan dalam mengambil data.');
+            });
+    }
+    // Function untuk melakukan pencarian berdasarkan NIK Wali
+    function cariDataWali() {
+        var nikWali = document.getElementById('nik_wali').value; // Ambil NIK Wali dari input
+
+        // Validasi jika nikWali kosong
+        if (nikWali === '') {
+            showModal('warning', 'NIK wali tidak boleh kosong');
+            return;
+        }
+
+        // Kirim permintaan AJAX ke controller
+        fetch(`/orang-tua/${nikWali}`)
+            .then(response => response.json()) // Pastikan controller mengembalikan data dalam format JSON
+            .then(data => {
+                // Jika berhasil, isi form dengan data yang diterima
+                if (data.status == 'success') {
+                    // Cek apakah jenis_orang_tua adalah Wali
+                    if (data.data.jenis_orang_tua == 'Wali') {
+                        document.getElementById('nama_lengkap_wali').value = data.data.nama_lengkap;
+                        document.getElementById('pekerjaan_wali').value = data.data.pekerjaan;
+                        document.getElementById('alamat_wali').value = data.data.alamat;
+                        document.getElementById('nomor_telepon_wali').value = data.data.nomor_telepon;
+                        document.getElementById('email_wali').value = data.data.email;
+                        document.getElementById('hubungan_wali').value = data.data.hubungan;
+                        document.getElementById('con_wali').value = 'existing'; // Menandakan data sudah ada
+                    } else {
+                        showModal('warning', 'NIK yang dimasukkan bukan data NIK wali.');
+                    }
+                } else {
+                    // Jika data tidak ditemukan
+                    showModal('error', 'Data wali tidak ditemukan.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showModal('error', 'Terjadi kesalahan dalam mengambil data.');
+            });
+    }
+
+    // Function untuk menampilkan modal notifikasi
+    function showModal(type, message) {
+        var modal = new bootstrap.Modal(document.getElementById('alert-modal'));
+
+        // Tentukan jenis modal berdasarkan tipe
+        var iconClass = '';
+        var title = '';
+        var textClass = '';
+
+        if (type === 'success') {
+            iconClass = 'text-success';
+            title = 'Berhasil';
+        } else if (type === 'error') {
+            iconClass = 'text-danger';
+            title = 'Gagal';
+        } else if (type === 'warning') {
+            iconClass = 'text-warning';
+            title = 'Peringatan';
+        }
+
+        // Ubah isi modal sesuai dengan pesan yang diberikan
+        document.querySelector('#alert-modal svg').classList.remove('text-success', 'text-danger', 'text-warning');
+        document.querySelector('#alert-modal svg').classList.add(iconClass);
+        document.querySelector('#alert-modal h4').innerText = title;
+        document.querySelector('#alert-modal p').innerText = message;
+
+        // Tampilkan modal
+        modal.show();
+    }
+
     function previewImage(event) {
         var file = event.target.files[0]; // Ambil file yang diunggah
         if (file) {
@@ -582,7 +772,10 @@
         toggleWaliForm(); // Menyembunyikan atau menampilkan form berdasarkan nilai dropdown saat halaman pertama kali dimuat
     };
 
+
+
     document.addEventListener("DOMContentLoaded", function() {
+        // Data Dummy untuk testing
         // Data Dummy untuk testing
         const dataDummy = {
             nisn: "123456789",
@@ -598,15 +791,17 @@
             tahun_masuk: "2010",
             tahun_lulus: "2014",
             golongan_darah: "O",
-            foto_siswa: null, // Tambahkan URL foto jika ada foto yang diupload
+            foto_siswa: null, // Foto bisa ditambahkan jika tersedia
 
             // Data Orangtua (Dummy)
+            nik_ayah: "1234567890123456", // NIK Ayah
             nama_lengkap_ayah: "Ayah Doe",
             pekerjaan_ayah: "PNS",
             alamat_ayah: "Jl. Ayah No. 10, Jakarta",
             nomor_telepon_ayah: "(+62) 812 1234 5678",
             email_ayah: "ayahd@yahoo.com",
 
+            nik_ibu: "6543210987654321", // NIK Ibu
             nama_lengkap_ibu: "Ibu Doe",
             pekerjaan_ibu: "Guru",
             alamat_ibu: "Jl. Ibu No. 5, Jakarta",
@@ -614,15 +809,17 @@
             email_ibu: "ibud@yahoo.com",
 
             // Wali (Dummy, bisa dikosongkan jika tidak ada)
-            type: "Ayah",
+            type: "Lain-lain", // Wali adalah Ayah
+            nik_wali: "1122334455667788", // NIK Wali
             nama_lengkap_wali: "Wali Dummy",
             pekerjaan_wali: "Pengusaha",
             alamat_wali: "Jl. Wali No. 20, Jakarta",
             nomor_telepon_wali: "(+62) 812 1111 2222",
             email_wali: "walidummy@yahoo.com",
+            hubungan_wali: "Paman",
         };
 
-        // Mengisi form dengan data dummy
+        // Tab 1 (Siswa)
         document.getElementById("nisn").value = dataDummy.nisn;
         document.getElementById("nama_lengkap").value = dataDummy.nama_lengkap;
         document.getElementById("alamat").value = dataDummy.alamat;
@@ -637,26 +834,33 @@
         document.getElementById("tahun_lulus").value = dataDummy.tahun_lulus;
         document.getElementById("golongan_darah").value = dataDummy.golongan_darah;
 
-        // Mengisi data orangtua
+        // Tab 2 (Ayah)
+        document.getElementById("nik_ayah").value = dataDummy.nik_ayah || '';
         document.getElementById("nama_lengkap_ayah").value = dataDummy.nama_lengkap_ayah;
         document.getElementById("pekerjaan_ayah").value = dataDummy.pekerjaan_ayah;
         document.getElementById("alamat_ayah").value = dataDummy.alamat_ayah;
         document.getElementById("nomor_telepon_ayah").value = dataDummy.nomor_telepon_ayah;
         document.getElementById("email_ayah").value = dataDummy.email_ayah;
 
+        // Tab 3 (Ibu)
+        document.getElementById("nik_ibu").value = dataDummy.nik_ibu || '';
         document.getElementById("nama_lengkap_ibu").value = dataDummy.nama_lengkap_ibu;
         document.getElementById("pekerjaan_ibu").value = dataDummy.pekerjaan_ibu;
         document.getElementById("alamat_ibu").value = dataDummy.alamat_ibu;
         document.getElementById("nomor_telepon_ibu").value = dataDummy.nomor_telepon_ibu;
         document.getElementById("email_ibu").value = dataDummy.email_ibu;
 
-        // Jika ada wali
-        document.getElementById("wali").value = dataDummy.type;
-        // document.getElementById("nama_lengkap_wali").value = dataDummy.nama_lengkap_wali;
-        // document.getElementById("pekerjaan_wali").value = dataDummy.pekerjaan_wali;
-        // document.getElementById("alamat_wali").value = dataDummy.alamat_wali;
-        // document.getElementById("nomor_telepon_wali").value = dataDummy.nomor_telepon_wali;
-        // document.getElementById("email_wali").value = dataDummy.email_wali;
+        // Tab 4 (Wali)
+        document.getElementById("wali").value = dataDummy.type || 'Ayah'; // Wali is Ayah, default to 'Ayah'
+        if (dataDummy.type === 'Lain-lain') {
+            document.getElementById("nik_wali").value = dataDummy.nik_wali || '';
+            document.getElementById("nama_lengkap_wali").value = dataDummy.nama_lengkap_wali;
+            document.getElementById("pekerjaan_wali").value = dataDummy.pekerjaan_wali;
+            document.getElementById("alamat_wali").value = dataDummy.alamat_wali;
+            document.getElementById("nomor_telepon_wali").value = dataDummy.nomor_telepon_wali;
+            document.getElementById("email_wali").value = dataDummy.email_wali;
+            document.getElementById("hubungan_wali").value = dataDummy.hubungan_wali;
+        }
     });
 </script>
 @endsection

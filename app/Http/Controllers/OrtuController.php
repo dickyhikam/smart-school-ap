@@ -41,4 +41,13 @@ class OrtuController extends Controller
 
         return view('management_user.ortu.index', $data);
     }
+
+    public function show_data($id)
+    {
+        $apiUrl = env('API_URL') . '/api/orangtua/' . $id; // URL API orangtua eksternal Anda
+        $response = Http::withToken(session('token'))->get($apiUrl);
+        $response = json_decode($response->body(), true); // Dekode response menjadi array
+
+        return response()->json($response);
+    }
 }
