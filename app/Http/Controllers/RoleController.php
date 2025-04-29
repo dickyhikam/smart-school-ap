@@ -90,7 +90,7 @@ class RoleController extends Controller
         }
 
         // If there was an error, capture the error message
-        $errorMessage = $response->body();  // Capture the error message from the response body
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
 
         // If the request failed, redirect back with error message
         return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);

@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class PPAnggota extends Controller
+class PPPeminjaman extends Controller
 {
     public function index(Request $request)
     {
-        $data['nama_menu'] = 'Anggota';
+        $data['nama_menu'] = 'Peminjaman';
         $data['con_menu'] = 'Perpustakaan';
 
         // Ambil nomor halaman, jumlah item per halaman, dan query pencarian
@@ -20,7 +20,7 @@ class PPAnggota extends Controller
         // URL API dengan parameter halaman
         $apiUrl = env('API_URL'); // URL API Anda
         $response = Http::withToken(session('token'))
-            ->get($apiUrl . '/api/perpustakaan/anggota', [
+            ->get($apiUrl . '/api/perpustakaan/peminjaman', [
                 'page' => $page,
                 'perPage' => $perPage, // Kirim parameter per_page
                 'search' => $search, // Kirim parameter pencarian
@@ -40,12 +40,6 @@ class PPAnggota extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        $response_siswa = Http::withToken(session('token'))
-            ->get($apiUrl . '/api/siswa');
-        $response_siswa = json_decode($response_siswa->body(), true);
-        $data['list_siswa'] = $response_siswa['data']['items'];
-        // dd($response_siswa['data']['items']);
-
-        return view('library.anggota.index', $data);
+        return view('library.peminjaman.index', $data);
     }
 }

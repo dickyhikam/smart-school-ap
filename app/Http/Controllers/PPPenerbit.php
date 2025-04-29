@@ -45,13 +45,83 @@ class PPPenerbit extends Controller
 
     public function index_form($id = null)
     {
-        $data['nama_menu'] = 'Penerbit';
-        $data['nama_menu2'] = 'Form Penerbit';
+        $menu = 'Penerbit';
+        $data['nama_menu'] = $menu;
+        $data['nama_menu2'] = 'Form ' . $menu;
         $data['con_menu'] = 'Perpustakaan';
-        // Jika tidak ada $id, berarti ini adalah halaman Create
-        $data['action'] = route('actionAddGuru'); // Arahkan ke store
-        $data['method'] = 'POST'; // Menggunakan metode POST untuk create
+
+        if ($id) {
+            // Jika $id ada, berarti ini adalah halaman Edit
+            // URL API dengan parameter halaman
+            $apiUrl = env('API_URL'); // URL API Anda
+            $response = Http::withToken(session('token'))->get($apiUrl . '/api/perpustakaan/penerbit/' . $id);
+            $response = json_decode($response->body(), true); // Dekode response menjadi array
+
+            $data['nama_menu2'] = 'Form Edit ' . $menu;
+
+            $data['data_row'] = $response['data'];
+            $data['action'] = route('actionAddPerpusPenerbit', $id); // Arahkan ke update
+        } else {
+            $data['nama_menu2'] = 'Form Tambah ' . $menu;
+
+            // Jika tidak ada $id, berarti ini adalah halaman Create
+            $data['action'] = route('actionAddPerpusPenerbit'); // Arahkan ke store
+        }
 
         return view('library.data_master.penerbit.form', $data);
+    }
+
+    public function store(Request $request, $id = null)
+    {
+        // Prepare data for sending to the API
+        $data = [
+            'nama' => $request->nama, // Menu name
+        ];
+
+        // Define the API URL for store or update
+        $apiUrl = env('API_URL') . '/api/perpustakaan/penerbit' . ($id ? "/{$id}" : '');
+
+        // Determine HTTP method (POST for store, PUT for update)
+        $method = $id ? 'put' : 'post';
+
+        // Send data to the external API
+        $response = Http::withToken(session('token'))
+            ->$method($apiUrl, $data);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            $message = $id ? 'Penerbit buku berhasil diperbarui!' : 'Penerbit buku berhasil disimpan!';
+            return redirect()->route('pagePerpusPenerbit')->with(['alert-type' => 'success', 'message' => $message]);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+    }
+
+
+    public function destroy($id)
+    {
+        // API URL to delete the menu by its ID
+        $apiUrl = env('API_URL') . '/api/perpustakaan/penerbit/' . $id;
+
+        // Send DELETE request to the API
+        $response = Http::withToken(session('token'))->delete($apiUrl);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pagePerpusPenerbit')->with(['alert-type' => 'success', 'message' => 'Penerbit buku berhasil dihapus!']);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+        // dd($response->body());
+
+        // If the request failed, redirect back with error message
+        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
     }
 }

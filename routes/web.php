@@ -9,6 +9,7 @@ use App\Http\Controllers\PPAnggota;
 use App\Http\Controllers\PPBuku;
 use App\Http\Controllers\PPDashboard;
 use App\Http\Controllers\PPKategori;
+use App\Http\Controllers\PPPeminjaman;
 use App\Http\Controllers\PPPenerbit;
 use App\Http\Controllers\PPPengarang;
 use App\Http\Controllers\RoleController;
@@ -70,16 +71,36 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/perpustakaan/dashboard', [PPDashboard::class, 'index'])->name('pagePerpusDashboard');
 
     Route::get('/perpustakaan/kategori', [PPKategori::class, 'index'])->name('pagePerpusKategori');
-    Route::get('/perpustakaan/kategori/tambah', [PPKategori::class, 'index_form'])->name('pagePerpusFormKategori');
+    Route::get('/perpustakaan/kategori/tambah', [PPKategori::class, 'index_form'])->name('pageFormPerpusKategori');
+    Route::get('/perpustakaan/kategori/edit/{id?}', [PPKategori::class, 'index_form'])->name('pageFormEditPerpusKategori');
+    Route::post('/perpustakaan/kategori/tambah/{id?}', [PPKategori::class, 'store'])->name('actionAddPerpusKategori');
+    Route::delete('/perpustakaan/kategori/hapus/{id?}', [PPKategori::class, 'destroy'])->name('actionDeletePerpusKategori');
 
     Route::get('/perpustakaan/pengarang', [PPPengarang::class, 'index'])->name('pagePerpusPengarang');
-    Route::get('/perpustakaan/pengarang/tambah', [PPPengarang::class, 'index_form'])->name('pagePerpusFormPengarang');
+    Route::get('/perpustakaan/pengarang/tambah', [PPPengarang::class, 'index_form'])->name('pageFormPerpusPengarang');
+    Route::get('/perpustakaan/pengarang/edit/{id?}', [PPPengarang::class, 'index_form'])->name('pageFormEditPerpusPengarang');
+    Route::post('/perpustakaan/pengarang/tambah/{id?}', [PPPengarang::class, 'store'])->name('actionAddPerpusPengarang');
+    Route::delete('/perpustakaan/pengarang/hapus/{id?}', [PPPengarang::class, 'destroy'])->name('actionDeletePerpusPengarang');
 
     Route::get('/perpustakaan/penerbit', [PPPenerbit::class, 'index'])->name('pagePerpusPenerbit');
-    Route::get('/perpustakaan/penerbit/tambah', [PPPengarang::class, 'index_form'])->name('pagePerpusFormPenerbit');
+    Route::get('/perpustakaan/penerbit/tambah', [PPPenerbit::class, 'index_form'])->name('pageFormPerpusPenerbit');
+    Route::get('/perpustakaan/penerbit/edit/{id?}', [PPPenerbit::class, 'index_form'])->name('pageFormEditPerpusPenerbit');
+    Route::post('/perpustakaan/penerbit/tambah/{id?}', [PPPenerbit::class, 'store'])->name('actionAddPerpusPenerbit');
+    Route::delete('/perpustakaan/penerbit/hapus/{id?}', [PPPenerbit::class, 'destroy'])->name('actionDeletePerpusPenerbit');
 
     Route::get('/perpustakaan/buku', [PPBuku::class, 'index'])->name('pagePerpusBuku');
-    Route::get('/perpustakaan/buku/tambah', [PPBuku::class, 'index_form'])->name('pagePerpusFormBuku');
+    Route::get('/perpustakaan/buku/tambah', [PPBuku::class, 'index_form'])->name('pageFormPerpusBuku');
+    Route::get('/perpustakaan/buku/edit/{id?}', [PPBuku::class, 'index_form'])->name('pageFormEditPerpusBuku');
+    Route::post('/perpustakaan/buku/tambah', [PPBuku::class, 'store'])->name('actionAddPerpusBuku');
+    // Route::put('/perpustakaan/buku/edit/{id?}', [PPBuku::class, 'store_update'])->name('actionEditPerpusBuku');
+    Route::delete('/perpustakaan/buku/hapus/{id?}', [PPBuku::class, 'destroy'])->name('actionDeletePerpusBuku');
 
     Route::get('/perpustakaan/anggota', [PPAnggota::class, 'index'])->name('pagePerpusAnggota');
+
+    Route::get('/perpustakaan/peminjaman', [PPPeminjaman::class, 'index'])->name('pagePerpusPeminjaman');
+    Route::get('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'index_form'])->name('pageFormPerpusPeminjaman');
+    Route::get('/perpustakaan/peminjaman/edit/{id?}', [PPPeminjaman::class, 'index_form'])->name('pageFormEditPerpusPeminjaman');
+    Route::post('/perpustakaan/peminjaman/tambah/{id?}', [PPPeminjaman::class, 'store'])->name('actionAddPerpusPeminjaman');
+    Route::put('/perpustakaan/peminjaman/edit/{id?}', [PPPeminjaman::class, 'store_update'])->name('actionEditPerpusPeminjaman');
+    Route::delete('/perpustakaan/peminjaman/hapus/{id?}', [PPPeminjaman::class, 'destroy'])->name('actionDeletePerpusPeminjaman');
 });

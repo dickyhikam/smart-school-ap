@@ -14,7 +14,7 @@
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
 
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pagePerpusFormPenerbit') }}">
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormPerpusPenerbit') }}">
                         <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
                     </a>
                 </div>
@@ -57,7 +57,7 @@
                                 <tr>
                                     <td>{{ $row['nama'] }}</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditPerpusPenerbit', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -65,7 +65,7 @@
                                                 <path d="M16 5l3 3" />
                                             </svg>
                                         </button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus {{ $nama_menu }}">
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Hapus {{ $nama_menu }}" data-menu-id="{{ $row['id'] }}" data-menu-name="{{ $row['nama'] }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M4 7l16 0" />
@@ -123,12 +123,57 @@
             </div> <!-- end card -->
         </div><!-- end col-->
     </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menghapus <b>{{ $nama_menu }}</b> ini <b id="deleteModalName"></b>?</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('actionDeletePerpusKategori', ['id' => ':id']) }}" method="POST" id="deleteMenuForm">
+                        @csrf
+                        @method('DELETE')
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger" id="deleteButton">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div> <!-- container -->
 
 @endsection
 
 @section('javascript_custom')
 <script>
+    // Get all delete buttons
+    const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#deleteModal"]');
 
+    // Loop through each button and add an event listener
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const menuId = this.getAttribute('data-menu-id'); // Get menu ID from button's data-menu-id attribute
+            const menuName = this.getAttribute('data-menu-name');
+            const form = document.querySelector('#deleteModal form'); // Get the form in the modal
+            form.action = form.action.replace(':id', menuId); // Replace the route parameter with the actual ID
+            document.getElementById('deleteModalName').textContent = menuName; // Set the menu name in the modal
+        });
+    });
+
+    // Menangani tombol "Hapus" untuk menghindari klik ganda
+    document.getElementById('deleteMenuForm').addEventListener('submit', function(event) {
+        // Ambil tombol Hapus
+        var deleteButton = document.getElementById('deleteButton');
+
+        // Nonaktifkan tombol dan ubah teks menjadi "Sedang memproses..."
+        deleteButton.disabled = true;
+        deleteButton.textContent = 'Sedang memproses...';
+    });
 </script>
 @endsection

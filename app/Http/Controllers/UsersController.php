@@ -62,7 +62,7 @@ class UsersController extends Controller
         }
 
         // Cek alasan kegagalan
-        $errorMessage = $response->body();  // Mengambil pesan error dari response body
+        $errorMessage = json_decode($response->body(), true);  // Mengambil pesan error dari response body
 
         // Jika gagal menyimpan data siswa
         return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);

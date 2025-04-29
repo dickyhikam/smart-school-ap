@@ -8,13 +8,57 @@
     <!-- Tabel Data Orang Tua/Wali -->
     <div class="row">
         <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center gap-2">
+                    <h4 class="mb-0">Data Non-Anggota</h4>
+
+                    <div class="d-flex align-items-start flex-wrap justify-content-sm-end gap-2">
+                        <form>
+                            <div class="d-flex align-items-start flex-wrap">
+                                <label for="membersearch-input" class="visually-hidden">Search</label>
+                                <input type="search" class="form-control" id="membersearch-input" placeholder="cari siswa...">
+                            </div>
+                        </form>
+
+                        <button type="button" class="btn btn-info btn-sm" id="toggleButton">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 5l0 14" />
+                                <path d="M5 12l14 0" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body" id="cardBody" style="background-color:rgb(235, 235, 235); display: none;">
+                    <div class="row" style="max-height: 500px; overflow-y: auto;">
+                        @foreach ($list_siswa as $row)
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <img src="{{ $row['foto']['url'] }}" class="rounded-circle img-thumbnail avatar-xl mt-1" alt="profile-image">
+                                    <h4 class="mt-3">{{ $row['nisn'] }}</h4>
+                                    <h5 class="mb-1">{{ $row['nama_lengkap'] }}</h5>
+                                    <h5 class="text-muted">Kelas <span> | </span>Wali Kelas</h5>
+                                    <div class="d-grid gap-2 mt-2 mb-2">
+                                        <button class="btn btn-soft-secondary rounded-pill" onclick="">Gabung</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
 
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pagePerpusFormKategori') }}">
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormPerpusKategori') }}">
                         <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
                     </a>
                 </div>
@@ -129,6 +173,27 @@
 
 @section('javascript_custom')
 <script>
+    document.getElementById("toggleButton").addEventListener("click", function() {
+        var cardBody = document.getElementById("cardBody");
+        var toggleButton = document.getElementById("toggleButton");
 
+        // Toggle the visibility of the card body
+        if (cardBody.style.display === "none") {
+            cardBody.style.display = "block";
+            // Change icon to minus
+            toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-minus">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M5 12l14 0" />
+                                </svg>`;
+        } else {
+            cardBody.style.display = "none";
+            // Change icon to plus
+            toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M12 5l0 14" />
+                                    <path d="M5 12l14 0" />
+                                </svg>`;
+        }
+    });
 </script>
 @endsection
