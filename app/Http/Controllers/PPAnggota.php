@@ -48,4 +48,30 @@ class PPAnggota extends Controller
 
         return view('library.anggota.index', $data);
     }
+
+    public function gabung(Request $request)
+    {
+        // Prepare data for sending to the API
+        $data = [
+            'user_id' => $request->user_id,
+        ];
+
+        // Send data to the external API using PUT (for updating)
+        $apiUrl = env('API_URL') . '/api/perpustakaan/anggota'; // API URL for updating the menu by ID
+        $response = Http::withToken(session('token'))
+            ->put($apiUrl, $data);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pagePerpusAnggota')->with(['alert-type' => 'success', 'message' => 'Siswa berhasil menjadi anggota']);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+        dd($response->body());
+
+        // If the request failed, redirect back with error message
+        // return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+    }
 }

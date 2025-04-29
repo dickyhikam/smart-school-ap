@@ -96,6 +96,7 @@ Route::middleware('APIAuth')->group(function () {
     Route::delete('/perpustakaan/buku/hapus/{id?}', [PPBuku::class, 'destroy'])->name('actionDeletePerpusBuku');
 
     Route::get('/perpustakaan/anggota', [PPAnggota::class, 'index'])->name('pagePerpusAnggota');
+    Route::post('/perpustakaan/anggota', [PPAnggota::class, 'gabung'])->name('actionGabungPerpusAnggota');
 
     Route::get('/perpustakaan/peminjaman', [PPPeminjaman::class, 'index'])->name('pagePerpusPeminjaman');
     Route::get('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'index_form'])->name('pageFormPerpusPeminjaman');

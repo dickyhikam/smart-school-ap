@@ -40,7 +40,12 @@
                                     <h5 class="mb-1">{{ $row['nama_lengkap'] }}</h5>
                                     <h5 class="text-muted">Kelas <span> | </span>Wali Kelas</h5>
                                     <div class="d-grid gap-2 mt-2 mb-2">
-                                        <button class="btn btn-soft-secondary rounded-pill" onclick="">Gabung</button>
+                                        <button class="btn btn-soft-secondary rounded-pill"
+                                            data-bs-toggle="modal" data-bs-target="#gabungModal"
+                                            data-nisn="{{ $row['id'] }}"
+                                            data-student-name="{{ $row['nama_lengkap'] }}">
+                                            Gabung
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -57,10 +62,6 @@
                     <h4 class="mb-0">
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
-
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormPerpusKategori') }}">
-                        <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
-                    </a>
                 </div>
                 <div class="card-body">
                     <!-- Bagian Search dan Show Entries -->
@@ -167,12 +168,63 @@
             </div> <!-- end card -->
         </div><!-- end col-->
     </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="gabungModal" tabindex="-1" aria-labelledby="gabungModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gabungModalLabel">Konfirmasi Bergabung</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menggabungkan siswa <b id="studentName"></b> menjadi anggota perpustakaan?</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('actionGabungPerpusAnggota') }}" method="POST" id="gabungForm">
+                        @csrf
+                        <input id="id_gabung" name="user_id" readonly>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger" id="confirmGabungBtn">Gabung</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div> <!-- container -->
 
 @endsection
 
 @section('javascript_custom')
 <script>
+    // Get all Gabung buttons
+    const gabungButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#gabungModal"]');
+
+    // Loop through each button and add an event listener
+    gabungButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const menuId = this.getAttribute('data-nisn'); // Get menu ID from button's data-menu-id attribute
+            const menuName = this.getAttribute('data-student-name');
+            const form = document.querySelector('#gabungModal form'); // Get the form in the modal
+
+            document.getElementById('id_gabung').value = menuId;
+
+            document.getElementById('studentName').textContent = menuName; // Set the menu name in the modal
+        });
+    });
+
+    // Menangani tombol "Hapus" untuk menghindari klik ganda
+    document.getElementById('gabungForm').addEventListener('submit', function(event) {
+        // Ambil tombol Hapus
+        var confirmGabungBtn = document.getElementById('confirmGabungBtn');
+
+        // Nonaktifkan tombol dan ubah teks menjadi "Sedang memproses..."
+        confirmGabungBtn.disabled = true;
+        confirmGabungBtn.textContent = 'Sedang memproses...';
+    });
+
     document.getElementById("toggleButton").addEventListener("click", function() {
         var cardBody = document.getElementById("cardBody");
         var toggleButton = document.getElementById("toggleButton");
