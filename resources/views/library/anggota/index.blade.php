@@ -94,14 +94,14 @@
                             <thead class="table-primary sticky-top">
                                 <tr>
                                     <th>Nama</th>
-                                    <th>Aksi</th>
+                                    <th hidden>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($list_data as $row)
                                 <tr>
-                                    <td>{{ $row['name'] }}</td>
-                                    <td>
+                                    <td>{{ $row['pengguna']['nama'] }}</td>
+                                    <td hidden>
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />

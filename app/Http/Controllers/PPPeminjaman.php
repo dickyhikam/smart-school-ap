@@ -42,4 +42,15 @@ class PPPeminjaman extends Controller
 
         return view('library.peminjaman.index', $data);
     }
+
+    public function index_form()
+    {
+        $menu = 'Peminjaman';
+        $data['nama_menu'] = $menu;
+        $data['nama_menu2'] = 'Form ' . $menu;
+        $data['con_menu'] = 'Perpustakaan';
+        $data['action'] = route('actionAddPerpusPeminjaman'); // Arahkan ke store
+
+        return view('library.peminjaman.form', $data);
+    }
 }

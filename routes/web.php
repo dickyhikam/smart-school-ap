@@ -92,7 +92,6 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/perpustakaan/buku/tambah', [PPBuku::class, 'index_form'])->name('pageFormPerpusBuku');
     Route::get('/perpustakaan/buku/edit/{id?}', [PPBuku::class, 'index_form'])->name('pageFormEditPerpusBuku');
     Route::post('/perpustakaan/buku/tambah', [PPBuku::class, 'store'])->name('actionAddPerpusBuku');
-    // Route::put('/perpustakaan/buku/edit/{id?}', [PPBuku::class, 'store_update'])->name('actionEditPerpusBuku');
     Route::delete('/perpustakaan/buku/hapus/{id?}', [PPBuku::class, 'destroy'])->name('actionDeletePerpusBuku');
 
     Route::get('/perpustakaan/anggota', [PPAnggota::class, 'index'])->name('pagePerpusAnggota');
@@ -100,8 +99,5 @@ Route::middleware('APIAuth')->group(function () {
 
     Route::get('/perpustakaan/peminjaman', [PPPeminjaman::class, 'index'])->name('pagePerpusPeminjaman');
     Route::get('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'index_form'])->name('pageFormPerpusPeminjaman');
-    Route::get('/perpustakaan/peminjaman/edit/{id?}', [PPPeminjaman::class, 'index_form'])->name('pageFormEditPerpusPeminjaman');
     Route::post('/perpustakaan/peminjaman/tambah/{id?}', [PPPeminjaman::class, 'store'])->name('actionAddPerpusPeminjaman');
-    Route::put('/perpustakaan/peminjaman/edit/{id?}', [PPPeminjaman::class, 'store_update'])->name('actionEditPerpusPeminjaman');
-    Route::delete('/perpustakaan/peminjaman/hapus/{id?}', [PPPeminjaman::class, 'destroy'])->name('actionDeletePerpusPeminjaman');
 });
