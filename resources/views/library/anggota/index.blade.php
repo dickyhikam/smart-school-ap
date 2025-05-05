@@ -100,7 +100,7 @@
                             <tbody>
                                 @foreach ($list_data as $row)
                                 <tr>
-                                    <td>{{ $row['pengguna']['nama'] }}</td>
+                                    <td>{!! $row['pengguna']['nama'] ?? '-' !!}</td>
                                     <td hidden>
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
@@ -146,19 +146,34 @@
                                     </li>
                                     @endif
 
-                                    @for ($i = 1; $i <= $pagination['last_page']; $i++)
+                                    {{-- Show ellipsis if there are more pages before or after --}}
+                                    @if ($pagination['current_page'] - 2 > 1)
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    @endif
+
+                                    {{-- Previous Pages and Current --}}
+                                    @for ($i = max(1, $pagination['current_page'] - 2); $i <= min($pagination['last_page'], $pagination['current_page'] + 2); $i++)
                                         <li class="page-item {{ $i == $pagination['current_page'] ? 'active' : '' }}">
                                         <a href="?page={{ $i }}" class="page-link">{{ $i }}</a>
                                         </li>
                                         @endfor
 
-                                        @if ($pagination['current_page'] < $pagination['last_page'])
-                                            <li class="page-item">
-                                            <a href="{{ $pagination['next_page_url'] }}" class="page-link">
-                                                <i class="ti ti-chevron-right"></i>
-                                            </a>
+                                        @if ($pagination['current_page'] + 2 < $pagination['last_page'])
+                                            <li class="page-item disabled">
+                                            <span class="page-link">...</span>
                                             </li>
                                             @endif
+
+                                            {{-- Next Pages --}}
+                                            @if ($pagination['current_page'] < $pagination['last_page'])
+                                                <li class="page-item">
+                                                <a href="{{ $pagination['next_page_url'] }}" class="page-link">
+                                                    <i class="ti ti-chevron-right"></i>
+                                                </a>
+                                                </li>
+                                                @endif
                                 </ul>
                             </div>
                         </div>
@@ -181,8 +196,7 @@
                     <p>Apakah Anda yakin ingin menggabungkan siswa <b id="studentName"></b> menjadi anggota perpustakaan?</p>
                 </div>
                 <div class="modal-footer">
-                    <form action="{{ route('actionGabungPerpusAnggota') }}" method="POST" id="gabungForm">
-                        @csrf
+                    <form id="gabungForm">
                         <input id="id_gabung" name="user_id" readonly hidden>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-danger" id="confirmGabungBtn">Gabung</button>
@@ -199,6 +213,99 @@
 
 @section('javascript_custom')
 <script>
+    $(document).ready(function() {
+        // Intercept the form submission
+        $('#gabungForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Disable the submit button to prevent multiple clicks
+            var submitButton = $('#confirmGabungBtn');
+            submitButton.prop('disabled', true);
+            submitButton.text('Sedang memproses...');
+
+            // Gather form data
+            var formData = new FormData(this);
+
+            // Get the CSRF token
+            var token = $('meta[name="csrf-token"]').attr('content');
+
+            // Send the request using AJAX
+            $.ajax({
+                url: '{{ env("API_URL") }}/api/perpustakaan/anggota', // The form's action URL
+                type: 'POST',
+                data: formData,
+                processData: false, // Don't process the data into a query string
+                contentType: false, // Set the content type as 'multipart/form-data'
+                headers: {
+                    'X-CSRF-TOKEN': token, // Add CSRF token to headers for Laravel
+                    'Authorization': 'Bearer ' + '{{ $token }}' // Bearer token injected dynamically by Blade
+                },
+                success: function(response) {
+                    // Handle success and show the notification alert
+                    notif_alert(response.status, response.message);
+
+
+
+                    // Re-enable the submit button after success or error
+                    submitButton.prop('disabled', false);
+                    submitButton.text('Simpan');
+                },
+                error: function(xhr, status, error) {
+                    // Check if the response is in JSON format
+                    if (xhr.responseJSON) {
+                        // Extract the message from the JSON response
+                        var errorMessage = xhr.responseJSON.message || 'Terjadi kesalahan saat menyimpan data.'; // Fallback message
+                        var errorStatus = xhr.responseJSON.status || 'Error'; // Fallback to 'Error' if no status provided
+
+                        // Show an alert with the error message from the JSON response
+                        notif_alert(errorStatus, errorMessage); // Assuming you have a function to show the alert
+
+                    } else {
+                        // If the error isn't JSON, just show a generic alert
+                        alert('Error: ' + error);
+                    }
+
+                    // Re-enable the submit button after error
+                    submitButton.prop('disabled', false);
+                    submitButton.text('Simpan');
+                }
+            });
+        });
+    });
+
+    function notif_alert(status, message) {
+        var alertType, alertIcon, alertTitle;
+
+        // Determine alert type based on response
+        if (status === 'success') {
+            alertType = 'success';
+            alertIcon = '<svg class="text-success" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10" /><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5" /></g></svg>';
+            alertTitle = 'Berhasil';
+        } else {
+            alertType = 'error';
+            alertIcon = '<svg class="text-danger" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path fill="currentColor" d="M10.03 8.97a.75.75 0 0 0-1.06 1.06L10.94 12l-1.97 1.97a.75.75 0 1 0 1.06 1.06L12 13.06l1.97 1.97a.75.75 0 0 0 1.06-1.06L13.06 12l1.97-1.97a.75.75 0 1 0-1.06-1.06L12 10.94z" /><path fill="currentColor" fill-rule="evenodd" d="M12.057 1.25h-.114c-2.309 0-4.118 0-5.53.19c-1.444.194-2.584.6-3.479 1.494c-.895.895-1.3 2.035-1.494 3.48c-.19 1.411-.19 3.22-.19 5.529v.114c0 2.309 0 4.118.19 5.53c.194 1.444.6 2.584 1.494 3.479c.895.895 2.035 1.3 3.48 1.494c1.411.19 3.22.19 5.529.19h.114c2.309 0 4.118 0 5.53-.19c1.444-.194 2.584-.6 3.479-1.494c.895-.895 1.3-2.035 1.494-3.48c.19-1.411.19-3.22.19-5.529v-.114c0-2.309 0-4.118-.19-5.53c-.194-1.444-.6-2.584-1.494-3.479c-.895-.895-2.035-1.3-3.48-1.494c-1.411-.19-3.22-.19-5.529-.19M3.995 3.995c.57-.57 1.34-.897 2.619-1.069c1.3-.174 3.008-.176 5.386-.176s4.086.002 5.386.176c1.279.172 2.05.5 2.62 1.069c.569.57.896 1.34 1.068 2.619c.174 1.3.176 3.008.176 5.386s-.002 4.086-.176 5.386c-.172 1.279-.5 2.05-1.069 2.62c-.57.569-1.34.896-2.619 1.068c-1.3.174-3.008.176-5.386.176s-4.086-.002-5.386-.176c-1.279-.172-2.05-.5-2.62-1.069c-.569-.57-.896-1.34-1.068-2.619c-.174-1.3-.176-3.008-.176-5.386s.002-4.086.176-5.386c.172-1.279.5-2.05 1.069-2.62" clip-rule="evenodd" /></svg>';
+            alertTitle = 'Gagal';
+        }
+
+        // Set the modal content dynamically
+        $('#alert-icon2').html(alertIcon);
+        $('#alert-title2').text(alertTitle);
+        $('#alert-message2').text(message || 'Terjadi kesalahan saat menyimpan data.');
+        // Show the modal
+        $('#alert-modal2').modal('show');
+
+        // Add an event listener to the "Tutup" button
+        $('#alert-modal2 .btn-info').on('click', function() {
+            // If status is "error", just dismiss the modal without redirecting
+            if (status === 'success') {
+                // Reload the page after closing the modal
+                location.reload();
+            } else {
+                $('#alert-modal2').modal('hide'); // Close the modal
+            }
+        });
+    }
+
     // Get all Gabung buttons
     const gabungButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#gabungModal"]');
 

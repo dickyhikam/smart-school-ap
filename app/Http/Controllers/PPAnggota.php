@@ -11,6 +11,7 @@ class PPAnggota extends Controller
     {
         $data['nama_menu'] = 'Anggota';
         $data['con_menu'] = 'Perpustakaan';
+        $data['token'] = session('token');
 
         // Ambil nomor halaman, jumlah item per halaman, dan query pencarian
         $page = $request->input('page', 1); // default ke 1 jika tidak ada parameter page

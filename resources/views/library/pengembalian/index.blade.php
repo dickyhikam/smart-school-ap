@@ -101,19 +101,34 @@
                                     </li>
                                     @endif
 
-                                    @for ($i = 1; $i <= $pagination['last_page']; $i++)
+                                    {{-- Show ellipsis if there are more pages before or after --}}
+                                    @if ($pagination['current_page'] - 2 > 1)
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    @endif
+
+                                    {{-- Previous Pages and Current --}}
+                                    @for ($i = max(1, $pagination['current_page'] - 2); $i <= min($pagination['last_page'], $pagination['current_page'] + 2); $i++)
                                         <li class="page-item {{ $i == $pagination['current_page'] ? 'active' : '' }}">
                                         <a href="?page={{ $i }}" class="page-link">{{ $i }}</a>
                                         </li>
                                         @endfor
 
-                                        @if ($pagination['current_page'] < $pagination['last_page'])
-                                            <li class="page-item">
-                                            <a href="{{ $pagination['next_page_url'] }}" class="page-link">
-                                                <i class="ti ti-chevron-right"></i>
-                                            </a>
+                                        @if ($pagination['current_page'] + 2 < $pagination['last_page'])
+                                            <li class="page-item disabled">
+                                            <span class="page-link">...</span>
                                             </li>
                                             @endif
+
+                                            {{-- Next Pages --}}
+                                            @if ($pagination['current_page'] < $pagination['last_page'])
+                                                <li class="page-item">
+                                                <a href="{{ $pagination['next_page_url'] }}" class="page-link">
+                                                    <i class="ti ti-chevron-right"></i>
+                                                </a>
+                                                </li>
+                                                @endif
                                 </ul>
                             </div>
                         </div>
