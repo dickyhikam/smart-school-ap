@@ -15,7 +15,7 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form action="{{ $action }}" method="POST" enctype="multipart/form-data">
+                    <form id="formBuku" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="judul">Judul <span class="text-danger">*</span></label>
@@ -43,14 +43,15 @@
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="tanggal_pengadaan">Tanggal Pengadaan <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input id="tanggal_pengadaan" name="tanggal_pengadaan" class="form-control" placeholder="Masukkan tanggal pengadaan" value="{{ old('tanggal_pengadaan', date('d-m-Y', strtotime($data_row['tanggal_pengadaan'] ?? ''))) }}" required>
+                                <input id="tanggal_pengadaan2" name="tanggal_pengadaan2" class="form-control" placeholder="Masukkan tanggal pengadaan" required>
+                                <input id="tanggal_pengadaan" name="tanggal_pengadaan" hidden class="form-control" placeholder="Masukkan tanggal pengadaan" required>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label class="col-md-3 col-form-label" for="kategori_id">Kategori <span class="text-danger">*</span></label>
+                            <label class="col-md-3 col-form-label" for="kategori_ids">Kategori <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <select id="kategori_id" name="kategori_id[]" class="form-control select2-multiple" multiple="multiple" required data-placeholder="Pilih Kategori">
+                                <select id="kategori_ids" name="kategori_ids[]" class="form-control select2-multiple" multiple="multiple" required data-placeholder="Pilih Kategori">
                                     <?php foreach ($list_kategori as $kategori): ?>
                                         <option value="<?= $kategori['id']; ?>"><?= $kategori['nama']; ?></option>
                                     <?php endforeach; ?>
@@ -102,7 +103,6 @@
                             </div>
                         </div>
 
-
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="keterangan">Keterangan</label>
                             <div class="col-md-9">
@@ -111,9 +111,9 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="gambar_cover" class="col-md-3 col-form-label">Cover <span class="text-danger">*</span></label>
+                            <label for="gambar" class="col-md-3 col-form-label">Cover <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="file" id="gambar_cover" name="gambar_cover" class="form-control" accept="image/*" onchange="previewImage(event)">
+                                <input type="file" id="gambar" name="gambar" class="form-control" accept="image/*" onchange="previewImage(event)">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -122,8 +122,8 @@
                                 <!-- Tempat untuk menampilkan gambar setelah diunggah -->
                                 <div id="foto-preview-container">
                                     <!-- Jika foto sudah ada, tampilkan gambar yang sudah ada -->
-                                    <?php if (!empty($data_row['foto']['url'])): ?>
-                                        <img src="<?= $data_row['foto']['url'] ?>" class="img-thumbnail" style="max-width: 200px;" alt="Foto Siswa">
+                                    <?php if (!empty($data_row['gambar'])): ?>
+                                        <img src="<?= $data_row['gambar'] ?>" class="img-thumbnail" style="max-width: 200px;" alt="Foto Siswa">
                                     <?php else: ?>
                                         <p>Tidak ada foto yang diunggah.</p>
                                     <?php endif; ?>
@@ -133,7 +133,7 @@
 
                         <!-- Submit Button -->
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <button type="button" id="btnSubmit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
 
@@ -150,19 +150,125 @@
 <script>
     $(document).ready(function() {
         // Ambil data old() dan kategori dari data_row
-        var selectedCategories = <?= json_encode(old('kategori_id', [])); ?>;
+        var selectedCategories = <?= json_encode(old('kategori_ids', [])); ?>;
         var selectedCategoryNames = <?= json_encode($data_row['kategori_buku'] ?? []); ?>;
         var allCategories = <?= json_encode($list_kategori); ?>;
 
         // Panggil fungsi untuk mengatur kategori yang dipilih
-        setSelectedCategories('#kategori_id', selectedCategories, selectedCategoryNames, allCategories);
+        setSelectedCategories('#kategori_ids', selectedCategories, selectedCategoryNames, allCategories);
 
         flatpickr("#tanggal_pengadaan", {
             enableTime: false,
+            dateFormat: "Y-m-d", // Pastikan format ini sesuai
+            defaultDate: "{{ old('tanggal_pengadaan', date('Y-m-d', strtotime($data_row['tanggal_pengadaan'] ?? $date_now))) }}", // Pastikan format tanggal sama dengan input
+        });
+        flatpickr("#tanggal_pengadaan2", {
+            enableTime: false,
             dateFormat: "d-m-Y", // Pastikan format ini sesuai
-            defaultDate: "{{ old('tanggal_pengadaan', date('d-m-Y', strtotime($data_row['tanggal_pengadaan'] ?? $date_now))) }}", // Pastikan format tanggal sama dengan input
+            defaultDate: "{{ old('tanggal_pengadaan2', date('d-m-Y', strtotime($data_row['tanggal_pengadaan2'] ?? $date_now))) }}", // Pastikan format tanggal sama dengan input
+        });
+
+        $('#btnSubmit').click(function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Disable the submit button and change the text to 'Sedang memproses...'
+            var submitButton = $('#btnSubmit');
+            submitButton.prop('disabled', true);
+            submitButton.text('Sedang memproses...');
+
+            // Create a FormData object to send form data and file
+            var formData = new FormData($('#formBuku')[0]);
+
+            // Get the CSRF token from the meta tag
+            var token = $('meta[name="csrf-token"]').attr('content'); // Ensure CSRF token is available in meta tag
+
+            // Construct the URL with optional ID
+            var url = '{{ env("API_URL") }}/api/perpustakaan/buku';
+            @if(isset($id_data) && $id_data)
+            url += '/{{ $id_data }}'; // Append ID if available
+            @endif
+
+            // Send the request using AJAX
+            $.ajax({
+                url: url, // The dynamically constructed URL
+                type: 'POST',
+                data: formData,
+                processData: false, // Don't process the data into a query string
+                contentType: false, // Keep the content type as 'multipart/form-data'
+                headers: {
+                    'X-CSRF-TOKEN': token, // Add CSRF token to headers for Laravel
+                    'Authorization': 'Bearer ' + '{{ $token }}' // Bearer token injected dynamically by Blade
+                },
+                success: function(response) {
+                    // Handle success and show the notification alert
+                    notif_alert(response.status, response.message);
+
+                    // Re-enable the submit button after success or error
+                    submitButton.prop('disabled', false);
+                    submitButton.text('Simpan');
+                },
+                error: function(xhr, status, error) {
+                    // Check if the response is in JSON format
+                    if (xhr.responseJSON) {
+                        // Extract the message from the JSON response
+                        var errorMessage = xhr.responseJSON.message || 'Terjadi kesalahan saat menyimpan data.'; // Fallback message
+                        var errorStatus = xhr.responseJSON.status || 'Error'; // Fallback to 'Error' if no status provided
+
+                        // Show an alert with the error message from the JSON response
+                        notif_alert(errorStatus, errorMessage); // Assuming you have a function to show the alert
+
+                    } else {
+                        // If the error isn't JSON, just show a generic alert
+                        alert('Error: ' + error);
+                    }
+
+                    // Re-enable the submit button after error
+                    submitButton.prop('disabled', false);
+                    submitButton.text('Simpan');
+                }
+            });
+        });
+
+        // Optional: Handle form submit event if you use submit button as a real submit
+        document.getElementById('formBuku').addEventListener('submit', function(event) {
+            var submitButton = document.getElementById('btnSubmit');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sedang memproses...';
         });
     });
+
+    function notif_alert(status, message) {
+        var alertType, alertIcon, alertTitle;
+
+        // Determine alert type based on response
+        if (status === 'success') {
+            alertType = 'success';
+            alertIcon = '<svg class="text-success" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10" /><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5" /></g></svg>';
+            alertTitle = 'Berhasil';
+        } else {
+            alertType = 'error';
+            alertIcon = '<svg class="text-danger" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24"><path fill="currentColor" d="M10.03 8.97a.75.75 0 0 0-1.06 1.06L10.94 12l-1.97 1.97a.75.75 0 1 0 1.06 1.06L12 13.06l1.97 1.97a.75.75 0 0 0 1.06-1.06L13.06 12l1.97-1.97a.75.75 0 1 0-1.06-1.06L12 10.94z" /><path fill="currentColor" fill-rule="evenodd" d="M12.057 1.25h-.114c-2.309 0-4.118 0-5.53.19c-1.444.194-2.584.6-3.479 1.494c-.895.895-1.3 2.035-1.494 3.48c-.19 1.411-.19 3.22-.19 5.529v.114c0 2.309 0 4.118.19 5.53c.194 1.444.6 2.584 1.494 3.479c.895.895 2.035 1.3 3.48 1.494c1.411.19 3.22.19 5.529.19h.114c2.309 0 4.118 0 5.53-.19c1.444-.194 2.584-.6 3.479-1.494c.895-.895 1.3-2.035 1.494-3.48c.19-1.411.19-3.22.19-5.529v-.114c0-2.309 0-4.118-.19-5.53c-.194-1.444-.6-2.584-1.494-3.479c-.895-.895-2.035-1.3-3.48-1.494c-1.411-.19-3.22-.19-5.529-.19M3.995 3.995c.57-.57 1.34-.897 2.619-1.069c1.3-.174 3.008-.176 5.386-.176s4.086.002 5.386.176c1.279.172 2.05.5 2.62 1.069c.569.57.896 1.34 1.068 2.619c.174 1.3.176 3.008.176 5.386s-.002 4.086-.176 5.386c-.172 1.279-.5 2.05-1.069 2.62c-.57.569-1.34.896-2.619 1.068c-1.3.174-3.008.176-5.386.176s-4.086-.002-5.386-.176c-1.279-.172-2.05-.5-2.62-1.069c-.569-.57-.896-1.34-1.068-2.619c-.174-1.3-.176-3.008-.176-5.386s.002-4.086.176-5.386c.172-1.279.5-2.05 1.069-2.62" clip-rule="evenodd" /></svg>';
+            alertTitle = 'Gagal';
+        }
+
+        // Set the modal content dynamically
+        $('#alert-icon2').html(alertIcon);
+        $('#alert-title2').text(alertTitle);
+        $('#alert-message2').text(message || 'Terjadi kesalahan saat menyimpan data.');
+        // Show the modal
+        $('#alert-modal2').modal('show');
+
+        // Add an event listener to the "Tutup" button
+        $('#alert-modal2 .btn-info').on('click', function() {
+            // If status is "error", just dismiss the modal without redirecting
+            if (status === 'success') {
+                // If status is "success", redirect after closing the modal
+                window.location.href = '{{ route("pagePerpusBuku") }}'; // Replace '/new-route' with the desired route
+            } else {
+                $('#alert-modal2').modal('hide'); // Close the modal
+            }
+        });
+    }
 
     // Fungsi untuk menginisialisasi dan memilih kategori
     function setSelectedCategories(selectElementId, oldCategoryIds, categoryNames, allCategories) {

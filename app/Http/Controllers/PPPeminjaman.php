@@ -50,7 +50,53 @@ class PPPeminjaman extends Controller
         $data['nama_menu2'] = 'Form ' . $menu;
         $data['con_menu'] = 'Perpustakaan';
         $data['action'] = route('actionAddPerpusPeminjaman'); // Arahkan ke store
+        $data['apiUrl'] = env('API_URL'); // URL API Anda
+        $data['apiToken'] = session('token');
+
+        //ambil dari sesion
+        $data['user'] = session('user');
+        $data['tgl_pinjam'] = date('d-m-Y', strtotime('now'));
+        $data['tgl_kembali'] = date('d-m-Y', strtotime('+7 days'));
+        $data['tgl_akhir'] = date('d-m-Y', strtotime('+2 days'));
 
         return view('library.peminjaman.form', $data);
+    }
+
+    public function store(Request $request)
+    {
+        //get last date
+        $lastDate = date('Y-m-d', strtotime('+2 days'));
+        $id_buku_array = explode(',', $request->id_buku);
+
+        // Misalnya $request->status_peminjaman berisi 'App\Models\Siswa'
+        $namespace = $request->type_anggota;
+        // Menghilangkan kata 'models' dari string
+        $cleaned_namespace = strtolower(str_replace('AppModels', '', $namespace));
+
+        // Prepare data for sending to the API
+        $data = [
+            'metode' => 'langsung',
+            'peminjam_id' => $request->id_anggota,
+            'status_peminjam' => $cleaned_namespace,
+            'tanggal_berakhir' => $lastDate,
+            'buku_id' => $id_buku_array,
+        ];
+
+        // Send data to the external API
+        $apiUrl = env('API_URL') . '/api/perpustakaan/peminjaman'; // External API URL for the menu
+        $response = Http::withToken(session('token'))
+            ->post($apiUrl, $data);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pagePerpusPeminjaman')->with(['alert-type' => 'success', 'message' => 'Data peminjaman berhasil disimpan!']);
+        }
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
     }
 }

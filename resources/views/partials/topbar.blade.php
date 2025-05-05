@@ -85,7 +85,7 @@
                             <div class="dropdown-item notification-item py-2 text-wrap active" id="notification-1">
                                 <span class="d-flex align-items-center">
                                     <span class="me-3 position-relative flex-shrink-0">
-                                        <img src="assets/images/users/avatar-2.jpg" class="avatar-lg rounded-circle"
+                                        <img src="{{ asset('assets/images/users/avatar-2.jpg') }}" class="avatar-lg rounded-circle"
                                             alt="" />
                                     </span>
                                     <span class="flex-grow-1 text-muted">
@@ -108,7 +108,7 @@
                             <div class="dropdown-item notification-item py-2 text-wrap" id="notification-2">
                                 <span class="d-flex align-items-center">
                                     <span class="me-3 position-relative flex-shrink-0">
-                                        <img src="assets/images/users/avatar-4.jpg" class="avatar-lg rounded-circle"
+                                        <img src="{{ asset('assets/images/users/avatar-4.jpg') }}" class="avatar-lg rounded-circle"
                                             alt="" />
                                     </span>
                                     <span class="flex-grow-1 text-muted">
@@ -156,7 +156,7 @@
                             <div class="dropdown-item notification-item py-2 text-wrap" id="notification-4">
                                 <span class="d-flex align-items-center">
                                     <span class="me-3 position-relative flex-shrink-0">
-                                        <img src="assets/images/users/avatar-7.jpg" class="avatar-lg rounded-circle"
+                                        <img src="{{ asset('assets/images/users/avatar-7.jpg') }}" class="avatar-lg rounded-circle"
                                             alt="" />
                                     </span>
                                     <span class="flex-grow-1 text-muted">
@@ -179,7 +179,7 @@
                             <div class="dropdown-item notification-item py-2 text-wrap" id="notification-5">
                                 <span class="d-flex align-items-center">
                                     <span class="me-3 position-relative flex-shrink-0">
-                                        <img src="assets/images/users/avatar-10.jpg" class="avatar-lg rounded-circle"
+                                        <img src="{{ asset('assets/images/users/avatar-10.jpg') }}" class="avatar-lg rounded-circle"
                                             alt="" />
                                     </span>
                                     <span class="flex-grow-1 text-muted">
@@ -224,7 +224,7 @@
                         <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex"
                             alt="user-image">
                         <span class="d-lg-flex flex-column gap-1 d-none">
-                            <h5 class="my-0">Nowak Helme</h5>
+                            <h5 class="my-0">{{ session('user')['name'] }}</h5>
                         </span>
                         <i class="ri-arrow-down-s-line d-none d-lg-block align-middle ms-1"></i>
                     </a>

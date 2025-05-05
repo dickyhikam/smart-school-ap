@@ -12,6 +12,7 @@ use App\Http\Controllers\PPKategori;
 use App\Http\Controllers\PPPeminjaman;
 use App\Http\Controllers\PPPenerbit;
 use App\Http\Controllers\PPPengarang;
+use App\Http\Controllers\PPPengembalian;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UsersController;
@@ -99,5 +100,9 @@ Route::middleware('APIAuth')->group(function () {
 
     Route::get('/perpustakaan/peminjaman', [PPPeminjaman::class, 'index'])->name('pagePerpusPeminjaman');
     Route::get('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'index_form'])->name('pageFormPerpusPeminjaman');
-    Route::post('/perpustakaan/peminjaman/tambah/{id?}', [PPPeminjaman::class, 'store'])->name('actionAddPerpusPeminjaman');
+    Route::post('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'store'])->name('actionAddPerpusPeminjaman');
+
+    Route::get('/perpustakaan/pengembalian', [PPPengembalian::class, 'index'])->name('pagePerpusPengembalian');
+    Route::get('/perpustakaan/pengembalian/tambah', [PPPengembalian::class, 'index_form'])->name('pageFormPerpusPengembalian');
+    Route::post('/perpustakaan/pengembalian/tambah', [PPPengembalian::class, 'store'])->name('actionAddPerpusPengembalian');
 });

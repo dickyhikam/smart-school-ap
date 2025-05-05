@@ -41,6 +41,9 @@ class AuthController extends Controller
             session(['role' => $data['data']['user']['role']['name']]); // Menyimpan role
             session(['permissions' => $data['data']['user']['role']['permissions']]); // Menyimpan permissions
 
+            // Simpan data user ke session
+            session(['user' => $data['data']['user']]); // Menyimpan data user
+
             // Redirect ke halaman dashboard atau halaman lain setelah berhasil login
             return redirect()->route('pageDashboard');
         }

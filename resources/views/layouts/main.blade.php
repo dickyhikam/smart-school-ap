@@ -90,6 +90,31 @@
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
+        <!-- Alert Modal -->
+        <div id="alert-modal2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-4">
+                        <div class="text-center">
+                            <!-- Icon (will be updated dynamically) -->
+                            <div id="alert-icon2">
+                                <!-- Icon will be injected here -->
+                            </div>
+
+                            <!-- Dynamic Title (success, error, warning, info) -->
+                            <h4 id="alert-title2" class="mt-2"></h4>
+
+                            <!-- Dynamic Message (from AJAX response) -->
+                            <p id="alert-message2" class="mt-3"></p>
+
+                            <!-- Close button -->
+                            <button type="button" class="btn btn-info my-2" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <!-- END wrapper -->
 
@@ -98,7 +123,12 @@
     @include('partials.footer-scripts')
 
     <script>
-        $(document).ready(function() {});
+        $(document).ready(function() {
+            $('#alert-modal2').modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+        });
 
         document.addEventListener("DOMContentLoaded", function() {
             // Periksa jika ada pesan dari session

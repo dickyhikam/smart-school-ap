@@ -27,7 +27,6 @@ class PPBuku extends Controller
                 'search' => $search, // Kirim parameter pencarian
             ]);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
-        // dd($response['data']['items']);
 
         $data['list_data'] = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
@@ -54,6 +53,8 @@ class PPBuku extends Controller
         $apiUrl = env('API_URL'); // URL API Anda
         //date now
         $data['date_now'] = Carbon::now()->format('Y-m-d');
+        $data['id_data'] = $id;
+        $data['token'] = session('token');
 
         $response_kategori = Http::withToken(session('token'))
             ->get($apiUrl . '/api/perpustakaan/kategori-buku');
@@ -118,7 +119,6 @@ class PPBuku extends Controller
         }
         // Now assign the kategori_ids array to data
         $data['kategori_ids'] = $kategoriIds;
-        // dd($data);
 
         // Define the API URL based on whether we're updating or creating
         $apiUrl = env('API_URL') . '/api/perpustakaan/buku' . ($id ? "/{$id}" : '');
@@ -133,7 +133,7 @@ class PPBuku extends Controller
 
             // Send a POST or PUT request to the API with the photo as binary data (multipart/form-data)
             $response = Http::withToken(session('token'))
-                ->attach('contents', file_get_contents($file), $file->getClientOriginalName()) // Attach the image as binary
+                ->attach('gambar', file_get_contents($file), $file->getClientOriginalName()) // Attach the image as binary
                 ->$method($apiUrl, $data);
         } else {
             // If no photo is provided, send data without the photo

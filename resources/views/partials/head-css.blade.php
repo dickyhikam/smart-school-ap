@@ -22,4 +22,26 @@
     c {
         color: red;
     }
+
+    input[readonly] {
+        background-color: #f0f0f0;
+        /* Warna latar belakang lebih terang */
+        color: #6c757d;
+        /* Warna teks lebih gelap atau abu-abu */
+        border-color: #ccc;
+        /* Warna border yang lebih netral */
+        cursor: not-allowed;
+        /* Mengubah kursor menjadi tidak diperbolehkan */
+        pointer-events: none;
+        /* Tidak bisa diklik atau dipilih */
+        opacity: 1;
+        /* Menjaga elemen tetap tidak transparan */
+    }
+
+    input[readonly]:focus {
+        border-color: #ccc;
+        /* Menghindari perubahan border saat fokus */
+        box-shadow: none;
+        /* Menghilangkan bayangan fokus */
+    }
 </style>

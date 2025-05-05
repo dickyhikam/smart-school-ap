@@ -53,22 +53,37 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form action="">
+                    <form action="{{ route('actionAddPerpusPeminjaman') }}" method="POST" id="formSubmit">
+                        @csrf
+                        <input readonly hidden class="form-control" name="id_anggota" id="id_anggota">
+                        <input readonly hidden class="form-control" name="type_anggota" id="type_anggota">
+                        <input readonly hidden class="form-control" name="id_buku" id="id_buku">
+
                         <div class="row mb-3">
-                            <label class="col-md-3 col-form-label" for="metode">Metode <span class="text-danger">*</span></label>
+                            <label class="col-md-3 col-form-label" for="petugas">Petugas</label>
                             <div class="col-md-9">
-                                <select id="metode" name="metode" class="form-control select2" required>
-                                    <option value="">Pilih Metode Peminjaman</option>
-                                    <option value="Online">Online</option>
-                                    <option value="Offline">Offline</option>
-                                </select>
+                                <input class="form-control" value="{{ $user['name'] }}" name="petugas" id="petugas" readonly>
                             </div>
                         </div>
 
                         <div class="row mb-3">
-                            <label class="col-md-3 col-form-label" for="tanggal_kembali">Tanggal Kembali <span class="text-danger">*</span></label>
+                            <label class="col-md-3 col-form-label" for="metode">Metode</label>
                             <div class="col-md-9">
-                                <input id="tanggal_kembali" name="tanggal_kembali" class="form-control" placeholder="Masukkan tanggal kembali" value="{{ old('tanggal_kembali') }}" required>
+                                <input class="form-control" value="Offline" name="metode" id="metode" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label class="col-md-3 col-form-label" for="tanggal_pinjam">Tanggal Pinjam</label>
+                            <div class="col-md-9">
+                                <input class="form-control" value="{{ $tgl_pinjam }}" name="tanggal_pinjam" id="tanggal_pinjam" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-md-3 col-form-label" for="tanggal_kembali">Tanggal Kembali</label>
+                            <div class="col-md-9">
+                                <input class="form-control" value="{{ $tgl_kembali }}" name="tanggal_kembali" id="tanggal_kembali" readonly>
+                                <small class="form-text text-muted">Tanggal kembali buku 7 hari setelah tanggal peminjaman.</small>
                             </div>
                         </div>
 
@@ -77,7 +92,7 @@
                                 <button type="button" class="btn btn-secondary w-100">Batal</button>
                             </div>
                             <div class="col-md-8">
-                                <button type="submit" class="btn btn-primary w-100">Simpan</button>
+                                <button type="submit" class="btn btn-primary w-100" id="submitButton">Simpan</button>
                             </div>
                         </div>
                     </form>
@@ -138,11 +153,26 @@
 
 @section('javascript_custom')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    // Array untuk menyimpan ID buku yang dipilih
+    var selectedBookIds = [];
+    var selectedAnggotaIds = [];
+
+    $(document).ready(function() {
         // Inisialisasi tooltip
         var tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.forEach(function(tooltipTriggerEl) {
             new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        var submitButton = document.getElementById('submitButton');
+        submitButton.disabled = false;
+        submitButton.textContent = 'Simpan';
+
+        // Menangani tombol "Simpan" untuk menghindari klik ganda
+        document.getElementById('formSubmit').addEventListener('submit', function(event) {
+            // Menonaktifkan tombol dan mengubah teks menjadi "Sedang memproses..."
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sedang memproses...';
         });
 
         // Tangani event keyup pada input
@@ -155,29 +185,6 @@
                 return;
             }
 
-            // Data dummy untuk simulasi pencarian buku berdasarkan kode unik
-            var dummyData = [{
-                    id: "B123",
-                    judul: "Pemrograman JavaScript untuk Pemula"
-                },
-                {
-                    id: "B124",
-                    judul: "Belajar React.js secara Mendalam"
-                },
-                {
-                    id: "B125",
-                    judul: "Dasar-Dasar HTML dan CSS"
-                },
-                {
-                    id: "B126",
-                    judul: "Pengantar Python untuk Data Science"
-                },
-                {
-                    id: "B127",
-                    judul: "Praktikum Node.js untuk Backend"
-                }
-            ];
-
             // Mengambil daftar ID buku yang sudah dipilih dari tabel
             var selectedIds = [];
             $('#tabelBuku tr').each(function() {
@@ -185,89 +192,111 @@
                 selectedIds.push(idBuku);
             });
 
-            // Simulasi pencarian berdasarkan kode unik (ID buku) atau judul buku
-            var results = dummyData.filter(function(buku) {
-                // Pastikan buku yang sudah dipilih tidak muncul lagi di dropdown
-                return (buku.id.toLowerCase().includes(query.toLowerCase()) || buku.judul.toLowerCase().includes(query.toLowerCase())) && !selectedIds.includes(buku.id);
+            // Mengirimkan request ke API untuk mendapatkan data buku yang sesuai dengan query
+            $.ajax({
+                url: '{{ env("API_URL") . "/api/perpustakaan/buku" }}', // API URL diambil dari .env
+                method: 'GET',
+                data: {
+                    search: query
+                },
+                headers: {
+                    'Authorization': 'Bearer {{ $apiToken }}' // Menambahkan token dalam header Authorization
+                },
+                success: function(response) {
+                    // Misalnya, API mengembalikan array buku
+                    var results = response.data.items.filter(function(buku) {
+                        // Pastikan buku yang sudah dipilih tidak muncul lagi di dropdown
+                        return !selectedIds.includes(buku.kode_buku);
+                    });
+
+                    // Jika ada hasil pencarian
+                    if (results.length > 0) {
+                        var resultsHtml = '';
+
+                        // Loop melalui hasil pencarian dan buat elemen dropdown
+                        results.forEach(function(buku) {
+                            resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectResult(\'' + buku.id + '\', \'' + buku.kode_buku + '\', \'' + buku.judul + '\')">' + buku.kode_buku + ' - ' + buku.judul + '</a>';
+                        });
+
+                        // Menampilkan hasil pencarian di dropdown
+                        $('#searchResults').html(resultsHtml).show();
+                    } else {
+                        // Jika tidak ada hasil, sembunyikan dropdown
+                        $('#searchResults').html('<a href="javascript:void(0)" class="dropdown-item">Tidak ada hasil yang ditemukan</a>').show();
+                    }
+                },
+                error: function() {
+                    // Menangani jika terjadi error pada saat request
+                    $('#searchResults').html('<a href="javascript:void(0)" class="dropdown-item">Terjadi kesalahan, coba lagi</a>').show();
+                }
             });
-
-            // Jika ada hasil pencarian
-            if (results.length > 0) {
-                var resultsHtml = '';
-
-                // Loop melalui hasil pencarian dan buat elemen dropdown
-                results.forEach(function(buku) {
-                    resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectResult(\'' + buku.id + '\', \'' + buku.judul + '\')">' + buku.id + ' - ' + buku.judul + '</a>';
-                });
-
-                // Menampilkan hasil pencarian di dropdown
-                $('#searchResults').html(resultsHtml).show();
-            } else {
-                // Jika tidak ada hasil, sembunyikan dropdown
-                $('#searchResults').html('<a href="javascript:void(0)" class="dropdown-item">Tidak ada hasil yang ditemukan</a>').show();
-            }
         });
 
-        // Tangani event keyup pada input
-        // $('#cari_buku').on('keyup', function() {
-        //     var query = $(this).val(); // Ambil nilai input
+        // Tangani event keyup pada input anggota
+        $('#cari_anggota').on('keyup', function() {
+            var query = $(this).val(); // Ambil nilai input
 
-        //     // Jika input kosong, tidak melakukan AJAX dan menutup dropdown
-        //     if (query.length < 3) {
-        //         $('#searchResults').html('').hide(); // Kosongkan hasil pencarian dan sembunyikan dropdown
-        //         return;
-        //     }
+            // Jika input kosong, tidak melakukan pencarian dan menutup dropdown
+            if (query.length < 1) {
+                $('#searchResultsAnggota').html('').hide(); // Kosongkan hasil pencarian dan sembunyikan dropdown
+                return;
+            }
 
-        //     // Kirim AJAX untuk mencari buku
-        //     $.ajax({
-        //         url: '/search/buku', // Ganti dengan URL endpoint pencarian buku Anda
-        //         type: 'GET',
-        //         data: {
-        //             query: query, // Kirimkan query pencarian ke server
-        //         },
-        //         success: function(response) {
-        //             // Jika ada hasil pencarian
-        //             if (response.length > 0) {
-        //                 var resultsHtml = '';
+            // Mengirimkan request ke API untuk mencari anggota berdasarkan query
+            $.ajax({
+                url: '{{ env("API_URL") . "/api/perpustakaan/anggota" }}', // Ganti dengan URL API yang sesuai
+                method: 'GET',
+                data: {
+                    search: query
+                },
+                headers: {
+                    'Authorization': 'Bearer {{ $apiToken }}' // Menambahkan token dalam header Authorization
+                },
+                success: function(response) {
+                    // Misalnya, API mengembalikan array anggota
+                    var results = response.data.items.filter(function(anggota) {
+                        // Periksa apakah nama pengguna ada dan tidak null atau kosong
+                        if (anggota.pengguna && anggota.pengguna.nama && anggota.is_anggota_perpus) {
+                            // Menyaring hasil pencarian jika sudah ada anggota yang dipilih
+                            return !selectedAnggotaIds.includes(anggota.nama);
+                        }
+                        return false; // Jika nama pengguna tidak valid (null atau kosong), anggota tidak dimasukkan
+                    });
 
-        //                 // Loop melalui hasil pencarian dan buat elemen dropdown
-        //                 response.forEach(function(buku) {
-        //                     resultsHtml += '<a href="#" class="dropdown-item" onclick="selectResult(\'' + buku.id + '\', \'' + buku.judul + '\')">' + buku.judul + '</a>';
-        //                 });
+                    // Jika ada hasil pencarian
+                    if (results.length > 0) {
+                        var resultsHtml = '';
 
-        //                 // Menampilkan hasil pencarian di dropdown
-        //                 $('#searchResults').html(resultsHtml).show();
-        //             } else {
-        //                 // Jika tidak ada hasil, sembunyikan dropdown
-        //                 $('#searchResults').html('<a href="#" class="dropdown-item">No results found</a>').show();
-        //             }
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.log('Terjadi kesalahan:', error);
-        //             $('#searchResults').html('Terjadi kesalahan saat pencarian.').show();
-        //         }
-        //     });
-        // });
+                        // Loop melalui hasil pencarian dan buat elemen dropdown
+                        results.forEach(function(anggota) {
+                            resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectAnggotaResult(\'' + anggota.id + '\', \'' + anggota.pengguna_type + '\', \'' + anggota.pengguna.nama + '\', \'' + anggota.pengguna.nama + '\')">' + anggota.pengguna.nama + '</a>';
+                        });
+
+                        // Menampilkan hasil pencarian di dropdown
+                        $('#searchResultsAnggota').html(resultsHtml).show();
+                    } else {
+                        // Jika tidak ada hasil, sembunyikan dropdown
+                        $('#searchResultsAnggota').html('<a href="javascript:void(0)" class="dropdown-item">Tidak ada hasil yang ditemukan</a>').show();
+                    }
+                },
+                error: function() {
+                    // Menangani jika terjadi error pada saat request
+                    $('#searchResultsAnggota').html('<a href="javascript:void(0)" class="dropdown-item">Terjadi kesalahan, coba lagi</a>').show();
+                }
+            });
+        });
     });
 
-    // Fungsi untuk memilih hasil dari dropdown
-    // function selectResult(id, title) {
-    //     // Masukkan nilai judul ke input dan sembunyikan dropdown
-    //     $('#cari_buku').val(title);
-    //     $('#searchResults').hide();
-
-    //     // Anda dapat melakukan aksi lain, misalnya menyimpan ID atau melakukan AJAX untuk memilih buku
-    //     console.log('Selected Book ID:', id);
-    // }
-
-    // Fungsi untuk menangani pemilihan hasil dan menambahkannya ke tabel
-    function selectResult(id, judul) {
-        console.log("Buku dipilih: " + judul + " (ID: " + id + ")");
+    function selectResult(id, kode, judul) {
+        // Menambahkan ID buku ke dalam array selectedBookIds
+        if (!selectedBookIds.includes(id)) {
+            selectedBookIds.push(id); // Menambahkan ID buku jika belum ada di array
+        }
 
         // Menambahkan baris baru ke tabel
         var newRow = '<tr>';
         newRow += '<td></td>'; // Tempat untuk nomor urut
-        newRow += '<td>' + id + '</td>';
+        newRow += '<td>' + kode + '</td>';
         newRow += '<td>' + judul + '</td>';
         newRow += '<td><button class="btn btn-danger" onclick="removeRow(this, \'' + id + '\')">Hapus</button></td>';
         newRow += '</tr>';
@@ -278,109 +307,46 @@
         // Update nomor urut
         updateRowNumbers();
 
+        // Perbarui nilai input hidden dengan array ID buku yang dipilih
+        $('#id_buku').val(selectedBookIds.join(',')); // ID buku dipisahkan oleh koma
+
         // Isi input dengan judul buku yang dipilih
         $('#cari_buku').val('');
         $('#searchResults').html('').hide(); // Menutup dropdown
     }
 
-    // Fungsi untuk menghapus baris pada tabel
-    function removeRow(button) {
+    // Fungsi untuk menghapus baris
+    function removeRow(button, id) {
+        // Menghapus ID buku yang sesuai dari array
+        var index = selectedBookIds.indexOf(id);
+        if (index !== -1) {
+            selectedBookIds.splice(index, 1); // Menghapus ID buku dari array
+        }
+
+        // Menghapus baris dari tabel
         $(button).closest('tr').remove();
 
-        // Update nomor urut setelah baris dihapus
+        // Update nomor urut
         updateRowNumbers();
+
+        // Perbarui input hidden setelah penghapusan
+        $('#id_buku').val(selectedBookIds.join(','));
     }
 
-    // Fungsi untuk memperbarui nomor urut setiap kali baris ditambahkan atau dihapus
+    // Fungsi untuk mengupdate nomor urut pada tabel
     function updateRowNumbers() {
         $('#tabelBuku tr').each(function(index) {
-            // Update nomor urut (index + 1 untuk mulai dari 1)
+            // Nomor urut dimulai dari 1 (index + 1)
             $(this).find('td:first').text(index + 1);
         });
     }
 
-
-    // Array untuk menyimpan ID anggota yang sudah dipilih
-    var selectedAnggotaIds = [];
-
-    // Tangani event keyup pada input
-    $('#cari_anggota').on('keyup', function() {
-        var query = $(this).val(); // Ambil nilai input
-
-        // Jika input kosong, tidak melakukan pencarian dan menutup dropdown
-        if (query.length < 1) {
-            $('#searchResultsAnggota').html('').hide(); // Kosongkan hasil pencarian dan sembunyikan dropdown
-            return;
-        }
-
-        // Data dummy untuk simulasi pencarian anggota berdasarkan nama atau nisn
-        var dummyDataAnggota = [{
-                id: "A123",
-                nama: "John Doe",
-                nisn: "123456",
-                foto: "https://via.placeholder.com/100?text=John",
-                nisn: "123456"
-            },
-            {
-                id: "A124",
-                nama: "Jane Smith",
-                nisn: "123457",
-                foto: "https://via.placeholder.com/100?text=Jane",
-                nisn: "123457"
-            },
-            {
-                id: "A125",
-                nama: "Robert Brown",
-                nisn: "123458",
-                foto: "https://via.placeholder.com/100?text=Robert",
-                nisn: "123458"
-            },
-            {
-                id: "A126",
-                nama: "Emily White",
-                nisn: "123459",
-                foto: "https://via.placeholder.com/100?text=Emily",
-                nisn: "123459"
-            },
-            {
-                id: "A127",
-                nama: "Daniel Green",
-                nisn: "123460",
-                foto: "https://via.placeholder.com/100?text=Daniel",
-                nisn: "123460"
-            }
-        ];
-
-        // Simulasi pencarian berdasarkan ID, nama atau nisn anggota
-        var results = dummyDataAnggota.filter(function(anggota) {
-            return (anggota.id.toLowerCase().includes(query.toLowerCase()) || anggota.nama.toLowerCase().includes(query.toLowerCase()) || anggota.nisn.includes(query)) && !selectedAnggotaIds.includes(anggota.id);
-        });
-
-        // Jika ada hasil pencarian
-        if (results.length > 0) {
-            var resultsHtml = '';
-
-            // Loop melalui hasil pencarian dan buat elemen dropdown
-            results.forEach(function(anggota) {
-                resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectAnggotaResult(\'' + anggota.id + '\', \'' + anggota.nama + '\', \'' + anggota.nisn + '\')">' + anggota.nisn + ' - ' + anggota.nama + '</a>';
-            });
-
-            // Menampilkan hasil pencarian di dropdown
-            $('#searchResultsAnggota').html(resultsHtml).show();
-        } else {
-            // Jika tidak ada hasil, sembunyikan dropdown
-            $('#searchResultsAnggota').html('<a href="javascript:void(0)" class="dropdown-item">Tidak ada hasil yang ditemukan</a>').show();
-        }
-    });
-
     // Fungsi untuk menangani pemilihan hasil dan menampilkannya sebagai kartu
-    function selectAnggotaResult(id, nama, nisn, foto) {
-        console.log("Anggota dipilih: " + nama + " (ID: " + id + ", NISN: " + nisn + ")");
-
+    function selectAnggotaResult(id, pengguna_type, nama, nisn, foto) {
         // Pastikan ID anggota tidak sudah ada di kartu
         if (!selectedAnggotaIds.includes(id)) {
             // Menambahkan ID ke dalam selectedAnggotaIds
-            selectedAnggotaIds.push(id);
+            selectedAnggotaIds.push(nama);
 
             // Menampilkan foto dan data anggota yang dipilih dalam kartu
             $('#anggotaFoto').attr('src', foto); // Set Foto Anggota
@@ -390,6 +356,10 @@
 
             // Menampilkan kartu anggota
             $('#anggotaCard').show();
+
+            // Menyimpan ID anggota yang dipilih ke input hidden (readonly input)
+            $('#id_anggota').val(id); // Mengisi input dengan ID anggota yang dipilih
+            $('#type_anggota').val(pengguna_type); // Mengisi input dengan ID anggota yang dipilih
 
             // Kosongkan input dan sembunyikan dropdown
             $('#cari_anggota').val('');

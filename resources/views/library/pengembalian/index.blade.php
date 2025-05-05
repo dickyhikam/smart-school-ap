@@ -8,60 +8,15 @@
     <!-- Tabel Data Orang Tua/Wali -->
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center gap-2">
-                    <h4 class="mb-0">Data Non-Anggota</h4>
-
-                    <div class="d-flex align-items-start flex-wrap justify-content-sm-end gap-2">
-                        <form>
-                            <div class="d-flex align-items-start flex-wrap">
-                                <label for="membersearch-input" class="visually-hidden">Search</label>
-                                <input type="search" class="form-control" id="membersearch-input" placeholder="cari siswa...">
-                            </div>
-                        </form>
-
-                        <button type="button" class="btn btn-info btn-sm" id="toggleButton">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12 5l0 14" />
-                                <path d="M5 12l14 0" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" id="cardBody" style="background-color:rgb(235, 235, 235); display: none;">
-                    <div class="row" style="max-height: 500px; overflow-y: auto;">
-                        @foreach ($list_siswa as $row)
-                        <div class="col-xl-2 col-md-4 col-sm-6">
-                            <div class="card text-center">
-                                <div class="card-body">
-                                    <img src="{{ $row['foto']['url'] }}" class="rounded-circle img-thumbnail avatar-xl mt-1" alt="profile-image">
-                                    <h4 class="mt-3">{{ $row['nisn'] }}</h4>
-                                    <h5 class="mb-1">{{ $row['nama_lengkap'] }}</h5>
-                                    <h5 class="text-muted">Kelas <span> | </span>Wali Kelas</h5>
-                                    <div class="d-grid gap-2 mt-2 mb-2">
-                                        <button class="btn btn-soft-secondary rounded-pill"
-                                            data-bs-toggle="modal" data-bs-target="#gabungModal"
-                                            data-nisn="{{ $row['id'] }}"
-                                            data-student-name="{{ $row['nama_lengkap'] }}">
-                                            Gabung
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
+
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormPerpusPeminjaman') }}">
+                        <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
+                    </a>
                 </div>
                 <div class="card-body">
                     <!-- Bagian Search dan Show Entries -->
@@ -94,14 +49,14 @@
                             <thead class="table-primary sticky-top">
                                 <tr>
                                     <th>Nama</th>
-                                    <th hidden>Aksi</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($list_data as $row)
                                 <tr>
-                                    <td>{{ $row['pengguna']['nama'] }}</td>
-                                    <td hidden>
+                                    <td>{{ $row['nama'] }}</td>
+                                    <td>
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -168,84 +123,12 @@
             </div> <!-- end card -->
         </div><!-- end col-->
     </div>
-
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="gabungModal" tabindex="-1" aria-labelledby="gabungModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="gabungModalLabel">Konfirmasi Bergabung</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Apakah Anda yakin ingin menggabungkan siswa <b id="studentName"></b> menjadi anggota perpustakaan?</p>
-                </div>
-                <div class="modal-footer">
-                    <form action="{{ route('actionGabungPerpusAnggota') }}" method="POST" id="gabungForm">
-                        @csrf
-                        <input id="id_gabung" name="user_id" readonly hidden>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-danger" id="confirmGabungBtn">Gabung</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 </div> <!-- container -->
 
 @endsection
 
 @section('javascript_custom')
 <script>
-    // Get all Gabung buttons
-    const gabungButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#gabungModal"]');
 
-    // Loop through each button and add an event listener
-    gabungButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const menuId = this.getAttribute('data-nisn'); // Get menu ID from button's data-menu-id attribute
-            const menuName = this.getAttribute('data-student-name');
-            const form = document.querySelector('#gabungModal form'); // Get the form in the modal
-
-            document.getElementById('id_gabung').value = menuId;
-
-            document.getElementById('studentName').textContent = menuName; // Set the menu name in the modal
-        });
-    });
-
-    // Menangani tombol "Hapus" untuk menghindari klik ganda
-    document.getElementById('gabungForm').addEventListener('submit', function(event) {
-        // Ambil tombol Hapus
-        var confirmGabungBtn = document.getElementById('confirmGabungBtn');
-
-        // Nonaktifkan tombol dan ubah teks menjadi "Sedang memproses..."
-        confirmGabungBtn.disabled = true;
-        confirmGabungBtn.textContent = 'Sedang memproses...';
-    });
-
-    document.getElementById("toggleButton").addEventListener("click", function() {
-        var cardBody = document.getElementById("cardBody");
-        var toggleButton = document.getElementById("toggleButton");
-
-        // Toggle the visibility of the card body
-        if (cardBody.style.display === "none") {
-            cardBody.style.display = "block";
-            // Change icon to minus
-            toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-minus">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M5 12l14 0" />
-                                </svg>`;
-        } else {
-            cardBody.style.display = "none";
-            // Change icon to plus
-            toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path d="M12 5l0 14" />
-                                    <path d="M5 12l14 0" />
-                                </svg>`;
-        }
-    });
 </script>
 @endsection
