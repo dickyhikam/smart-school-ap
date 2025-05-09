@@ -7,7 +7,7 @@
 
     <!-- Tabel Data Orang Tua/Wali -->
     <div class="row">
-        <div class="col-12">
+        <div class="<?= $con_col1 ?>">
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
@@ -140,6 +140,101 @@
                 </div> <!-- end card body-->
             </div> <!-- end card -->
         </div><!-- end col-->
+
+        <div class="<?= $con_col2 ?>" <?= $con_hid ?>>
+            <div class="card shadow-sm">
+                <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="mdi mdi-account-group me-2"></i> Tabel Jumlah Buku
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-striped dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @if (isset($data_row['items']))
+                                @foreach ($data_row['items'] as $row)
+
+                                <tr>
+                                    <td><?= $row['kode_item'] ?></td>
+                                    @if ($row['status'] == 'tersedia')
+                                    <td><span class="badge bg-success rounded-pill"><?= $row['status'] ?></span></td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Buku Rusak" data-status="rusak" data-id="{{ $row['id'] }}" data-kode="{{ $row['kode_item'] }}" onclick="modal_konfirm(this);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-book">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M12.088 4.82a10 10 0 0 1 9.412 .314a1 1 0 0 1 .493 .748l.007 .118v13a1 1 0 0 1 -1.5 .866a8 8 0 0 0 -8 0a1 1 0 0 1 -1 0a8 8 0 0 0 -7.733 -.148l-.327 .18l-.103 .044l-.049 .016l-.11 .026l-.061 .01l-.117 .006h-.042l-.11 -.012l-.077 -.014l-.108 -.032l-.126 -.056l-.095 -.056l-.089 -.067l-.06 -.056l-.073 -.082l-.064 -.089l-.022 -.036l-.032 -.06l-.044 -.103l-.016 -.049l-.026 -.11l-.01 -.061l-.004 -.049l-.002 -.068v-13a1 1 0 0 1 .5 -.866a10 10 0 0 1 9.412 -.314l.088 .044l.088 -.044z" />
+                                            </svg>
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm" data-bs-toggle="tooltip" title="Buku Hilang" data-status="hilang" data-id="{{ $row['id'] }}" data-kode="{{ $row['kode_item'] }}" onclick="modal_konfirm(this);">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-vocabulary-off">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M7 3h3a2 2 0 0 1 2 2a2 2 0 0 1 2 -2h6a1 1 0 0 1 1 1v13m-2 2h-5a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2h-6a1 1 0 0 1 -1 -1v-14c0 -.279 .114 -.53 .298 -.712" />
+                                                <path d="M12 5v3m0 4v9" />
+                                                <path d="M7 11h1" />
+                                                <path d="M16 7h1" />
+                                                <path d="M16 11h1" />
+                                                <path d="M3 3l18 18" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                    @elseif ($row['status'] == 'dipinjam')
+                                    <td><span class="badge bg-info rounded-pill"><?= $row['status'] ?></span></td>
+                                    <td>
+
+                                    </td>
+                                    @elseif ($row['status'] == 'hilang')
+                                    <td><span class="badge bg-danger rounded-pill"><?= $row['status'] ?></span></td>
+                                    <td>
+
+                                    </td>
+                                    @else
+                                    <td><span class="badge bg-warning rounded-pill"><?= $row['status'] ?></span></td>
+                                    <td>
+
+                                    </td>
+                                    @endif
+                                </tr>
+
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
+        </div><!-- end col-->
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="konfirmModal" tabindex="-1" aria-labelledby="konfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="konfirmModalLabel">Konfirmasi Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Apakah Anda yakin ingin menggubah status buku menjadi <b id="statusBuku"></b> dengan ID <b id="itemBuku"></b>?</p>
+                </div>
+                <div class="modal-footer">
+                    <form id="konfirmForm">
+                        <input id="id_buku" name="id_buku" readonly hidden>
+                        <input id="status_buku" name="status" readonly hidden>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-danger" onclick="btn_konfirm();" id="confirmBtn">Ya</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div> <!-- container -->
@@ -149,6 +244,8 @@
 @section('javascript_custom')
 <script>
     $(document).ready(function() {
+        $("#basic-datatable").DataTable();
+
         // Ambil data old() dan kategori dari data_row
         var selectedCategories = <?= json_encode(old('kategori_ids', [])); ?>;
         var selectedCategoryNames = <?= json_encode($data_row['kategori_buku'] ?? []); ?>;
@@ -201,7 +298,7 @@
                 },
                 success: function(response) {
                     // Handle success and show the notification alert
-                    notif_alert(response.status, response.message);
+                    notif_alert(response.status, response.message, 'no');
 
                     // Re-enable the submit button after success or error
                     submitButton.prop('disabled', false);
@@ -215,7 +312,7 @@
                         var errorStatus = xhr.responseJSON.status || 'Error'; // Fallback to 'Error' if no status provided
 
                         // Show an alert with the error message from the JSON response
-                        notif_alert(errorStatus, errorMessage); // Assuming you have a function to show the alert
+                        notif_alert(errorStatus, errorMessage, 'no'); // Assuming you have a function to show the alert
 
                     } else {
                         // If the error isn't JSON, just show a generic alert
@@ -237,7 +334,7 @@
         });
     });
 
-    function notif_alert(status, message) {
+    function notif_alert(status, message, con) {
         var alertType, alertIcon, alertTitle;
 
         // Determine alert type based on response
@@ -262,8 +359,14 @@
         $('#alert-modal2 .btn-info').on('click', function() {
             // If status is "error", just dismiss the modal without redirecting
             if (status === 'success') {
-                // If status is "success", redirect after closing the modal
-                window.location.href = '{{ route("pagePerpusBuku") }}'; // Replace '/new-route' with the desired route
+                if (con === 'reload') {
+                    // Reload halaman setelah sukses
+                    location.reload(); // Reload halaman
+                } else {
+                    // If status is "success", redirect after closing the modal
+                    window.location.href = '{{ route("pagePerpusBuku") }}'; // Replace '/new-route' with the desired route
+                }
+
             } else {
                 $('#alert-modal2').modal('hide'); // Close the modal
             }
@@ -317,6 +420,88 @@
             // Membaca file yang diunggah sebagai URL
             reader.readAsDataURL(file);
         }
+    }
+
+    function modal_konfirm(element) {
+        // Ambil nilai dari data-status dan data-id
+        var status = element.getAttribute('data-status');
+        var id = element.getAttribute('data-id');
+        var kode = element.getAttribute('data-kode');
+
+        $('#status_buku').val(status);
+        $('#id_buku').val(id);
+        $('#statusBuku').text(status);
+        $('#itemBuku').text(kode);
+
+        $('#konfirmModal').modal('show');
+    }
+
+    function btn_konfirm() {
+        // Dapatkan elemen form dengan ID konfirmForm
+        var form = $('#konfirmForm')[0]; // Ambil elemen form pertama
+
+        // Ambil bookId dari elemen input dengan id 'id_buku'
+        var bookId = document.getElementById('id_buku').value;
+
+        // Pastikan bookId ada dan valid
+        if (!bookId) {
+            alert('ID Buku tidak ditemukan!');
+            return; // Stop eksekusi jika bookId tidak ada
+        }
+
+        // Prevent default form submission
+        event.preventDefault();
+
+        // Disable the submit button to prevent multiple clicks
+        var submitButton = $('#confirmBtn');
+        submitButton.prop('disabled', true);
+        submitButton.text('Sedang memproses...');
+
+        // Gather form data
+        var formData = new FormData(form);
+
+        // Get the CSRF token
+        var token = $('meta[name="csrf-token"]').attr('content');
+
+        // Send the request using AJAX
+        $.ajax({
+            url: `{{ env("API_URL") }}/api/perpustakaan/buku/item/${bookId}`, // Ganti :id dengan nilai bookId
+            type: 'POST',
+            data: formData,
+            processData: false, // Jangan proses data menjadi query string
+            contentType: false, // Tentukan konten sebagai 'multipart/form-data'
+            headers: {
+                'X-CSRF-TOKEN': token, // CSRF token untuk Laravel
+                'Authorization': 'Bearer ' + '{{ $token }}' // Bearer token untuk otorisasi
+            },
+            success: function(response) {
+                // Handle success dan tampilkan notifikasi
+                notif_alert(response.status, response.message, 'reload');
+
+                // Re-enable the submit button setelah sukses atau error
+                submitButton.prop('disabled', false);
+                submitButton.text('Simpan');
+            },
+            error: function(xhr, status, error) {
+                // Cek apakah respons berupa JSON
+                if (xhr.responseJSON) {
+                    // Ambil pesan error dari respons JSON
+                    var errorMessage = xhr.responseJSON.message || 'Terjadi kesalahan saat menyimpan data.'; // Pesan fallback
+                    var errorStatus = xhr.responseJSON.status || 'Error'; // Status fallback
+
+                    // Tampilkan notifikasi dengan pesan error
+                    notif_alert(errorStatus, errorMessage, 'no'); // Asumsikan Anda memiliki fungsi untuk menampilkan notifikasi
+
+                } else {
+                    // Jika respons bukan JSON, tampilkan alert generic
+                    alert('Error: ' + error);
+                }
+
+                // Re-enable the submit button setelah error
+                submitButton.prop('disabled', false);
+                submitButton.text('Simpan');
+            }
+        });
     }
 </script>
 @endsection

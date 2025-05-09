@@ -8,7 +8,7 @@
 
     <h4 class="fw-semibold mb-3 fs-18">Log in ke akun Anda</h4>
 
-    <form action="{{ route('actionLogin') }}" method="POST" class="text-start mb-3">
+    <form action="{{ route('login') }}" method="POST" class="text-start mb-3">
         @csrf
         <div class="mb-3">
             <label class="form-label" for="username">NIP/NIS</label>
@@ -24,7 +24,7 @@
 
         <div class="d-flex justify-content-between mb-3">
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="checkbox-signin">
+                <input type="checkbox" class="form-check-input" id="checkbox-signin" name="remember">
                 <label class="form-check-label" for="checkbox-signin">Remember me</label>
             </div>
         </div>

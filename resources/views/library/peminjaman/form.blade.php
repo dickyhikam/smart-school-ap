@@ -237,7 +237,7 @@
             var query = $(this).val(); // Ambil nilai input
 
             // Jika input kosong, tidak melakukan pencarian dan menutup dropdown
-            if (query.length < 1) {
+            if (query.length < 0 || query.length == 0) {
                 $('#searchResultsAnggota').html('').hide(); // Kosongkan hasil pencarian dan sembunyikan dropdown
                 return;
             }
@@ -262,6 +262,8 @@
                         }
                         return false; // Jika nama pengguna tidak valid (null atau kosong), anggota tidak dimasukkan
                     });
+                    console.log(results);
+
 
                     // Jika ada hasil pencarian
                     if (results.length > 0) {

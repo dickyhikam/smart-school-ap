@@ -27,6 +27,7 @@ class PPBuku extends Controller
                 'search' => $search, // Kirim parameter pencarian
             ]);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
+        // dd($response);
 
         $data['list_data'] = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
@@ -81,11 +82,17 @@ class PPBuku extends Controller
 
             $data['data_row'] = $response['data'];
             $data['action'] = route('actionAddPerpusBuku', $id); // Arahkan ke update
+            $data['con_hid'] = '';
+            $data['con_col1'] = 'col-sm-7';
+            $data['con_col2'] = 'col-sm-5';
 
             // dd($data['data_row']);
         } else {
             $data['nama_menu2'] = 'Form Tambah ' . $menu;
             $data['data_row'] = [];
+            $data['con_hid'] = 'hidden';
+            $data['con_col1'] = 'col-sm-12';
+            $data['con_col2'] = '';
 
             // Jika tidak ada $id, berarti ini adalah halaman Create
             $data['action'] = route('actionAddPerpusBuku'); // Arahkan ke store

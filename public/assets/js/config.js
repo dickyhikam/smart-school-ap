@@ -6,7 +6,7 @@
             layout: { mode: "fluid" },
             topbar: { color: "light" },
             menu: { color: "light" },
-            sidenav: { size: "default" },
+            sidenav: { size: null },
         },
         i =
             ((this.html = document.getElementsByTagName("html")[0]),
@@ -20,10 +20,14 @@
             this.html.getAttribute("data-topbar-color")),
         i =
             ((config.topbar.color = null != i ? i : o.topbar.color),
-            this.html.getAttribute("data-sidenav-size")),
+            this.html.getAttribute("data-menu-color")),
         i =
-            ((config.sidenav.size = null !== i ? i : o.sidenav.size),
-            this.html.getAttribute("data-menu-color"));
+            ((this.html.getAttribute("data-sidenav-size") = null !== i ? i : o.sidenav.size),
+            this.html.getAttribute("data-sidenav-size"));
+
+    // alert(e);
+    console.log(this.html.getAttribute("data-sidenav-size"));
+
     (config.menu.color = null !== i ? i : o.menu.color),
         (window.defaultConfig = JSON.parse(JSON.stringify(config))),
         null !== t && (config = JSON.parse(t)),

@@ -83,7 +83,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                <div class="table-responsive">
                     <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                         <thead class="table-primary sticky-top">
                             <tr>
@@ -99,7 +99,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($list_data as $row)
+                            @forelse ($list_data as $row)
                             <tr>
                                 <td>{{ $row['kode_pinjam'] }}</td>
                                 <td>{{ $row['peminjam']['name'] }}</td>
@@ -109,13 +109,11 @@
                                 <td>{!! date('d-m-Y', strtotime($row['tanggal_pinjam'] . ' +7 days')) !!}</td>
                                 <td>
                                     @foreach ($row['buku'] as $buku)
-                                    <li>
-                                        {{ $buku['judul'] }}
-                                    </li>
+                                    <li>{{ $buku['judul'] }}</li>
                                     @endforeach
                                 </td>
                                 <td>
-                                    <span class="badge {{ in_array($row['status'], ['dikembalikan']) ? 'bg-success' : (in_array($row['status'], ['dipinjam', 'diambil']) ? 'bg-warning' : 'bg-danger') }}">
+                                    <span class="badge {{ in_array($row['status'], ['dikembalikan']) ? 'bg-success' : (in_array($row['status'], ['dipinjam', 'diambil']) ? 'bg-info' : 'bg-danger') }}">
                                         {{ $row['status'] == 'dikembalikan' ? 'Dikembalikan' : ($row['status'] == 'dipinjam' || $row['status'] == 'diambil' ? 'Dipinjam' : 'Terlambat') }}
                                     </span>
                                 </td>
@@ -130,7 +128,7 @@
                                         </svg>
                                     </button>
 
-                                    <button class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Detil {{ $nama_menu }}">
+                                    <button class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Detil {{ $nama_menu }}" onclick="btn_detil(this);" data-id="{{ $row['id'] }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-text">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                             <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
@@ -141,7 +139,11 @@
                                     </button>
                                 </td>
                             </tr>
-                            @endforeach
+                            @empty
+                            <tr>
+                                <td colspan="8" class="text-center">Tidak ada data yang tersedia</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div> <!-- end table-responsive -->
@@ -234,5 +236,19 @@
             form.action = form.action.replace(':id', bookId);
         });
     });
+
+    public
+
+    function btn_detil(button) {
+        // Retrieve the ID from the button's data-id attribute
+        var id = $(button).data('id'); // Using jQuery to get the data-id attribute
+
+        // Construct the URL dynamically by appending the `id` to the route
+        var url = '{{ route("pageDetilPerpusPeminjaman", ["id" => ":id"]) }}';
+        url = url.replace(':id', id); // Replace the ":id" placeholder with the actual `id`
+
+        // Redirect to the new URL
+        window.location.href = url;
+    }
 </script>
 @endsection

@@ -44,7 +44,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
@@ -59,7 +59,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($list_data as $row)
+                                @forelse ($list_data as $row)
                                 <tr>
                                     <td>
                                         @if ($row['gambar'])
@@ -69,8 +69,8 @@
                                         @endif
                                     </td>
                                     <td>{{ $row['judul'] }}</td>
-                                    <td>{{ $row['pengarang']['nama']?? '-' }}</td>
-                                    <td>{{ $row['penerbit']['nama']?? '-' }}</td>
+                                    <td>{{ $row['pengarang']['nama'] ?? '-' }}</td>
+                                    <td>{{ $row['penerbit']['nama'] ?? '-' }}</td>
                                     <td>{{ $row['tahun_terbit'] }}</td>
                                     <td>{{ $row['rak_kode'] }}</td>
                                     <td>{{ $row['jumlah'] }}</td>
@@ -95,7 +95,12 @@
                                         </button>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <!-- Menyesuaikan colspan dengan jumlah kolom yang ada -->
+                                    <td colspan="8" class="text-center">Tidak ada data yang tersedia</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->

@@ -62,6 +62,30 @@ class PPPeminjaman extends Controller
         return view('library.peminjaman.form', $data);
     }
 
+    public function index_detil($id = null)
+    {
+        $menu = 'Detil Peminjaman';
+        $data['nama_menu'] = $menu;
+        $data['nama_menu2'] = 'Data ' . $menu;
+        $data['con_menu'] = 'Perpustakaan';
+
+        // Fetch data for the given ID using an API if available
+        if (!$id) {
+            // Handle errors if the API request fails
+            return redirect()->route('pagePerpusPeminjaman')->with(['alert-type' => 'error', 'message' => 'Data not found']);
+        }
+
+        // URL API dengan parameter halaman
+        $apiUrl = env('API_URL'); // URL API Anda
+        $response = Http::withToken(session('token'))->get($apiUrl . '/api/perpustakaan/peminjaman/' . $id);
+        $response = json_decode($response->body(), true); // Dekode response menjadi array
+        $data['data_peminjaman'] = $response['data'];
+        // dd($data['data_peminjaman']);
+
+        // Pass the data to the view
+        return view('library.peminjaman.detil', $data);
+    }
+
     public function store(Request $request)
     {
         //get last date

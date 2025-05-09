@@ -1,17 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-sidenav-size="full">
 
 <head>
     @include('partials.title-meta')
 
     @include('partials.head-css')
+
+    <script>
+
+    </script>
 </head>
 
 <body>
     <!-- Begin page -->
     <div class="wrapper">
 
-        @include('partials.topbar')
+        <!-- Topbar Start -->
+        <header class="app-topbar" id="header">
+            <div class="page-container topbar-menu">
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Brand Logo -->
+                    <a href="index.php" class="logo">
+                        <span class="logo-light">
+                            <span class="logo-lg"><img src="assets/images/logo.png" alt="logo"></span>
+                            <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="small logo"></span>
+                        </span>
+
+                        <span class="logo-dark">
+                            <span class="logo-lg"><img src="assets/images/logo-dark.png" alt="dark logo"></span>
+                            <span class="logo-sm"><img src="assets/images/logo-sm.png" alt="small logo"></span>
+                        </span>
+                    </a>
+
+
+                    <!-- Topbar Page Title -->
+                    <div class="topbar-item d-none d-md-flex px-2">
+                        <h4 class="page-title fs-20 fw-semibold mb-0">Selamat Datang di Catalog Buku Perpustakaan</h4>
+                    </div>
+
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+
+                    <!-- Search for small devices -->
+                    <div class="topbar-item d-flex d-xl-none">
+                        <button class="topbar-link" data-bs-toggle="modal" data-bs-target="#searchModal" type="button">
+                            <i class="ri-search-line fs-22"></i>
+                        </button>
+                    </div>
+
+                    <!-- Button Trigger Search Modal -->
+                    <div class="topbar-search text-muted d-none d-xl-flex gap-2 me-2 align-items-center" data-bs-toggle="modal"
+                        data-bs-target="#searchModal" type="button">
+                        <i class="ri-search-line fs-18"></i>
+                        <span class="me-2">Cari buku..</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Topbar End -->
+
+        <!-- Search Modal -->
+        <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-transparent">
+                    <form>
+                        <div class="card mb-1">
+                            <div class="px-3 py-2 d-flex flex-row align-items-center" id="top-search">
+                                <i class="ri-search-line fs-22"></i>
+                                <input type="search" class="form-control border-0" id="search-modal-input"
+                                    placeholder="Search for actions, people,">
+                                <button type="submit" class="btn p-0" data-bs-dismiss="modal" aria-label="Close">[esc]</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         @include('partials.sidenav')
 
@@ -117,8 +183,6 @@
 
     </div>
     <!-- END wrapper -->
-
-    <!-- @include('partials.customizer') -->
 
     @include('partials.footer-scripts')
 

@@ -44,7 +44,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
@@ -53,7 +53,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($list_data as $row)
+                                @forelse ($list_data as $row)
                                 <tr>
                                     <td>{{ $row['nama'] }}</td>
                                     <td>
@@ -77,7 +77,11 @@
                                         </button>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="2" class="text-center">Tidak ada data yang tersedia</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->

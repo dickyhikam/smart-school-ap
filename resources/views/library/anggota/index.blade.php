@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="card-body" id="cardBody" style="background-color:rgb(235, 235, 235); display: none;">
-                    <div class="row" style="max-height: 500px; overflow-y: auto;">
+                    <div class="row">
                         @foreach ($list_siswa as $row)
                         <div class="col-xl-2 col-md-4 col-sm-6">
                             <div class="card text-center">
@@ -89,11 +89,12 @@
                             </form>
                         </div>
                     </div>
-                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
                                     <th>Nama</th>
+                                    <th>Tipe Anggota</th>
                                     <th hidden>Aksi</th>
                                 </tr>
                             </thead>
@@ -101,6 +102,7 @@
                                 @foreach ($list_data as $row)
                                 <tr>
                                     <td>{!! $row['pengguna']['nama'] ?? '-' !!}</td>
+                                    <td>{!! $row['pengguna']['type'] ?? '-' !!}</td>
                                     <td hidden>
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">

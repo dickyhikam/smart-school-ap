@@ -7,6 +7,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\PPAnggota;
 use App\Http\Controllers\PPBuku;
+use App\Http\Controllers\PPCatalog;
 use App\Http\Controllers\PPDashboard;
 use App\Http\Controllers\PPKategori;
 use App\Http\Controllers\PPPeminjaman;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthController::class, 'index'])->name('pageAuth');
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('actionLogin');
+Route::get('/perpustakaan/catalog', [PPCatalog::class, 'index'])->name('pageCatalog');
 
 // Protected routes
 Route::middleware('APIAuth')->group(function () {
@@ -99,6 +101,7 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/perpustakaan/anggota', [PPAnggota::class, 'gabung'])->name('actionGabungPerpusAnggota');
 
     Route::get('/perpustakaan/peminjaman', [PPPeminjaman::class, 'index'])->name('pagePerpusPeminjaman');
+    Route::get('/perpustakaan/peminjaman/detil/{id?}', [PPPeminjaman::class, 'index_detil'])->name('pageDetilPerpusPeminjaman');
     Route::get('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'index_form'])->name('pageFormPerpusPeminjaman');
     Route::post('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'store'])->name('actionAddPerpusPeminjaman');
 

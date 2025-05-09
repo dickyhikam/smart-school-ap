@@ -44,7 +44,7 @@
                             </form>
                         </div>
                     </div>
-                    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                    <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
