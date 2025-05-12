@@ -110,8 +110,7 @@
                 <div class="card-body">
                     <div class="row mb-3" hidden>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" placeholder="Cari buku"
-                                data-bs-toggle="tooltip" title="Masukkan kode unik buku" />
+                            <input type="text" class="form-control" placeholder="Cari buku" data-bs-toggle="tooltip" title="Masukkan kode unik buku" />
                         </div>
                         <div class="col-sm-3">
                             <div class="d-grid gap-2">
@@ -122,10 +121,10 @@
                         </div>
                     </div>
                     <div class="mb-3 position-relative">
-                        <input type="text" id="cari_buku" class="form-control" placeholder="Cari buku" data-bs-toggle="tooltip" title="Masukkan judul/kode unik buku" />
+                        <input type="text" id="cari_buku" class="form-control" placeholder="Cari buku" data-bs-toggle="tooltip" title="Masukkan kode unik buku" />
 
                         <!-- Dropdown hasil pencarian -->
-                        <div id="searchResults" class="dropdown-menu" style="width: 100%; display: none;"></div>
+                        <div id="searchResults" class="dropdown-menu" style="width: 100%; display: none; max-height: 300px; overflow-y: scroll; scroll-behavior: smooth;"></div>
                     </div>
 
                     <!-- Tabel untuk menampilkan buku yang dipilih -->
@@ -215,7 +214,11 @@
 
                         // Loop melalui hasil pencarian dan buat elemen dropdown
                         results.forEach(function(buku) {
-                            resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectResult(\'' + buku.id + '\', \'' + buku.kode_buku + '\', \'' + buku.judul + '\')">' + buku.kode_buku + ' - ' + buku.judul + '</a>';
+                            buku.items.forEach(function(bukuItem) {
+                                console.log(bukuItem.id);
+
+                                resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectResult(\'' + bukuItem.id + '\', \'' + bukuItem.kode_item + '\', \'' + buku.judul + '\')">' + bukuItem.kode_item + ' | ' + buku.judul + '</a>';
+                            });
                         });
 
                         // Menampilkan hasil pencarian di dropdown

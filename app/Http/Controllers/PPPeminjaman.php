@@ -25,19 +25,33 @@ class PPPeminjaman extends Controller
                 'perPage' => $perPage, // Kirim parameter per_page
                 'search' => $search, // Kirim parameter pencarian
             ]);
-        $response = json_decode($response->body(), true); // Dekode response menjadi array
+        // Filter data berdasarkan status
+        $statusFilter = 'diambil'; // Ganti dengan status yang diinginkan, misalnya 'dikembalikan'
+        $filteredItems = array_filter($response['data']['items'], function ($item) use ($statusFilter) {
+            return $item['status'] === $statusFilter;
+        });
 
-        $data['list_data'] = $response['data']['items']; // Mengambil data siswa
-        // Mengambil data pagination
+        $data['list_data'] = $filteredItems; // Mengambil data yang sudah difilter
+        // Update pagination berdasarkan data yang sudah difilter
+        $filteredTotal = count($filteredItems); // Total data yang sudah difilter
+        $perPage = $response['data']['per_page']; // Ambil per_page dari response
+
+        // Menghitung total halaman baru berdasarkan data yang sudah difilter
+        $totalPages = ceil($filteredTotal / $perPage);
+        $currentPage = $response['data']['current_page']; // Halaman saat ini dari response
+        $from = ($currentPage - 1) * $perPage + 1;
+        $to = min($currentPage * $perPage, $filteredTotal);
+
+        // Membuat pagination baru
         $data['pagination'] = [
-            'from' => $response['data']['from'],
-            'to' => $response['data']['to'],
-            'current_page' => $response['data']['current_page'],
-            'last_page' => $response['data']['last_page'],
-            'total' => $response['data']['total'],
-            'per_page' => $response['data']['per_page'],
-            'next_page_url' => $response['data']['next_page_url'],
-            'prev_page_url' => $response['data']['prev_page_url'],
+            'from' => $from,
+            'to' => $to,
+            'current_page' => $currentPage,
+            'last_page' => $totalPages,
+            'total' => $filteredTotal,
+            'per_page' => $perPage,
+            'next_page_url' => ($currentPage < $totalPages) ? $response['data']['next_page_url'] : null,
+            'prev_page_url' => ($currentPage > 1) ? $response['data']['prev_page_url'] : null,
         ];
 
         return view('library.peminjaman.index', $data);
@@ -92,18 +106,12 @@ class PPPeminjaman extends Controller
         $lastDate = date('Y-m-d', strtotime('+2 days'));
         $id_buku_array = explode(',', $request->id_buku);
 
-        // Misalnya $request->status_peminjaman berisi 'App\Models\Siswa'
-        $namespace = $request->type_anggota;
-        // Menghilangkan kata 'models' dari string
-        $cleaned_namespace = strtolower(str_replace('AppModels', '', $namespace));
-
         // Prepare data for sending to the API
         $data = [
             'metode' => 'langsung',
             'peminjam_id' => $request->id_anggota,
-            'status_peminjam' => $cleaned_namespace,
             'tanggal_berakhir' => $lastDate,
-            'buku_id' => $id_buku_array,
+            'buku_item_id' => $id_buku_array,
         ];
 
         // Send data to the external API
@@ -119,6 +127,26 @@ class PPPeminjaman extends Controller
 
         // If there was an error, capture the error message
         $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+    }
+
+    public function storeReturn($id)
+    {
+        // Send data to the external API
+        $apiUrl = env('API_URL') . '/api/perpustakaan/peminjaman/return/' . $id; // External API URL for the menu
+        $response = Http::withToken(session('token'))
+            ->post($apiUrl);
+
+        // If there was an error, capture the error message
+        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pagePerpusPeminjaman')->with(['alert-type' => 'success', 'message' => $errorMessage['message']]);
+        }
 
         // If the request failed, redirect back with error message
         return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);

@@ -104,6 +104,7 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/perpustakaan/peminjaman/detil/{id?}', [PPPeminjaman::class, 'index_detil'])->name('pageDetilPerpusPeminjaman');
     Route::get('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'index_form'])->name('pageFormPerpusPeminjaman');
     Route::post('/perpustakaan/peminjaman/tambah', [PPPeminjaman::class, 'store'])->name('actionAddPerpusPeminjaman');
+    Route::post('/perpustakaan/peminjaman/kembali/{id?}', [PPPeminjaman::class, 'storeReturn'])->name('actionReturnPerpusPeminjaman');
 
     Route::get('/perpustakaan/pengembalian', [PPPengembalian::class, 'index'])->name('pagePerpusPengembalian');
     Route::get('/perpustakaan/pengembalian/tambah', [PPPengembalian::class, 'index_form'])->name('pageFormPerpusPengembalian');

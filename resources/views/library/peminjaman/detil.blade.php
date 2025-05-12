@@ -16,8 +16,6 @@
                 </div>
                 <div class="card-body">
                     <form>
-                        <input readonly hidden class="form-control" name="id_anggota" id="id_anggota">
-
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="petugas">Kode</label>
                             <div class="col-md-9">
@@ -113,12 +111,18 @@
 
 
                         <div class="row">
+                            @if($data_peminjaman['status'] == 'dipinjam' || $data_peminjaman['status'] == 'diambil')
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-secondary w-100">Batal</button>
+                                <button type="button" class="btn btn-secondary w-100" onclick="buttonBatal()">Batal</button>
                             </div>
                             <div class="col-md-8">
-                                <button type="submit" class="btn btn-primary w-100" id="submitButton">Kembalikan Buku</button>
+                                <button type="button" class="btn btn-primary w-100" id="buttonKembalikan" onclick="bukuKembali();">Kembalikan Buku</button>
                             </div>
+                            @else
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-secondary w-100" onclick="buttonBatal()">Kembali</button>
+                            </div>
+                            @endif
                         </div>
                     </form>
                 </div> <!-- end card body-->
@@ -141,7 +145,7 @@
                                 <!-- Foto Anggota (di sebelah kiri) -->
                                 <div style="margin-right: 40px;">
                                     <img id="anggotaFoto" src="https://via.placeholder.com/100" alt="Foto Anggota" style="width: 100px; height: 100px; object-fit: cover; border: 3px solid #f1f1f1;">
-                                    Belum ada di API
+                                    <b class="text-danger">Belum ada di API</b>
                                 </div>
 
                                 <!-- Informasi Anggota (di sebelah kanan) -->
@@ -170,17 +174,15 @@
                             <tr>
                                 <th>#</th>
                                 <th>Gambar</th>
-                                <th>Kode</th>
                                 <th>Judul</th>
-                                <th>Jumlah</th>
+                                <th>Kode Items</th>
+                                <th>Kondisi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($data_peminjaman['buku'] as $key => $buku)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-
-                                <!-- Check if 'gambar' exists and show the image, otherwise show a placeholder or dash -->
                                 <td>
                                     @if($buku['gambar'])
                                     <img src="{{ asset('path/to/images/' . $buku['gambar']) }}" alt="Gambar Buku" style="width: 50px; height: auto;">
@@ -188,10 +190,34 @@
                                     -
                                     @endif
                                 </td>
-                                <!-- Static code, you can replace it with the actual API field when available -->
-                                <td>{{ $buku['kode_buku'] }}</td>
                                 <td>{{ $buku['judul'] }}</td>
-                                <td>{{ $buku['jumlah'] }}</td>
+                                <td>{{ $buku['buku_item']['kode_item'] }}</td>
+                                <!-- <td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Kode</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td> -->
+                                <td>
+                                    @if($data_peminjaman['status'] == 'dipinjam' || $data_peminjaman['status'] == 'diambil')
+                                    <select id="kondisi_buku" class="form-select" onchange="kondisiBuku(`{{ $buku['buku_item']['id'] }}`, this.value);">
+                                        <option value="normal" selected>Normal</option>
+                                        <option value="rusak">Rusak</option>
+                                        <option value="hilang">Hilang</option>
+                                    </select>
+                                    @else
+                                    <b class="text-danger">Belum ada di API</b>
+                                    @endif
+
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -201,12 +227,39 @@
             </div> <!-- end card -->
         </div><!-- end col-->
     </div>
+
+    <!-- Modal for Book Return Confirmation -->
+    <div class="modal fade" id="returnBookModal" tabindex="-1" aria-labelledby="returnBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="returnBookModalLabel">Konfirmasi Pengembalian Buku</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Pastikan apakah data dan fisik buku sudah sesuai untuk dikembalikan?</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('actionReturnPerpusPeminjaman', $data_peminjaman['id']) }}" method="POST" id="formSubmitReturn">
+                        @csrf
+                        <input class="form-control" type="text" id="konBuku" readonly hidden>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary" id="returnButton">Ya, Kembalikan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div> <!-- container -->
 
 @endsection
 
 @section('javascript_custom')
 <script>
+    // Initialize an object to store book conditions by ID
+    let bookConditions = {};
+
     $(document).ready(function() {
         // Get the current date
         var currentDate = new Date();
@@ -234,7 +287,41 @@
 
         // Update the "Denda" field with the calculated fine
         document.getElementById('denda').value = denda > 0 ? denda : 0; // If no fine, set to 0
-    }
+
+        var submitButton = document.getElementById('returnButton');
+        submitButton.disabled = false;
+        submitButton.textContent = 'Ya, Kembalikan';
+
+        // Menangani tombol "Simpan" untuk menghindari klik ganda
+        document.getElementById('formSubmitReturn').addEventListener('submit', function(event) {
+            // Menonaktifkan tombol dan mengubah teks menjadi "Sedang memproses..."
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sedang memproses...';
+        });
+
+        // Initialize the bookConditions object with existing data
+        @foreach($data_peminjaman['buku'] as $buku)
+        kondisiBuku("{{ $buku['buku_item']['id'] }}", "normal");
+        @endforeach
     });
+
+    function kondisiBuku(id, kondisi) {
+        // Update or add the kondisi for the given id
+        bookConditions[id] = kondisi;
+
+        // Convert the object to a string with each key-value pair as 'id|kondisi' and join with commas
+        let bukuArray = Object.keys(bookConditions).map(key => `${key}|${bookConditions[key]}`);
+
+        // Update the hidden input field with the new array of book ID and kondisi pairs
+        $('#konBuku').val(bukuArray.join(','));
+    }
+
+    function bukuKembali() {
+        $('#returnBookModal').modal('show');
+    }
+
+    function buttonBatal() {
+        window.location.href = '{{ route("pagePerpusPeminjaman") }}';
+    }
 </script>
 @endsection

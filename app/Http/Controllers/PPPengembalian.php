@@ -20,14 +20,19 @@ class PPPengembalian extends Controller
         // URL API dengan parameter halaman
         $apiUrl = env('API_URL'); // URL API Anda
         $response = Http::withToken(session('token'))
-            ->get($apiUrl . '/api/perpustakaan/pengembalian', [
+            ->get($apiUrl . '/api/perpustakaan/peminjaman', [
                 'page' => $page,
                 'perPage' => $perPage, // Kirim parameter per_page
                 'search' => $search, // Kirim parameter pencarian
             ]);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
+        // Filter data berdasarkan status
+        $statusFilter = 'diambil'; // Ganti dengan status yang diinginkan, misalnya 'dikembalikan'
+        $filteredItems = array_filter($response['data']['items'], function ($item) use ($statusFilter) {
+            return $item['status'] !== $statusFilter;
+        });
 
-        $data['list_data'] = $response['data']['items']; // Mengambil data siswa
+        $data['list_data'] = $filteredItems; // Mengambil data yang sudah difilter
         // Mengambil data pagination
         $data['pagination'] = [
             'from' => $response['data']['from'],

@@ -1,4 +1,30 @@
 !(function () {
+    var tRaw = sessionStorage.getItem("__ADMINTO_CONFIG__"),
+        e = document.getElementsByTagName("html")[0],
+        o = {
+            theme: "light",
+            layout: { mode: "fluid" },
+            topbar: { color: "light" },
+            menu: { color: "light" },
+            sidenav: { size: e.getAttribute("data-sidenav-size") ?? "default" },
+        };
+
+    // Parse t jadi objek
+    var t = tRaw ? JSON.parse(tRaw) : null;
+
+    // Cek perbedaan antara o dan t
+    function isDifferent(a, b) {
+        return JSON.stringify(a) !== JSON.stringify(b);
+    }
+
+    // Kalau berbeda, update sessionStorage
+    if (!t || isDifferent(o, t)) {
+        sessionStorage.setItem("__ADMINTO_CONFIG__", JSON.stringify(o));
+        // console.log("Config updated to sessionStorage:", o);
+    } else {
+        console.log("No changes detected in config.");
+    }
+
     var t = sessionStorage.getItem("__ADMINTO_CONFIG__"),
         e = document.getElementsByTagName("html")[0],
         o = {
@@ -6,7 +32,7 @@
             layout: { mode: "fluid" },
             topbar: { color: "light" },
             menu: { color: "light" },
-            sidenav: { size: null },
+            sidenav: { size: e.getAttribute("data-sidenav-size") ?? "default" },
         },
         i =
             ((this.html = document.getElementsByTagName("html")[0]),
@@ -22,11 +48,12 @@
             ((config.topbar.color = null != i ? i : o.topbar.color),
             this.html.getAttribute("data-menu-color")),
         i =
-            ((this.html.getAttribute("data-sidenav-size") = null !== i ? i : o.sidenav.size),
+            ((config.sidenav.size = null !== i ? i : o.sidenav.size),
             this.html.getAttribute("data-sidenav-size"));
 
-    // alert(e);
-    console.log(this.html.getAttribute("data-sidenav-size"));
+    // console.log(t);
+    // console.log(o);
+    // console.log(config);
 
     (config.menu.color = null !== i ? i : o.menu.color),
         (window.defaultConfig = JSON.parse(JSON.stringify(config))),

@@ -5,10 +5,6 @@
     @include('partials.title-meta')
 
     @include('partials.head-css')
-
-    <script>
-
-    </script>
 </head>
 
 <body>

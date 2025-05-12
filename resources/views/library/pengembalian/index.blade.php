@@ -13,10 +13,6 @@
                     <h4 class="mb-0">
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
-
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormPerpusPeminjaman') }}">
-                        <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
-                    </a>
                 </div>
                 <div class="card-body">
                     <!-- Bagian Search dan Show Entries -->
@@ -48,36 +44,51 @@
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
-                                    <th>Nama</th>
+                                    <th>Kode Peminjaman</th>
+                                    <th>Nama Peminjam</th>
+                                    <th>Petugas</th>
+                                    <th>Tanggal Kembali</th>
+                                    <th>Denda</th>
+                                    <th>Buku</th>
+                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($list_data as $row)
+                                @forelse ($list_data as $row)
                                 <tr>
-                                    <td>{{ $row['nama'] }}</td>
+                                    <td>{{ $row['kode_pinjam'] }}</td>
+                                    <td>{{ $row['peminjam']['name'] }}</td>
+                                    <td>{{ $row['petugas']['name'] }}</td>
+                                    <td>{!! date('d-m-Y', strtotime($row['tanggal_pengembalian'])) !!}</td>
+                                    <td>0</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditGuru', ['id' => $row['id']]) }}'">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                        @foreach ($row['buku'] as $buku)
+                                        <li>{{ $buku['judul'] }}</li>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ in_array($row['status'], ['dikembalikan']) ? 'bg-success' : (in_array($row['status'], ['dipinjam', 'diambil']) ? 'bg-info' : 'bg-danger') }}">
+                                            {{ $row['status'] == 'dikembalikan' ? 'Dikembalikan' : ($row['status'] == 'dipinjam' || $row['status'] == 'diambil' ? 'Dipinjam' : 'Terlambat') }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Detil Data {{ $nama_menu }}" onclick="btn_detil(this);" data-id="{{ $row['id'] }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-text">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                <path d="M16 5l3 3" />
-                                            </svg>
-                                        </button>
-                                        <button class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Hapus {{ $nama_menu }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M4 7l16 0" />
-                                                <path d="M10 11l0 6" />
-                                                <path d="M14 11l0 6" />
-                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                                                <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                                                <path d="M9 12h6" />
+                                                <path d="M9 16h6" />
                                             </svg>
                                         </button>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">Tidak ada data yang tersedia</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->
@@ -101,34 +112,19 @@
                                     </li>
                                     @endif
 
-                                    {{-- Show ellipsis if there are more pages before or after --}}
-                                    @if ($pagination['current_page'] - 2 > 1)
-                                    <li class="page-item disabled">
-                                        <span class="page-link">...</span>
-                                    </li>
-                                    @endif
-
-                                    {{-- Previous Pages and Current --}}
-                                    @for ($i = max(1, $pagination['current_page'] - 2); $i <= min($pagination['last_page'], $pagination['current_page'] + 2); $i++)
+                                    @for ($i = 1; $i <= $pagination['last_page']; $i++)
                                         <li class="page-item {{ $i == $pagination['current_page'] ? 'active' : '' }}">
                                         <a href="?page={{ $i }}" class="page-link">{{ $i }}</a>
                                         </li>
                                         @endfor
 
-                                        @if ($pagination['current_page'] + 2 < $pagination['last_page'])
-                                            <li class="page-item disabled">
-                                            <span class="page-link">...</span>
+                                        @if ($pagination['current_page'] < $pagination['last_page'])
+                                            <li class="page-item">
+                                            <a href="{{ $pagination['next_page_url'] }}" class="page-link">
+                                                <i class="ti ti-chevron-right"></i>
+                                            </a>
                                             </li>
                                             @endif
-
-                                            {{-- Next Pages --}}
-                                            @if ($pagination['current_page'] < $pagination['last_page'])
-                                                <li class="page-item">
-                                                <a href="{{ $pagination['next_page_url'] }}" class="page-link">
-                                                    <i class="ti ti-chevron-right"></i>
-                                                </a>
-                                                </li>
-                                                @endif
                                 </ul>
                             </div>
                         </div>
@@ -137,13 +133,43 @@
                 </div> <!-- end card body-->
             </div> <!-- end card -->
         </div><!-- end col-->
-    </div>
+    </div><!-- end col-->
+</div>
+
 </div> <!-- container -->
 
 @endsection
 
 @section('javascript_custom')
 <script>
+    // Mengupdate modal dengan nama buku yang akan dikembalikan
+    document.querySelectorAll('[data-bs-toggle="modal"]').forEach((button) => {
+        button.addEventListener('click', function() {
+            const bookName = this.getAttribute('data-book-names');
+            const bookId = this.getAttribute('data-book-id');
+            const peminjam = this.getAttribute('data-peminjam');
 
+            // Update modal dengan nama buku
+            document.getElementById('returnModalBookName').textContent = bookName;
+            document.getElementById('returnModalPeminjam').textContent = peminjam;
+
+
+            // Update action URL form dengan ID buku yang sesuai
+            const form = document.getElementById('returnBookForm');
+            form.action = form.action.replace(':id', bookId);
+        });
+    });
+
+    function btn_detil(button) {
+        // Retrieve the ID from the button's data-id attribute
+        var id = $(button).data('id'); // Using jQuery to get the data-id attribute
+
+        // Construct the URL dynamically by appending the `id` to the route
+        var url = '{{ route("pageDetilPerpusPeminjaman", ["id" => ":id"]) }}';
+        url = url.replace(':id', id); // Replace the ":id" placeholder with the actual `id`
+
+        // Redirect to the new URL
+        window.location.href = url;
+    }
 </script>
 @endsection

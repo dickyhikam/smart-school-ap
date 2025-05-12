@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-sidenav-size="default">
 
 <head>
     @include('partials.title-meta')
