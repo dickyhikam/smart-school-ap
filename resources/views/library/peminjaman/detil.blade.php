@@ -214,7 +214,9 @@
                                         <option value="hilang">Hilang</option>
                                     </select>
                                     @else
-                                    <b class="text-danger">Belum ada di API</b>
+                                    <b class="@if($buku['buku_item']['status'] == 'tersedia') text-success @endif">
+                                        {{ $buku['buku_item']['status'] }}
+                                    </b>
                                     @endif
 
                                 </td>

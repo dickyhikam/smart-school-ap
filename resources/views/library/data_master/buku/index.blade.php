@@ -65,7 +65,7 @@
                                         @if ($row['gambar'])
                                         <img src="{{ $row['gambar'] }}" alt="Gambar Buku" width="50" height="75">
                                         @else
-                                        <img src="{{ asset('images/no-image.png') }}" alt="No Image" width="50" height="75">
+                                        <img src="{{ env('APP_URL') . '/assets/images/cover-book.png' }}" alt="Gambar Tidak Ditemukan" width="50" height="75">
                                         @endif
                                     </td>
                                     <td>{{ $row['judul'] }}</td>

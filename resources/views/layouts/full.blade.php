@@ -50,7 +50,7 @@
                     <div class="topbar-search text-muted d-none d-xl-flex gap-2 me-2 align-items-center" data-bs-toggle="modal"
                         data-bs-target="#searchModal" type="button">
                         <i class="ri-search-line fs-18"></i>
-                        <span class="me-2">Cari buku..</span>
+                        <span class="me-2">Cari buku...</span>
                     </div>
                 </div>
             </div>
@@ -65,11 +65,13 @@
                         <div class="card mb-1">
                             <div class="px-3 py-2 d-flex flex-row align-items-center" id="top-search">
                                 <i class="ri-search-line fs-22"></i>
-                                <input type="search" class="form-control border-0" id="search-modal-input"
-                                    placeholder="Search for actions, people,">
-                                <button type="submit" class="btn p-0" data-bs-dismiss="modal" aria-label="Close">[esc]</button>
+                                <input type="search" class="form-control border-0" id="search-modal-input" placeholder="Cari buku...">
+                                <button type="submit" class="btn p-0" data-bs-dismiss="modal" aria-label="Close">[Tutup]</button>
                             </div>
                         </div>
+
+                        <!-- Search status message -->
+                        <div id="search-status" class="text-muted mt-2" style="display:none;">Mencari buku...</div>
                     </form>
                 </div>
             </div>
