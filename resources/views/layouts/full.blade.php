@@ -152,7 +152,7 @@
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->
+        </div>
 
         <!-- Alert Modal -->
         <div id="alert-modal2" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -190,7 +190,30 @@
                 backdrop: 'static',
                 keyboard: false
             })
+
+            getToken();
         });
+
+        function getToken() {
+            // Mengirimkan request ke API untuk mendapatkan token
+            $.ajax({
+                url: '{{ env("API_URL") . "/api/token" }}', // URL API yang sesuai
+                method: 'POST',
+                headers: {
+                    'X-Private-Key': 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDel5ktrGMXidf0n0K' // Private key
+                },
+                success: function(response) {
+                    console.log(response);
+
+                    // const token = response.token; // Jika token berhasil didapat
+                    // console.log('Token: ', token); // Simpan token di localStorage atau sessionStorage
+                    // localStorage.setItem("auth_token", token); // Simpan token untuk request berikutnya
+                },
+                error: function() {
+                    console.log("Error getting token");
+                }
+            });
+        }
 
         document.addEventListener("DOMContentLoaded", function() {
             // Periksa jika ada pesan dari session

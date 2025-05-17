@@ -22,6 +22,7 @@
                             <!-- Card Peminjam -->
                             <div class="card shadow-sm border-0 rounded-3 mb-3">
                                 <div class="card-body">
+                                    @forelse ($list_data_online as $row)
                                     <div class="d-flex align-items-center">
                                         <!-- Foto Peminjam -->
                                         <img src="https://randomuser.me/api/portraits/men/30.jpg" alt="Foto Peminjam" class="rounded-circle border border-3 border-primary" width="100" height="100" />
@@ -56,6 +57,7 @@
                                     </div>
 
                                     <button type="button" class="btn btn-soft-primary rounded-pill w-100" onclick="buttonBatal()">Detil Data</button>
+                                    @endforeach
                                 </div> <!-- end card body-->
                             </div> <!-- end card -->
                         </div>

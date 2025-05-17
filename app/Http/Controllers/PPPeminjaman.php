@@ -25,13 +25,21 @@ class PPPeminjaman extends Controller
                 'perPage' => $perPage, // Kirim parameter per_page
                 'search' => $search, // Kirim parameter pencarian
             ]);
-        // Filter data berdasarkan status
-        $statusFilter = 'diambil'; // Ganti dengan status yang diinginkan, misalnya 'dikembalikan'
+        // Filter data based on the 'status'
+        $statusFilter = 'diambil'; // Change this to the desired status (e.g., 'dikembalikan')
         $filteredItems = array_filter($response['data']['items'], function ($item) use ($statusFilter) {
             return $item['status'] === $statusFilter;
         });
 
-        $data['list_data'] = $filteredItems; // Mengambil data yang sudah difilter
+        // Get data for 'metode' online and 'pengambilan' belum
+        // $filteredMetodes = array_filter($response['data']['items'], function ($item) {
+        //     return $item['metode'] === 'online' && $item['pengambilan'] === 'belum';
+        // });
+
+        // Assign the filtered data to variables for use in the view or further processing
+        $data['list_data_online'] = []; // Store filtered data for online borrowing
+        $data['list_data'] = $filteredItems; // Store filtered data based on status (e.g., 'diambil')
+
         // Update pagination berdasarkan data yang sudah difilter
         $filteredTotal = count($filteredItems); // Total data yang sudah difilter
         $perPage = $response['data']['per_page']; // Ambil per_page dari response

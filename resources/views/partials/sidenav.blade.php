@@ -172,6 +172,23 @@
             </li>
 
             <li class="side-nav-title mt-2">
+                Master Data
+            </li>
+            <li class="side-nav-item">
+                <a href="{{ route('pageKelas') }}" class="side-nav-link">
+                    <span class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-door">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M14 12v.01" />
+                            <path d="M3 21h18" />
+                            <path d="M6 21v-16a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v16" />
+                        </svg>
+                    </span>
+                    <span class="menu-text"> Kelas </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title mt-2">
                 Management User
             </li>
 
@@ -215,6 +232,40 @@
                         </svg>
                     </span>
                     <span class="menu-text"> Siswa </span>
+                </a>
+            </li>
+
+            <li class="side-nav-title mt-2">
+                Pengajaran
+            </li>
+            <li class="side-nav-item">
+                <a href="" class="side-nav-link">
+                    <span class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-stats">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+                            <path d="M18 14v4h4" />
+                            <path d="M18 18m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                            <path d="M15 3v4" />
+                            <path d="M7 3v4" />
+                            <path d="M3 11h16" />
+                        </svg>
+                    </span>
+                    <span class="menu-text"> Tahun Ajaran </span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="" class="side-nav-link">
+                    <span class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-door-enter">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M13 12v.01" />
+                            <path d="M3 21h18" />
+                            <path d="M5 21v-16a2 2 0 0 1 2 -2h6m4 10.5v7.5" />
+                            <path d="M21 7h-7m3 -3l-3 3l3 3" />
+                        </svg>
+                    </span>
+                    <span class="menu-text"> Sub Kelas </span>
                 </a>
             </li>
 

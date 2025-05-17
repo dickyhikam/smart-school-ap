@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\PPAnggota;
@@ -72,6 +73,7 @@ Route::middleware('APIAuth')->group(function () {
 
     //bagian perpustakaan
     Route::get('/perpustakaan/dashboard', [PPDashboard::class, 'index'])->name('pagePerpusDashboard');
+    Route::get('/perpustakaan', [PPDashboard::class, 'index'])->name('pagePerpusDashboard');
 
     Route::get('/perpustakaan/kategori', [PPKategori::class, 'index'])->name('pagePerpusKategori');
     Route::get('/perpustakaan/kategori/tambah', [PPKategori::class, 'index_form'])->name('pageFormPerpusKategori');
@@ -107,6 +109,11 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/perpustakaan/peminjaman/kembali/{id?}', [PPPeminjaman::class, 'storeReturn'])->name('actionReturnPerpusPeminjaman');
 
     Route::get('/perpustakaan/pengembalian', [PPPengembalian::class, 'index'])->name('pagePerpusPengembalian');
-    Route::get('/perpustakaan/pengembalian/tambah', [PPPengembalian::class, 'index_form'])->name('pageFormPerpusPengembalian');
-    Route::post('/perpustakaan/pengembalian/tambah', [PPPengembalian::class, 'store'])->name('actionAddPerpusPengembalian');
+
+    Route::get('/kelas', [KelasController::class, 'index'])->name('pageKelas');
+    Route::get('/kelas/tambah', [KelasController::class, 'index_form'])->name('pageFormKelas');
+    Route::get('/kelas/edit/{id?}', [KelasController::class, 'index_form'])->name('pageFormEditKelas');
+    Route::post('/kelas/tambah', [KelasController::class, 'store'])->name('actionAddKelas');
+    Route::put('/kelas/edit/{id?}', [KelasController::class, 'store_update'])->name('actionEditKelas');
+    Route::delete('/kelas/hapus/{id?}', [KelasController::class, 'destroy'])->name('actionDeleteKelas');
 });

@@ -183,6 +183,50 @@
             height: 120px;
         }
     }
+
+    /* Kontainer loading */
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Menempatkan elemen secara horizontal di tengah */
+        align-items: center;
+        /* Menempatkan elemen secara vertikal di tengah */
+        height: 100vh;
+        /* Menggunakan tinggi penuh viewport */
+        text-align: center;
+        /* Menyelaraskan teks dengan spinner */
+        background-color: rgba(213, 213, 213, 0.8);
+        /* Memberikan latar belakang transparan */
+    }
+
+    /* Spinner dengan animasi */
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.5rem;
+        animation: spin 1s linear infinite;
+        /* Menambahkan animasi rotasi */
+    }
+
+    /* Teks loading */
+    .loading-text {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    /* Animasi putaran spinner */
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 <div class="page-container">
@@ -599,8 +643,7 @@
 
     function listBooks(page = 1, searchQuery = '') {
         // Show loading indicator
-        $('#searchResults').html('<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>').show();
-
+        $('#searchResults').html('<div class="loading-container"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="loading-text">Memuat data buku...</p></div>').show();
 
         // Mengirimkan request ke API untuk mendapatkan data buku yang sesuai dengan query
         $.ajax({
@@ -608,7 +651,8 @@
             method: 'GET',
             data: {
                 page: page, // Send the page parameter to the API
-                search: searchQuery
+                search: searchQuery,
+                perPage: 15
             },
             headers: {
                 'Authorization': 'Bearer {{ $apiToken }}' // Menambahkan token dalam header Authorization
