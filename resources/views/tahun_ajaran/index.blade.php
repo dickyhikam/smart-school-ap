@@ -14,7 +14,7 @@
                         <i class="mdi mdi-account-group me-2"></i> Data {{ $nama_menu }}
                     </h4>
 
-                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormKelas') }}">
+                    <a class="btn btn-soft-primary btn-sm d-flex align-items-center gap-1" href="{{ route('pageFormTahunAjaran') }}">
                         <i class="mdi mdi-plus"></i> Tambah {{ $nama_menu }}
                     </a>
                 </div>
@@ -48,18 +48,30 @@
                         <table class="table table-bordered table-hover table-striped align-middle" id="siswaTable">
                             <thead class="table-primary sticky-top">
                                 <tr>
-                                    <th>Nama</th>
-                                    <th>Jenjang</th>
+                                    <th>Tahun Ajaran</th>
+                                    <th class="text-center">Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($list_data as $row)
                                 <tr>
-                                    <td>{{ $row['nama'] }}</td>
-                                    <td></td>
+                                    <td>{{ $row['tahun_ajaran'] }}</td>
                                     <td class="text-center">
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditKelas', ['id' => $row['id']]) }}'">
+                                        <span class="badge {{ $row['status']['value'] == '1' ? 'bg-success' : 'bg-warning' }}">
+                                            {{ $row['status']['label'] }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        @if ($row['status']['value'] == '0')
+                                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalKonfirmStatus" data-status="1" data-id="{{ $row['id'] }}" data-name="{{ $row['tahun_ajaran'] }}" title="Aktif Tahun Ajaran">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M5 12l5 5l10 -10" />
+                                            </svg>
+                                        </button>
+                                        @endif
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditTahunAjaran', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -67,7 +79,7 @@
                                                 <path d="M16 5l3 3" />
                                             </svg>
                                         </button>
-                                        <button hidden class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Hapus {{ $nama_menu }}" data-menu-id="{{ $row['id'] }}" data-menu-name="{{ $row['nama'] }}">
+                                        <button hidden class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal" title="Hapus {{ $nama_menu }}" data-menu-id="{{ $row['id'] }}" data-menu-name="{{ $row['tahun_ajaran'] }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M4 7l16 0" />
@@ -153,11 +165,35 @@
                     <p>Apakah Anda yakin ingin menghapus menu ini <b id="deleteModalName"></b>?</p>
                 </div>
                 <div class="modal-footer">
-                    <form action="{{ route('actionDeleteKelas', ['id' => ':id']) }}" method="POST" id="deleteMenuForm">
+                    <form action="{{ route('actionDeleteTahunAjaran', ['id' => ':id']) }}" method="POST" id="deleteMenuForm">
                         @csrf
                         @method('DELETE')
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalKonfirmStatus" tabindex="-1" aria-labelledby="modalKonfirmStatusLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalKonfirmStatusLabel">Konformasi Status Tahun Ajaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="statusMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <form id="statusChangeForm" method="PUT" action="{{ route('actionEditTahunAjaran', ['id' => '']) }}">
+                        @csrf
+                        <input type="text" name="th_name" id="th_name" readonly>
+                        <input type="text" name="is_active" id="is_active" readonly>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
+                        <button type="submit" class="btn btn-primary">Ya</button>
                     </form>
                 </div>
             </div>
@@ -181,6 +217,35 @@
             form.action = form.action.replace(':id', menuId); // Replace the route parameter with the actual ID
             document.getElementById('deleteModalName').textContent = menuName; // Set the menu name in the modal
         });
+    });
+
+    // Event listener to handle modal show
+    var myModal = document.getElementById('modalKonfirmStatus');
+    myModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget; // Button that triggered the modal
+        var status = button.getAttribute('data-status'); // Extract the status
+        var id = button.getAttribute('data-id'); // Extract the user id
+        var name = button.getAttribute('data-name'); // Extract the tahun ajaran
+
+        document.getElementById('is_active').value = status;
+        document.getElementById('th_name').value = name;
+
+        // Set the form action URL dynamically by adding the ID to the URL
+        var form = document.getElementById('statusChangeForm');
+        form.action = "{{ route('actionEditTahunAjaran', ['id' => '']) }}/" + id;
+
+        // Set the modal content dynamically
+        var statusMessage = document.getElementById('statusMessage');
+        statusMessage.innerHTML = `
+            <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+                <p style="font-weight: bold; color: #333;">Apakah Anda yakin ingin mengubah status tahun ajaran <span style="color: #007bff;">${name}</span> menjadi "<span style="color: #28a745;">Aktif</span>"?</p>
+                <hr style="border: 1px solid #ddd; margin: 10px 0;">
+                <p style="font-size: 14px; color: #555;">
+                    <i style="color: #f39c12;" class="fa fa-info-circle"></i>
+                    Catatan: Tahun ajaran yang diaktifkan akan berubah sepenuhnya pada proses belajar mengajar. Pastikan semua persiapan sudah matang sebelum melanjutkan.
+                </p>
+            </div>
+        `;
     });
 </script>
 @endsection

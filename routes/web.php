@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\KelasSubController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\PPAnggota;
@@ -17,6 +18,7 @@ use App\Http\Controllers\PPPengarang;
 use App\Http\Controllers\PPPengembalian;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\TahunAjaranController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -116,4 +118,13 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/kelas/tambah', [KelasController::class, 'store'])->name('actionAddKelas');
     Route::put('/kelas/edit/{id?}', [KelasController::class, 'store_update'])->name('actionEditKelas');
     Route::delete('/kelas/hapus/{id?}', [KelasController::class, 'destroy'])->name('actionDeleteKelas');
+
+    Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('pageTahunAjaran');
+    Route::get('/tahun-ajaran/tambah', [TahunAjaranController::class, 'index_form'])->name('pageFormTahunAjaran');
+    Route::get('/tahun-ajaran/edit/{id?}', [TahunAjaranController::class, 'index_form'])->name('pageFormEditTahunAjaran');
+    Route::post('/tahun-ajaran/tambah', [TahunAjaranController::class, 'store'])->name('actionAddTahunAjaran');
+    Route::put('/tahun-ajaran/edit/{id?}', [TahunAjaranController::class, 'store_update'])->name('actionEditTahunAjaran');
+    Route::delete('/tahun-ajaran/hapus/{id?}', [TahunAjaranController::class, 'destroy'])->name('actionDeleteTahunAjaran');
+
+    Route::get('/sub-kelas', [KelasSubController::class, 'index'])->name('pageKelasSub');
 });

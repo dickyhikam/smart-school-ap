@@ -21,16 +21,17 @@
                         @method('PUT') <!-- Menandakan bahwa ini adalah update -->
                         @endif
 
+
                         <div class="row mb-3">
-                            <label for="nama" class="col-md-3 col-form-label">Nama <span class="text-danger">*</span></label>
+                            <label for="tahun" class="col-md-3 col-form-label">Tahun Ajaran <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="text" id="nama" name="nama" class="form-control" value="{{ old('nama', $data_row['nama'] ?? '') }}" placeholder="Masukkan nama kelas" required>
+                                <input type="text" id="tahun" name="tahun" class="form-control" value="{{ old('tahun', $data_row['tahun_ajaran'] ?? '') }}" placeholder="Masukkan tahun ajaran" required>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="jenjang" class="col-md-3 col-form-label">Jenjang <span class="text-danger">*</span></label>
+                            <label for="tahun" class="col-md-3 col-form-label">An</label>
                             <div class="col-md-9">
-                                <input type="text" id="jenjang" name="jenjang" class="form-control" value="{{ old('jenjang', $data_row['jenjang'] ?? '') }}" placeholder="Masukkan jenjang kelas" required>
+                                <input readonly id="st_ta" name="status" class="form-control" value="{{ old('status', $data_row['status']['value'] ?? '0') }}" placeholder="Masukkan tahun ajaran">
                             </div>
                         </div>
 
