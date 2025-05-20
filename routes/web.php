@@ -127,4 +127,9 @@ Route::middleware('APIAuth')->group(function () {
     Route::delete('/tahun-ajaran/hapus/{id?}', [TahunAjaranController::class, 'destroy'])->name('actionDeleteTahunAjaran');
 
     Route::get('/sub-kelas', [KelasSubController::class, 'index'])->name('pageKelasSub');
+    Route::get('/sub-kelas/tambah/{th?}', [KelasSubController::class, 'index_form'])->name('pageFormKelasSub');
+    Route::get('/sub-kelas/edit/{th?}/{id?}', [KelasSubController::class, 'index_form'])->name('pageFormEditKelasSub');
+    Route::post('/sub-kelas/tambah', [KelasSubController::class, 'store'])->name('actionAddKelasSub');
+    Route::put('/sub-kelas/edit/{id?}', [KelasSubController::class, 'store_update'])->name('actionEditKelasSub');
+    Route::delete('/sub-kelas/hapus/{th?}/{id?}', [KelasSubController::class, 'destroy'])->name('actionDeleteKelasSub');
 });

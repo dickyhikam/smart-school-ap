@@ -39,7 +39,7 @@ class KelasController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('master_data.kelas.index', $data);
+        return view('data_master.kelas.index', $data);
     }
 
     public function index_form($id = null)
