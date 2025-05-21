@@ -49,7 +49,7 @@
                             <thead class="table-primary sticky-top">
                                 <tr>
                                     <th>Nama</th>
-                                    <th>Jenjang</th>
+                                    <th>Jenjang (urutan kelas)</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -57,7 +57,7 @@
                                 @foreach ($list_data as $row)
                                 <tr>
                                     <td>{{ $row['nama'] }}</td>
-                                    <td></td>
+                                    <td>{{ $row['jenjang'] }}</td>
                                     <td class="text-center">
                                         <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditKelas', ['id' => $row['id']]) }}'">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">

@@ -67,7 +67,7 @@ class KelasController extends Controller
             $data['method'] = 'POST'; // Menggunakan metode POST untuk create
         }
 
-        return view('master_data.kelas.form', $data);
+        return view('data_master.kelas.form', $data);
     }
 
     public function store(Request $request)

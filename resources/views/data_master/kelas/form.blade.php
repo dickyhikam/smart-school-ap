@@ -30,7 +30,8 @@
                         <div class="row mb-3">
                             <label for="jenjang" class="col-md-3 col-form-label">Jenjang <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="text" id="jenjang" name="jenjang" class="form-control" value="{{ old('jenjang', $data_row['jenjang'] ?? '') }}" placeholder="Masukkan jenjang kelas" required>
+                                <input type="text" id="jenjang" name="jenjang" class="form-control" value="{{ old('jenjang', $data_row['jenjang'] ?? '') }}" placeholder="Masukkan jenjang atau tingkatan kelas" onkeypress="return hanyaAngka(event, true);" required>
+                                <small>nb. Data jenjang diisi urutan dari kelas atau tingkatan kelas</small>
                             </div>
                         </div>
 
