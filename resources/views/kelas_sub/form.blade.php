@@ -33,35 +33,50 @@
                                 <input id="tahun_ajaran" name="tahun_ajaran" class="form-control" value="{{ old('tahun_ajaran', $data_ta['id'] ?? '') }}" readonly>
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="nama" class="col-md-3 col-form-label">Kelas <span class="text-danger">*</span></label>
+                        <div class="row mb-3" hidden>
+                            <label for="status_sk" class="col-md-3 col-form-label">Status <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <select class="form-control select2" data-toggle="select2">
-                                    <option value="" selected>Pilih kelas</option>
+                                <input id="status_sk" name="status_sk" class="form-control" value="{{ old('status_sk', $data_ta['status']['value'] ?? '1') }}" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="kelas" class="col-md-3 col-form-label">Kelas <span class="text-danger">*</span></label>
+                            <div class="col-md-9">
+                                <select class="form-control select2" data-toggle="select2" id="kelas" name="kelas" required>
+                                    <option value="" disabled selected>Pilih kelas</option>
                                     @foreach($list_kelas as $row)
-                                    <option value="{{ $row['id'] }}" {{ old('kelas', $data_row['kelas'] ?? '') == $row->id ? 'selected' : '' }}>
-                                        {{ $row->nama_kelas }}
+                                    <option value="{{ $row['id'] }}" {{ old('kelas') == $row['id'] ? 'selected' : '' }} {{ $data_row['kelas']['nama'] ?? '' == $row['nama'] ? 'selected' : '' }}>
+                                        {{ $row['nama'] }}
                                     </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="nama" class="col-md-3 col-form-label">Jurusan <span class="text-danger">*</span></label>
+                            <label for="jurusan" class="col-md-3 col-form-label">Jurusan <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="text" id="nama" name="nama" class="form-control" value="{{ old('nama', $data_row['nama'] ?? '') }}" placeholder="Masukkan nama kelas" required>
+                                <select class="form-control select2" data-toggle="select2" id="jurusan" name="jurusan" required>
+                                    <option value="" disabled selected>Pilih jurusan</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="nama" class="col-md-3 col-form-label">Nama Sub Kelas <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="text" id="nama" name="nama" class="form-control" value="{{ old('nama', $data_row['nama'] ?? '') }}" placeholder="Masukkan nama kelas" required>
+                                <input type="text" id="nama" name="nama" class="form-control" value="{{ old('nama', $data_row['nama'] ?? '') }}" placeholder="Masukkan nama sub kelas" required>
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="jenjang" class="col-md-3 col-form-label">Wali Kelas <span class="text-danger">*</span></label>
+                            <label for="wali_kelas" class="col-md-3 col-form-label">Wali Kelas <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="text" id="jenjang" name="jenjang" class="form-control" value="{{ old('jenjang', $data_row['jenjang'] ?? '') }}" placeholder="Masukkan jenjang kelas" required>
+                                <select class="form-control select2" data-toggle="select2" id="wali_kelas" name="wali_kelas" required>
+                                    <option value="" disabled selected>Pilih wali kelas</option>
+                                    @foreach($list_guru as $row)
+                                    <option value="{{ $row['id'] }}" {{ old('wali_kelas') == $row['id'] ? 'selected' : '' }} {{ $data_row['wali_kelas']['nama_lengkap'] ?? '' == $row['nama_lengkap'] ? 'selected' : '' }}>
+                                        {{ $row['nama_lengkap'] }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 

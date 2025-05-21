@@ -177,6 +177,55 @@
                 return false;
             }
         }
+
+        // Fungsi untuk menampilkan loading
+        function showLoading(btn, icon) {
+            // Nonaktifkan tombol
+            btn.disabled = true;
+            icon.classList.add('d-none');
+
+            // Membuat elemen spinner
+            let spinner = document.createElement('span');
+            spinner.classList.add('spinner-border', 'spinner-border-sm');
+            spinner.setAttribute('role', 'status');
+            spinner.setAttribute('aria-hidden', 'true');
+
+            // Menambahkan spinner ke dalam tombol (btn)
+            btn.appendChild(spinner);
+        }
+
+        // Fungsi untuk menyembunyikan loading
+        function hideLoading(btn, icon) {
+            // Aktifkan tombol kembali
+            btn.disabled = false;
+            icon.classList.remove('d-none');
+
+            // Cari spinner yang sudah ditambahkan ke tombol
+            let spinner = btn.querySelector('.spinner-border');
+
+            // Hapus spinner jika ada
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+
+        // Fungsi umum untuk menangani tombol dengan loading
+        function handleButtonClick(buttonId, iconId, href) {
+            const btn = document.getElementById(buttonId);
+            const icon = document.getElementById(iconId);
+
+            // Event listener untuk tombol
+            btn.addEventListener('click', function(e) {
+                // Cek jika tombol tidak disabled
+                if (!btn.classList.contains('disabled')) {
+                    showLoading(btn, icon); // Menampilkan loading
+                    // Menunggu efek loading, bisa diganti dengan AJAX atau refresh
+                    setTimeout(function() {
+                        window.location.href = href; // Arahkan ke URL tujuan
+                    }, 1000); // Waktu loading 1 detik
+                }
+            });
+        }
     </script>
 
     @yield('javascript_custom')

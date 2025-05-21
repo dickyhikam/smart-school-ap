@@ -11,8 +11,8 @@
             <div class="d-flex justify-content-between align-items-center flex-column py-2">
                 <div class="d-flex justify-content-between w-100 mb-3">
                     <!-- Tombol Kiri -->
-                    <a class="btn btn-outline-info {{ $tahun_ajaran_prev == '' ? 'disabled' : '' }}" data-bs-toggle="tooltip" title="Tahun Ajaran Sebelumnya" href="{{ $tahun_ajaran_prev == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_prev }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-caret-left">
+                    <a id="prev-btn" class="btn btn-outline-info {{ $tahun_ajaran_prev == '' ? 'disabled' : '' }}" data-bs-toggle="tooltip" title="Tahun Ajaran Sebelumnya" href="{{ $tahun_ajaran_prev == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_prev }}">
+                        <svg id="prev-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-caret-left">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M14 6l-6 6l6 6v-12" />
                         </svg>
@@ -32,8 +32,8 @@
                     </div>
 
                     <!-- Tombol Kanan -->
-                    <a class="btn btn-outline-info {{ $tahun_ajaran_next == '' ? 'disabled' : '' }}" data-bs-toggle="tooltip" title="Tahun Ajaran Selanjutnya" href="{{ $tahun_ajaran_next == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_next }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-caret-right">
+                    <a id="next-btn" class="btn btn-outline-info {{ $tahun_ajaran_next == '' ? 'disabled' : '' }}" data-bs-toggle="tooltip" title="Tahun Ajaran Selanjutnya" href="{{ $tahun_ajaran_next == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_next }}">
+                        <svg id="next-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-caret-right">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                             <path d="M10 18l6 -6l-6 -6v12" />
                         </svg>
@@ -105,8 +105,8 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditKelasSub', ['th' => $ta_code, 'id' => $row['id']]) }}'" @if($tahun_ajaran_status!=='Aktif' ) disabled @endif>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                                        <button id="edit-btn" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Edit {{ $nama_menu }}" onclick="window.location.href='{{ route('pageFormEditKelasSub', ['th' => $ta_code, 'id' => $row['id']]) }}'" @if($tahun_ajaran_status!=='Aktif' ) disabled @endif>
+                                            <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                                 <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
                                                 <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
@@ -239,6 +239,11 @@
 
 @section('javascript_custom')
 <script>
+    $(document).ready(function() {
+        // Panggil fungsi untuk tombol
+        handleButtonClick('prev-btn', 'prev-icon', `{{ $tahun_ajaran_prev == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_prev }}`);
+        handleButtonClick('next-btn', 'next-icon', `{{ $tahun_ajaran_next == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_next }}`);
+    });
     // Get all delete buttons
     const deleteButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#deleteModal"]');
 

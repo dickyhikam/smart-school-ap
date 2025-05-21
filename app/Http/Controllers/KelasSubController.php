@@ -106,13 +106,13 @@ class KelasSubController extends Controller
 
         if ($id) {
             // Jika $id ada, berarti ini adalah halaman Edit
+            $data['nama_menu2'] = 'Form Edit ' . $menu;
+
             // URL API dengan parameter halaman
             $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/sub-kelas/' . $id);
             $response = json_decode($response->body(), true); // Dekode response menjadi array
-
-            $data['nama_menu2'] = 'Form Edit ' . $menu;
-
             $data['data_row'] = $response['data'];
+
             $data['action'] = route('actionEditKelasSub', $id); // Arahkan ke update
             $data['method'] = 'PUT'; // Menggunakan metode PUT untuk update
         } else {
@@ -127,7 +127,11 @@ class KelasSubController extends Controller
         $response_kelas = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/kelas');
         $response_kelas = json_decode($response_kelas->body(), true); // Dekode response menjadi array
         $data['list_kelas'] = $response_kelas['data']['items'];
-        dd($data['list_kelas']);
+
+        //get guru
+        $response_guru = Http::withToken(session('token'))->get($apiUrl . '/api/guru');
+        $response_guru = json_decode($response_guru->body(), true); // Dekode response menjadi array
+        $data['list_guru'] = $response_guru['data']['items'];
 
         //get data tahun ajaran
         $response_ta = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/tahun-ajaran/' . $th);
@@ -135,5 +139,61 @@ class KelasSubController extends Controller
         $data['data_ta'] = $response_ta['data'];
 
         return view('kelas_sub.form', $data);
+    }
+
+    public function store(Request $request)
+    {
+        // Prepare data for sending to the API
+        $data = [
+            'kelas_id' => $request->kelas,
+            'jurusan_id' => $request->jurusan,
+            'tahun_ajaran_id' => $request->tahun_ajaran,
+            'wali_kelas_id' => $request->wali_kelas,
+            'nama' => $request->nama,
+            'status' => $request->status_sk,
+        ];
+
+        // Send data to the external API
+        $apiUrl = env('API_URL') . '/api/akademik/sub-kelas'; // External API URL for the menu
+        $response = Http::withToken(session('token'))
+            ->post($apiUrl, $data);
+        $resultMessage = json_decode($response->body(), true);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pageKelasSub')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
+        }
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+    }
+
+    public function store_update(Request $request, $id)
+    {
+        // Prepare data for sending to the API
+        $data = [
+            'kelas_id' => $request->kelas,
+            'jurusan_id' => $request->jurusan,
+            'tahun_ajaran_id' => $request->tahun_ajaran,
+            'wali_kelas_id' => $request->wali_kelas,
+            'nama' => $request->nama,
+            'status' => $request->status_sk,
+        ];
+
+        // Send data to the external API using PUT (for updating)
+        $apiUrl = env('API_URL') . '/api/akademik/sub-kelas/' . $id; // API URL for updating the menu by ID
+        $response = Http::withToken(session('token'))
+            ->put($apiUrl, $data);
+        $resultMessage = json_decode($response->body(), true);
+
+        // Check if the request was successful
+        if ($response->successful()) {
+            // If successful, redirect with success message
+            return redirect()->route('pageKelasSub')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
+        }
+
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
     }
 }
