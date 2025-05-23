@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\KelasSiswaController;
 use App\Http\Controllers\KelasSubController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrtuController;
@@ -132,4 +133,10 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/sub-kelas/tambah', [KelasSubController::class, 'store'])->name('actionAddKelasSub');
     Route::put('/sub-kelas/edit/{id?}', [KelasSubController::class, 'store_update'])->name('actionEditKelasSub');
     Route::delete('/sub-kelas/hapus/{th?}/{id?}', [KelasSubController::class, 'destroy'])->name('actionDeleteKelasSub');
+
+    Route::get('/siswa-kelas', [KelasSiswaController::class, 'index'])->name('pageKelasSiswa');
+    Route::get('/siswa-kelas/detil/{id?}', [KelasSiswaController::class, 'index_form'])->name('pageDetilKelasSiswa');
+    Route::post('/siswa-kelas/tambah', [KelasSiswaController::class, 'store'])->name('actionAddKelasSiswa');
+    Route::put('/siswa-kelas/edit/{id?}', [KelasSiswaController::class, 'store_update'])->name('actionEditKelasSiswa');
+    Route::delete('/siswa-kelas/hapus/{th?}/{id?}', [KelasSiswaController::class, 'destroy'])->name('actionDeleteKelasSiswa');
 });

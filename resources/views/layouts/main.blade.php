@@ -181,8 +181,8 @@
         // Fungsi untuk menampilkan loading
         function showLoading(btn, icon) {
             // Nonaktifkan tombol
-            btn.disabled = true;
-            icon.classList.add('d-none');
+            btn.classList.add('disabled');
+            icon.classList.add('d-none'); // Menyembunyikan ikon
 
             // Membuat elemen spinner
             let spinner = document.createElement('span');
@@ -196,9 +196,9 @@
 
         // Fungsi untuk menyembunyikan loading
         function hideLoading(btn, icon) {
-            // Aktifkan tombol kembali
-            btn.disabled = false;
-            icon.classList.remove('d-none');
+            // Menghapus kelas disabled
+            btn.classList.remove('disabled');
+            icon.classList.remove('d-none'); // Menampilkan kembali ikon
 
             // Cari spinner yang sudah ditambahkan ke tombol
             let spinner = btn.querySelector('.spinner-border');

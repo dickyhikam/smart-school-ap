@@ -282,7 +282,7 @@
                             </a>
                         </li>
                         <li class="side-nav-item">
-                            <a href="{{ route('pagePerpusKategori') }}" class="side-nav-link">
+                            <a href="{{ route('pageKelasSiswa') }}" class="side-nav-link">
                                 <span class="menu-text">Siswa Kelas</span>
                             </a>
                         </li>
