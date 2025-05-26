@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KelasSiswaController;
 use App\Http\Controllers\KelasSubController;
@@ -120,6 +121,13 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/kelas/tambah', [KelasController::class, 'store'])->name('actionAddKelas');
     Route::put('/kelas/edit/{id?}', [KelasController::class, 'store_update'])->name('actionEditKelas');
     Route::delete('/kelas/hapus/{id?}', [KelasController::class, 'destroy'])->name('actionDeleteKelas');
+
+    Route::get('/jurusan', [JurusanController::class, 'index'])->name('pageJurusan');
+    Route::get('/jurusan/tambah', [JurusanController::class, 'index_form'])->name('pageFormJurusan');
+    Route::get('/jurusan/edit/{id?}', [JurusanController::class, 'index_form'])->name('pageFormEditJurusan');
+    Route::post('/jurusan/tambah', [JurusanController::class, 'store'])->name('actionAddJurusan');
+    Route::put('/jurusan/edit/{id?}', [JurusanController::class, 'store_update'])->name('actionEditJurusan');
+    Route::delete('/jurusan/hapus/{id?}', [JurusanController::class, 'destroy'])->name('actionDeleteJurusan');
 
     Route::get('/mata-pelajaran', [MapelController::class, 'index'])->name('pageMapel');
     Route::get('/mata-pelajaran/tambah', [MapelController::class, 'index_form'])->name('pageFormMapel');
