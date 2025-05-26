@@ -5,6 +5,13 @@
     @include('partials.title-meta')
 
     @include('partials.head-css')
+
+    <style>
+        .No_API {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>

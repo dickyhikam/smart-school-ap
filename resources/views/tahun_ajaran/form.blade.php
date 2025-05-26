@@ -28,7 +28,7 @@
                                 <input type="text" id="tahun" name="tahun" class="form-control" value="{{ old('tahun', $data_row['tahun_ajaran'] ?? '') }}" placeholder="Masukkan tahun ajaran" required>
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-3" hidden>
                             <label for="tahun" class="col-md-3 col-form-label">An</label>
                             <div class="col-md-9">
                                 <input readonly id="st_ta" name="status" class="form-control" value="{{ old('status', $data_row['status']['value'] ?? '0') }}" placeholder="Masukkan tahun ajaran">

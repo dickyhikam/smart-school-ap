@@ -6,6 +6,7 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KelasSiswaController;
 use App\Http\Controllers\KelasSubController;
+use App\Http\Controllers\MapelController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrtuController;
 use App\Http\Controllers\PPAnggota;
@@ -119,6 +120,15 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/kelas/tambah', [KelasController::class, 'store'])->name('actionAddKelas');
     Route::put('/kelas/edit/{id?}', [KelasController::class, 'store_update'])->name('actionEditKelas');
     Route::delete('/kelas/hapus/{id?}', [KelasController::class, 'destroy'])->name('actionDeleteKelas');
+
+    Route::get('/mata-pelajaran', [MapelController::class, 'index'])->name('pageMapel');
+    Route::get('/mata-pelajaran/tambah', [MapelController::class, 'index_form'])->name('pageFormMapel');
+    Route::get('/mata-pelajaran/edit/{id?}', [MapelController::class, 'index_form'])->name('pageFormEditMapel');
+    Route::post('/mata-pelajaran/tambah', [MapelController::class, 'store'])->name('actionAddMapel');
+    Route::put('/mata-pelajaran/edit/{id?}', [MapelController::class, 'store_update'])->name('actionEditMapel');
+    Route::delete('/mata-pelajaran/hapus/{id?}', [MapelController::class, 'destroy'])->name('actionDeleteMapel');
+
+    Route::get('/akademik/tambah', [TahunAjaranController::class, 'index_form_akademik'])->name('pageFormAkademik');
 
     Route::get('/tahun-ajaran', [TahunAjaranController::class, 'index'])->name('pageTahunAjaran');
     Route::get('/tahun-ajaran/tambah', [TahunAjaranController::class, 'index_form'])->name('pageFormTahunAjaran');
