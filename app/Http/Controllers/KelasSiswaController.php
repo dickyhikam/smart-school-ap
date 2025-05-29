@@ -97,28 +97,28 @@ class KelasSiswaController extends Controller
         ];
 
 
-        $list_data_with_siswa = [];
+        // $list_data_with_siswa = [];
 
-        foreach ($data['list_data'] as $row) {
-            // Ambil sub_kelas_id dari data yang sudah diterima
-            $sub_kelas_id = $row['id'];
+        // foreach ($data['list_data'] as $row) {
+        //     // Ambil sub_kelas_id dari data yang sudah diterima
+        //     // $sub_kelas_id = $row['id'];
 
-            // Panggil API kedua untuk mendapatkan data siswa berdasarkan sub_kelas_id
-            $response_siswa_kelas = Http::withToken(session('token'))
-                ->get($apiUrl . '/api/akademik/kelas-siswa', [
-                    'sub_kelas_id' => $sub_kelas_id,
-                ]);
-            $response_siswa_kelas = json_decode($response_siswa_kelas->body(), true);
+        //     // // Panggil API kedua untuk mendapatkan data siswa berdasarkan sub_kelas_id
+        //     // $response_siswa_kelas = Http::withToken(session('token'))
+        //     //     ->get($apiUrl . '/api/akademik/kelas-siswa', [
+        //     //         'sub_kelas_id' => $sub_kelas_id,
+        //     //     ]);
+        //     // $response_siswa_kelas = json_decode($response_siswa_kelas->body(), true);
 
-            // Menambahkan data siswa ke dalam row
-            $row['siswa'] = $response_siswa_kelas['data']['items']; // Asumsi bahwa data siswa ada di field 'data'
+        //     // Menambahkan data siswa ke dalam row
+        //     // $row['siswa'] = $response_siswa_kelas['data']['items']; // Asumsi bahwa data siswa ada di field 'data'
 
-            // Menyimpan data yang sudah dilengkapi
-            $list_data_with_siswa[] = $row;
-        }
+        //     // Menyimpan data yang sudah dilengkapi
+        //     // $list_data_with_siswa[] = $row;
+        // }
 
-        // Sekarang $list_data_with_siswa berisi data subkelas dengan data siswa terkait
-        $data['list_data'] = $list_data_with_siswa;
+        // // Sekarang $list_data_with_siswa berisi data subkelas dengan data siswa terkait
+        // $data['list_data'] = $list_data_with_siswa;
         // dd($data['list_data']);
 
         return view('kelas_siswa.index', $data);
@@ -135,10 +135,15 @@ class KelasSiswaController extends Controller
         $data['nama_menu2'] = 'Detil ' . $menu;
         $data['id_kelas'] = $id;
 
+        // $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/kelas-siswa');
+        // $response = json_decode($response->body(), true); // Dekode response menjadi array
+        // dd($response);
+
         // URL API get data sub kelas
         $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/sub-kelas/' . $id);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
         $data['data_row'] = $response['data'];
+        // dd($response['data']);
         // dd($data['data_row']);
 
         // URL API get data siswa kelas

@@ -29,5 +29,11 @@
 <script src="{{ asset('assets/vendor/datatables.net-keytable/js/dataTables.keyTable.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/datatables.net-select/js/dataTables.select.min.js') }}"></script>
 
+<!-- Fullcalendar js -->
+<script src="{{ asset('assets/vendor/fullcalendar/index.global.min.js') }}"></script>
+
+<!-- Calendar App Demo js -->
+<!-- <script src="assets/js/pages/apps-calendar.js"></script> -->
+
 <!-- Calendar App Demo js -->
 <!-- <script src="{{ asset('assets/js/pages/apps-calendar.js') }}"></script> -->

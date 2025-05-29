@@ -302,7 +302,7 @@
                             </a>
                         </li>
                         <li class="side-nav-item">
-                            <a href="{{ route('pagePerpusPengarang') }}" class="side-nav-link">
+                            <a href="{{ route('pageJadwal') }}" class="side-nav-link">
                                 <span class="menu-text">Jadwal</span>
                             </a>
                         </li>

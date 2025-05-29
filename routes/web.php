@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\KelasSiswaController;
@@ -157,4 +158,11 @@ Route::middleware('APIAuth')->group(function () {
     Route::post('/siswa-kelas/tambah', [KelasSiswaController::class, 'store'])->name('actionAddKelasSiswa');
     Route::put('/siswa-kelas/edit/{id?}', [KelasSiswaController::class, 'store_update'])->name('actionEditKelasSiswa');
     Route::delete('/siswa-kelas/hapus/{th?}/{id?}', [KelasSiswaController::class, 'destroy'])->name('actionDeleteKelasSiswa');
+
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('pageJadwal');
+    Route::get('/jadwal/tambah', [JadwalController::class, 'index_form'])->name('pageFormJadwal');
+    Route::get('/jadwal/edit/{id?}', [JadwalController::class, 'index_form'])->name('pageFormEditJadwal');
+    Route::post('/jadwal/tambah', [JadwalController::class, 'store'])->name('actionAddJadwal');
+    Route::put('/jadwal/edit/{id?}', [JadwalController::class, 'store_update'])->name('actionEditJadwal');
+    Route::delete('/jadwal/hapus/{id?}', [JadwalController::class, 'destroy'])->name('actionDeleteJadwal');
 });
