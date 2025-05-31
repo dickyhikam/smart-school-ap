@@ -95,7 +95,7 @@ class KelasSubController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('kelas_sub.index', $data);
+        return view('akademik.kelas_sub.index', $data);
     }
 
     public function index_form($th = null, $id = null)
@@ -138,7 +138,7 @@ class KelasSubController extends Controller
         $response_ta = json_decode($response_ta->body(), true); // Dekode response menjadi array
         $data['data_ta'] = $response_ta['data'];
 
-        return view('kelas_sub.form', $data);
+        return view('akademik.kelas_sub.form', $data);
     }
 
     public function store(Request $request)

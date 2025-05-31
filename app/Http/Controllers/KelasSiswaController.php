@@ -83,7 +83,7 @@ class KelasSiswaController extends Controller
         $response = json_decode($response->body(), true); // Dekode response menjadi array
         // dd($response['data']['items']);
 
-        $data['list_data'] = $response['data']['items']; // Mengambil data siswa
+        $listSubKelas = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
         $data['pagination'] = [
             'from' => $response['data']['from'],
@@ -96,32 +96,31 @@ class KelasSiswaController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
+        $list_data_with_siswa = [];
 
-        // $list_data_with_siswa = [];
+        foreach ($listSubKelas as $row) {
+            // Ambil sub_kelas_id dari data yang sudah diterima
+            $sub_kelas_id = $row['id'];
 
-        // foreach ($data['list_data'] as $row) {
-        //     // Ambil sub_kelas_id dari data yang sudah diterima
-        //     // $sub_kelas_id = $row['id'];
+            // Panggil API kedua untuk mendapatkan data siswa berdasarkan sub_kelas_id
+            $response_siswa_kelas = Http::withToken(session('token'))
+                ->get($apiUrl . '/api/akademik/kelas-siswa', [
+                    'sub_kelas_id' => $sub_kelas_id,
+                ]);
+            $response_siswa_kelas = json_decode($response_siswa_kelas->body(), true);
+            // dd($response_siswa_kelas);
 
-        //     // // Panggil API kedua untuk mendapatkan data siswa berdasarkan sub_kelas_id
-        //     // $response_siswa_kelas = Http::withToken(session('token'))
-        //     //     ->get($apiUrl . '/api/akademik/kelas-siswa', [
-        //     //         'sub_kelas_id' => $sub_kelas_id,
-        //     //     ]);
-        //     // $response_siswa_kelas = json_decode($response_siswa_kelas->body(), true);
+            // Menambahkan data siswa ke dalam row
+            $row['siswa'] = $response_siswa_kelas['data']; // Asumsi bahwa data siswa ada di field 'data'
 
-        //     // Menambahkan data siswa ke dalam row
-        //     // $row['siswa'] = $response_siswa_kelas['data']['items']; // Asumsi bahwa data siswa ada di field 'data'
+            // Menyimpan data yang sudah dilengkapi
+            $list_data_with_siswa[] = $row;
+        }
 
-        //     // Menyimpan data yang sudah dilengkapi
-        //     // $list_data_with_siswa[] = $row;
-        // }
+        // Sekarang $list_data_with_siswa berisi data subkelas dengan data siswa terkait
+        $data['list_data'] = $list_data_with_siswa;
 
-        // // Sekarang $list_data_with_siswa berisi data subkelas dengan data siswa terkait
-        // $data['list_data'] = $list_data_with_siswa;
-        // dd($data['list_data']);
-
-        return view('kelas_siswa.index', $data);
+        return view('akademik.kelas_siswa.index', $data);
     }
 
     public function index_form($id = null)
@@ -135,35 +134,11 @@ class KelasSiswaController extends Controller
         $data['nama_menu2'] = 'Detil ' . $menu;
         $data['id_kelas'] = $id;
 
-        // $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/kelas-siswa');
-        // $response = json_decode($response->body(), true); // Dekode response menjadi array
-        // dd($response);
-
         // URL API get data sub kelas
         $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/sub-kelas/' . $id);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
         $data['data_row'] = $response['data'];
-        // dd($response['data']);
-        // dd($data['data_row']);
 
-        // URL API get data siswa kelas
-        // $response_sk = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/kelas-siswa', [
-        //     'sub_kelas_id' => $id
-        // ]);
-        // $response_sk = json_decode($response_sk->body(), true); // Dekode response menjadi array
-        // $data['list_siswa_kelas'] = $response_sk['data']['items'];
-        // // Mengambil data pagination
-        // $data['pagination'] = [
-        //     'from' => $response_sk['data']['from'],
-        //     'to' => $response_sk['data']['to'],
-        //     'current_page' => $response_sk['data']['current_page'],
-        //     'last_page' => $response_sk['data']['last_page'],
-        //     'total' => $response_sk['data']['total'],
-        //     'per_page' => $response_sk['data']['per_page'],
-        //     'next_page_url' => $response_sk['data']['next_page_url'],
-        //     'prev_page_url' => $response_sk['data']['prev_page_url'],
-        // ];
-
-        return view('kelas_siswa.form', $data);
+        return view('akademik.kelas_siswa.form', $data);
     }
 }

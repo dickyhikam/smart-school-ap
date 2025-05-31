@@ -93,22 +93,11 @@
                                         @if (empty($row['siswa']))
                                         <p class="text-center text">Tidak ada siswa di kelas ini.</p>
                                         @else
-                                        <table class="table table-sm table-bordered table-hover table-striped align-middle">
-                                            <thead class="table-primary sticky-top">
-                                                <tr>
-                                                    <th>NISN</th>
-                                                    <th>Nama</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($row['siswa'] as $siswa)
-                                                <tr>
-                                                    <td>{{ $siswa['siswa']['nisn'] }}</td>
-                                                    <td>{{ $siswa['siswa']['nama_lengkap'] }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                        <ul>
+                                            @foreach ($row['siswa'] as $siswa)
+                                            <li>{{ $siswa['siswa']['nama_lengkap'] }} ({{ $siswa['siswa']['nisn'] }})</li>
+                                            @endforeach
+                                        </ul>
                                         @endif
                                     </td>
                                     <td class="text-center">

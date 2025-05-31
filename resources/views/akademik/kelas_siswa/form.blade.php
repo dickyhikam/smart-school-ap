@@ -41,7 +41,64 @@
     .list-group-item .nisn+span {
         padding-left: 10px;
     }
+
+    /* Menambahkan border di antara kolom */
+    .list-group-item .col-sm-6 {
+        border-right: 1px solid #ddd;
+        /* Garis pemisah */
+        padding-right: 10px;
+        /* Menambahkan jarak antara konten dan garis */
+    }
+
+    /* Menghapus border pada kolom terakhir */
+    .list-group-item .col-sm-6:last-child {
+        border-right: none;
+    }
+
+    /* Kontainer loading */
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Menempatkan elemen secara horizontal di tengah */
+        align-items: center;
+        /* Menempatkan elemen secara vertikal di tengah */
+        /* height: 100vh; */
+        /* Menggunakan tinggi penuh viewport */
+        text-align: center;
+        /* Menyelaraskan teks dengan spinner */
+        /* background-color: rgba(213, 213, 213, 0.8); */
+        /* Memberikan latar belakang transparan */
+    }
+
+    /* Spinner dengan animasi */
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+        border-width: 0.5rem;
+        animation: spin 1s linear infinite;
+        /* Menambahkan animasi rotasi */
+    }
+
+    /* Teks loading */
+    .loading-text {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        /* font-weight: bold; */
+    }
+
+    /* Animasi putaran spinner */
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
+
 <div class="page-container">
 
     <!-- Tabel Data Orang Tua/Wali -->
@@ -92,20 +149,25 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="d-grid gap-2 mt-3">
-                                <button type="button" class="btn btn-outline-info" id="submitButton">
-                                    <i class="bi bi-arrow-left-circle"></i> Tambah Siswa Kelas Random
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
+                        @if(isset($data_row['kelas']['jenjang']))
+                        @if($data_row['kelas']['jenjang'] > 1)
+                        <div class="col-sm-8">
                             <div class="d-grid gap-2 mt-3">
                                 <button type="button" class="btn btn-outline-primary" id="submitButton">
                                     <i class="bi bi-arrow-left-circle"></i> Tambah Siswa Kelas Dari Kelas Sebelumnya
                                 </button>
                             </div>
                         </div>
+                        @else
+                        <div class="col-sm-8">
+                            <div class="d-grid gap-2 mt-3">
+                                <button type="button" class="btn btn-outline-info" id="submitButton">
+                                    <i class="bi bi-arrow-left-circle"></i> Tambah Siswa Kelas Random
+                                </button>
+                            </div>
+                        </div>
+                        @endif
+                        @endif
                     </div>
 
                 </div> <!-- end card body-->
@@ -126,6 +188,8 @@
         </div><!-- end col-->
 
         <div class="col-6">
+            @if(isset($data_row['kelas']['jenjang']))
+            @if($data_row['kelas']['jenjang'] > 1)
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
@@ -133,13 +197,11 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <ul id="listSiswaSebelah" class="list-group" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        <li class="list-group-item clickable" id="siswa1" onclick="moveToLeft(this)">
-                            <span class="nisn">1001</span> | <span class="nama">Toni</span>
-                        </li>
-                    </ul>
+                    <ul id="listSiswaSebelah" class="list-group"></ul>
                 </div> <!-- end card body-->
             </div> <!-- end card -->
+            @endif
+            @endif
 
             <div class="card shadow-sm">
                 <div class="card-header border-bottom border-dashed d-flex justify-content-between align-items-center">
@@ -151,7 +213,9 @@
                     <div class="mb-3 position-relative">
                         <input type="text" id="cari_siswa" class="form-control" placeholder="Cari siswa" data-bs-toggle="tooltip" title="Masukkan nama/nisn siswa" oninput="searchSiswa()">
                         <!-- Dropdown hasil pencarian -->
-                        <div id="searchResultsSiswa" class="dropdown-menu" style="width: 100%; display: none;"></div>
+                        <ul id="searchResultsSiswa" class="list-group" style="width: 100%; display: none; padding: 11px;">
+                            <!-- <ul id="searchResultsSiswa" class="list-group" style="width: 100%;"></ul> -->
+                        </ul>
                     </div>
                 </div> <!-- end card body-->
             </div> <!-- end card -->
@@ -165,25 +229,9 @@
 
 @section('javascript_custom')
 <script>
-    // siswaKelas();
-    // Contoh data siswa (dapat diganti dengan data dari API atau database)
-    const siswaData = [{
-            nisn: '1001',
-            nama: 'Toni'
-        },
-        {
-            nisn: '1002',
-            nama: 'Rina'
-        },
-        {
-            nisn: '1003',
-            nama: 'Budi'
-        },
-        {
-            nisn: '1004',
-            nama: 'Siti'
-        }
-    ];
+    $(document).ready(function() {
+        siswaKelas();
+    });
 
     // Fungsi pencarian siswa
     function searchSiswa() {
@@ -191,33 +239,53 @@
         const searchResults = document.getElementById('searchResultsSiswa');
         const searchTerm = input.value.toLowerCase();
 
-        // Filter siswa berdasarkan NISN atau Nama
-        const filteredSiswa = siswaData.filter(siswa =>
-            siswa.nisn.toLowerCase().includes(searchTerm) || siswa.nama.toLowerCase().includes(searchTerm)
-        );
+        // Tampilkan loading spinner sebelum request dimulai
+        const loadingHtml = `
+            <div class="loading-container text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="loading-text mt-2">Memuat data siswa...</p>
+            </div>
+        `;
+        $('#searchResultsSiswa').html(loadingHtml).show();
 
-        // Kosongkan dropdown sebelum menampilkan hasil pencarian
-        searchResults.innerHTML = '';
-
-        if (filteredSiswa.length > 0) {
-            // Tampilkan hasil pencarian dalam format list
-            filteredSiswa.forEach(siswa => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-group-item', 'clickable');
-                listItem.setAttribute('onclick', 'moveToLeftFromSearch(this)');
-
-                listItem.innerHTML = `<span class="nisn">${siswa.nisn}</span> | <span class="nama">${siswa.nama}</span>`;
-
-                // Tambahkan item ke dalam dropdown
-                searchResults.appendChild(listItem);
-            });
-
-            // Tampilkan dropdown
-            searchResults.style.display = 'block';
-        } else {
-            // Jika tidak ada hasil, sembunyikan dropdown
-            searchResults.style.display = 'none';
-        }
+        $.ajax({
+            url: '{{ env("API_URL") . "/api/siswa" }}',
+            method: 'GET',
+            data: {
+                'search': searchTerm
+            },
+            headers: {
+                'Authorization': 'Bearer {{ $apiToken }}'
+            },
+            success: function(response) {
+                if (response.data.items.length > 0) {
+                    let resultsHtml = '';
+                    response.data.items.forEach(function(row) {
+                        resultsHtml += `
+                        <li class="list-group-item clickable row" id="siswaSearch${row.id}" onclick="moveToLeft(this)">
+                            <div class="col-sm-6"><span class="nisn">${row.nisn}</span></div> 
+                            <div class="col-sm-6"><span class="nama">${row.nama_lengkap}</span></div>
+                        </li>`;
+                    });
+                    $('#searchResultsSiswa').html(resultsHtml).show();
+                } else {
+                    $('#searchResultsSiswa').html(`
+                    <li class="list-group-item text-muted no-results-item">
+                        <p class="no-results-text">Data siswa tidak ditemukan</p>
+                    </li>
+                `).show();
+                }
+            },
+            error: function() {
+                $('#searchResultsSiswa').html(`
+                <li class="list-group-item text-danger">
+                    Terjadi kesalahan saat memuat data siswa.
+                </li>
+            `).show();
+            }
+        });
     }
 
     // Fungsi untuk memindahkan siswa dari pencarian (search) ke kolom kiri
@@ -245,117 +313,58 @@
     }
 
     function siswaKelas() {
+        const loadingHtml = `
+            <div class="loading-container text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="loading-text mt-2">Memuat data siswa kelas...</p>
+            </div>
+        `;
+
         $.ajax({
-            url: '{{ env("API_URL") . "/api/akademik/kelas-siswa" }}', // Ganti dengan URL API yang sesuai
+            url: '{{ env("API_URL") . "/api/akademik/kelas-siswa" }}',
             method: 'GET',
             data: {
                 'sub_kelas_id': "{{ $id_kelas }}",
+                'has_pagination': '0'
             },
             headers: {
-                'Authorization': 'Bearer {{ $apiToken }}' // Menambahkan token dalam header Authorization
+                'Authorization': 'Bearer {{ $apiToken }}'
+            },
+            beforeSend: function() {
+                $('#listSiswa').html(loadingHtml).show();
             },
             success: function(response) {
-                // Misalnya, API mengembalikan array anggota
-                var results = response.data.items.filter(function(row) {
-                    // if (row.pengguna && row.pengguna.nama && row.is_anggota_perpus) {
-                    //     return !selectedAnggotaIds.includes(row.nama);
-                    // }
-                    // return false;
-                    return row.siswa;
-                });
-                console.log(results);
-
-                // Jika ada hasil pencarian
-                if (results.length > 0) {
-                    var resultsHtml = '';
-                    results.forEach(function(row) {
-                        resultsHtml += `<li class="list-group-item clickable" id="siswa` + row.id + `" onclick="moveToLeft(this)">
-                                            <span class="nisn">` + row.siswa.nisn + `</span> | <span class="nama">` + row.siswa.nama_lengkap + `</span>
-                                        </li>`;
+                if (response.data.length > 0) {
+                    let resultsHtml = '';
+                    response.data.forEach(function(row) {
+                        resultsHtml += `
+                        <li class="list-group-item clickable row" id="siswa${row.id}" onclick="moveToLeft(this)">
+                            <div class="col-sm-6"><span class="nisn">${row.siswa.nisn}</span></div> 
+                            <div class="col-sm-6"><span class="nama">${row.siswa.nama_lengkap}</span></div>
+                        </li>`;
                     });
                     $('#listSiswa').html(resultsHtml).show();
                 } else {
-                    // Jika tidak ada siswa kelas
-                    $('#listSiswa').html(`<li class="list-group-item text-muted no-results-item">
-                                            <div class="no-results-content">
-                                                <img src="https://via.placeholder.com/150" alt="No results" class="no-results-img">
-                                                <p class="no-results-text">Belum terdapat siswa di dalam kelas ini.</p>
-                                            </div>
-                                        </li>`).show();
+                    $('#listSiswa').html(`
+                        <li class="list-group-item text-muted no-results-item">
+                            <div class="no-results-content text-center">
+                                <img src="https://via.placeholder.com/150" alt="No results" class="no-results-img mb-2">
+                                <p class="no-results-text">Belum terdapat siswa di dalam kelas ini.</p>
+                            </div>
+                        </li>
+                    `).show();
                 }
             },
             error: function() {
-                $('#listSiswa').html('').show();
+                $('#listSiswa').html(`
+                    <li class="list-group-item text-danger text-center">
+                        Gagal memuat data siswa.
+                    </li>
+                `).show();
             }
         });
     }
-</script>
-
-<script>
-    // $(document).ready(function() {
-    //     // Event listener untuk keyup (ketika mengetik)
-    //     $('#cari_siswa').on('keyup', function() {
-    //         var query = $(this).val();
-    //         searchAnggota(query); // Panggil fungsi pencarian
-    //     });
-
-    //     // Event listener untuk click (ketika input diklik)
-    //     $('#cari_siswa').on('click', function() {
-    //         var query = $(this).val();
-    //         searchAnggota(query); // Panggil fungsi pencarian
-    //     });
-
-    //     // Event listener untuk blur (ketika input kehilangan fokus)
-    //     $('#cari_siswa').on('blur', function() {
-    //         handleBlur(); // Panggil fungsi blur
-    //     });
-    // });
-
-    // // Fungsi untuk menangani pencarian anggota
-    // function searchAnggota(query) {
-    //     // Mengirimkan request ke API untuk mencari anggota berdasarkan query
-    //     $.ajax({
-    //         url: '{{ env("API_URL") . "/api/siswa" }}', // Ganti dengan URL API yang sesuai
-    //         method: 'GET',
-    //         data: {
-    //             search: query
-    //         },
-    //         headers: {
-    //             'Authorization': 'Bearer {{ $apiToken }}' // Menambahkan token dalam header Authorization
-    //         },
-    //         success: function(response) {
-    //             // Misalnya, API mengembalikan array anggota
-    //             var results = response.data.items.filter(function(anggota) {
-    //                 if (anggota.pengguna && anggota.pengguna.nama && anggota.is_anggota_perpus) {
-    //                     return !selectedAnggotaIds.includes(anggota.nama);
-    //                 }
-    //                 return false;
-    //             });
-
-    //             // Jika ada hasil pencarian
-    //             if (results.length > 0) {
-    //                 var resultsHtml = '';
-    //                 results.forEach(function(anggota) {
-    //                     resultsHtml += '<a href="javascript:void(0)" class="dropdown-item" onclick="selectAnggotaResult(\'' + anggota.id + '\', \'' + anggota.pengguna_type + '\', \'' + anggota.pengguna.nama + '\', \'' + anggota.pengguna.nama + '\')">' + anggota.pengguna.nama + '</a>';
-    //                 });
-    //                 $('#searchResultsSiswa').html(resultsHtml).show();
-    //             } else {
-    //                 // Jika tidak ada hasil
-    //                 $('#searchResultsSiswa').html('<a href="javascript:void(0)" class="dropdown-item">Tidak ada hasil yang ditemukan</a>').show();
-    //             }
-    //         },
-    //         error: function() {
-    //             $('#searchResultsSiswa').html('<a href="javascript:void(0)" class="dropdown-item">Terjadi kesalahan, coba lagi</a>').show();
-    //         }
-    //     });
-    // }
-
-    // // Fungsi untuk menangani event blur
-    // function handleBlur() {
-    //     // Menyembunyikan dropdown hasil pencarian setelah kehilangan fokus
-    //     setTimeout(function() {
-    //         $('#searchResultsSiswa').hide();
-    //     }, 200); // Delay untuk menghindari hilangnya dropdown saat memilih item
-    // }
 </script>
 @endsection
