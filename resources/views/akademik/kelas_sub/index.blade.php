@@ -87,7 +87,7 @@
                                     <th>Kelas</th>
                                     <th>Sub Kelas</th>
                                     <th>Wali Kelas</th>
-                                    <th>Tahun Ajaran</th>
+                                    <th>Max Siswa</th>
                                     <th class="text-center">Status</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -98,7 +98,7 @@
                                     <td>{{ $row['kelas']['nama'] }}</td>
                                     <td>{{ $row['nama'] }}</td>
                                     <td>{{ $row['wali_kelas']['nama_lengkap'] }}</td>
-                                    <td>{{ $row['tahun_ajaran']['tahun_ajaran'] }}</td>
+                                    <td>{{ $row['max_siswa']}} </td>
                                     <td class="text-center">
                                         <span class="badge {{ $row['status']['value'] == '1' ? 'bg-success' : 'bg-danger' }}">
                                             {{ $row['status']['label'] }}

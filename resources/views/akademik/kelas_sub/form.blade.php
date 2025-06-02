@@ -57,6 +57,11 @@
                             <div class="col-md-9">
                                 <select class="form-control select2" data-toggle="select2" id="jurusan" name="jurusan" required>
                                     <option value="" disabled selected>Pilih jurusan</option>
+                                    @foreach($list_jurusan as $row)
+                                    <option value="{{ $row['id'] }}" {{ old('kelas') == $row['id'] ? 'selected' : '' }} {{ $data_row['kelas'] ?? '' == $row['nama'] ? 'selected' : '' }}>
+                                        {{ $row['nama'] }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -64,6 +69,12 @@
                             <label for="nama" class="col-md-3 col-form-label">Nama Sub Kelas <span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <input type="text" id="nama" name="nama" class="form-control" value="{{ old('nama', $data_row['nama'] ?? '') }}" placeholder="Masukkan nama sub kelas" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="max_siswa" class="col-md-3 col-form-label">Jumlah Max Siswa <span class="text-danger">*</span></label>
+                            <div class="col-md-9">
+                                <input id="max_siswa" name="max_siswa" class="form-control" value="{{ old('max_siswa', $data_row['max_siswa'] ?? '') }}" placeholder="Masukkan jumlah max siswa sub kelas" onkeypress="return hanyaAngka(event, true);" required>
                             </div>
                         </div>
                         <div class="row mb-3">

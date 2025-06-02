@@ -81,6 +81,7 @@ class KelasSubController extends Controller
                 'tahun_ajaran' => $tahun_ajaran,
             ]);
         $response = json_decode($response->body(), true); // Dekode response menjadi array
+        // dd($response['data']['items']);
 
         $data['list_data'] = $response['data']['items']; // Mengambil data siswa
         // Mengambil data pagination
@@ -138,6 +139,11 @@ class KelasSubController extends Controller
         $response_ta = json_decode($response_ta->body(), true); // Dekode response menjadi array
         $data['data_ta'] = $response_ta['data'];
 
+        //get jurusan
+        $response_jurusan = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/jurusan');
+        $response_jurusan = json_decode($response_jurusan->body(), true); // Dekode response menjadi array
+        $data['list_jurusan'] = $response_jurusan['data']['items'];
+
         return view('akademik.kelas_sub.form', $data);
     }
 
@@ -151,6 +157,7 @@ class KelasSubController extends Controller
             'wali_kelas_id' => $request->wali_kelas,
             'nama' => $request->nama,
             'status' => $request->status_sk,
+            'max_siswa' => $request->max_siswa,
         ];
 
         // Send data to the external API
@@ -179,6 +186,7 @@ class KelasSubController extends Controller
             'wali_kelas_id' => $request->wali_kelas,
             'nama' => $request->nama,
             'status' => $request->status_sk,
+            'max_siswa' => $request->max_siswa,
         ];
 
         // Send data to the external API using PUT (for updating)
