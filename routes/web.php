@@ -104,6 +104,7 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/perpustakaan/buku/edit/{id?}', [PPBuku::class, 'index_form'])->name('pageFormEditPerpusBuku');
     Route::post('/perpustakaan/buku/tambah', [PPBuku::class, 'store'])->name('actionAddPerpusBuku');
     Route::delete('/perpustakaan/buku/hapus/{id?}', [PPBuku::class, 'destroy'])->name('actionDeletePerpusBuku');
+    Route::get('/perpustakaan/buku/print/{id}', [PPBuku::class, 'printBuku'])->name('pagePrintPerpusBuku');
 
     Route::get('/perpustakaan/anggota', [PPAnggota::class, 'index'])->name('pagePerpusAnggota');
     Route::post('/perpustakaan/anggota', [PPAnggota::class, 'gabung'])->name('actionGabungPerpusAnggota');

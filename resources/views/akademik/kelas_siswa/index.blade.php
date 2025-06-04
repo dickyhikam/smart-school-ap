@@ -80,6 +80,7 @@
                                 <tr>
                                     <th>Kelas</th>
                                     <th>Wali Kelas</th>
+                                    <th>Jumlah Siswa</th>
                                     <th class="text-center">Siswa</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
@@ -88,6 +89,7 @@
                                 @foreach ($list_data as $row)
                                 <tr>
                                     <td>{{ $row['kelas']['nama'].' - '.$row['nama'] }}</td>
+                                    <td>{{ $row['wali_kelas']['nama_lengkap'] }}</td>
                                     <td>{{ $row['wali_kelas']['nama_lengkap'] }}</td>
                                     <td>
                                         @if (empty($row['siswa']))

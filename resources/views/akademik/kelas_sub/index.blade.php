@@ -85,6 +85,7 @@
                             <thead class="table-primary sticky-top">
                                 <tr>
                                     <th>Kelas</th>
+                                    <th>Jurusan</th>
                                     <th>Sub Kelas</th>
                                     <th>Wali Kelas</th>
                                     <th>Max Siswa</th>
@@ -96,6 +97,7 @@
                                 @foreach ($list_data as $row)
                                 <tr>
                                     <td>{{ $row['kelas']['nama'] }}</td>
+                                    <td>{{ $row['jurusan']['nama']?? '-' }}</td>
                                     <td>{{ $row['nama'] }}</td>
                                     <td>{{ $row['wali_kelas']['nama_lengkap'] }}</td>
                                     <td>{{ $row['max_siswa']}} </td>

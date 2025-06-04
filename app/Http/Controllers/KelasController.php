@@ -39,7 +39,7 @@ class KelasController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('data_master.kelas.index', $data);
+        return view('akademik.data_master.kelas.index', $data);
     }
 
     public function index_form($id = null)
@@ -67,7 +67,7 @@ class KelasController extends Controller
             $data['method'] = 'POST'; // Menggunakan metode POST untuk create
         }
 
-        return view('data_master.kelas.form', $data);
+        return view('akademik.data_master.kelas.form', $data);
     }
 
     public function store(Request $request)

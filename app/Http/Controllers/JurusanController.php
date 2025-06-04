@@ -39,7 +39,7 @@ class JurusanController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('data_master.jurusan.index', $data);
+        return view('akademik.data_master.jurusan.index', $data);
     }
 
     public function index_form($id = null)
@@ -67,7 +67,7 @@ class JurusanController extends Controller
             $data['method'] = 'POST'; // Menggunakan metode POST untuk create
         }
 
-        return view('data_master.jurusan.form', $data);
+        return view('akademik.data_master.jurusan.form', $data);
     }
 
     public function store(Request $request)

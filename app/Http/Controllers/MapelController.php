@@ -39,7 +39,7 @@ class MapelController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('data_master.mapel.index', $data);
+        return view('akademik.data_master.mapel.index', $data);
     }
 
     public function index_form($id = null)
@@ -70,7 +70,7 @@ class MapelController extends Controller
             $data['method'] = 'POST'; // Menggunakan metode POST untuk create
         }
 
-        return view('data_master.mapel.form', $data);
+        return view('akademik.data_master.mapel.form', $data);
     }
 
     public function store(Request $request)
