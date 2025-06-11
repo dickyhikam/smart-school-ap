@@ -140,7 +140,7 @@ class KelasSubController extends Controller
         $data['data_ta'] = $response_ta['data'];
 
         //get jurusan
-        $response_jurusan = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/jurusan');
+        $response_jurusan = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/jurusan?status=1');
         $response_jurusan = json_decode($response_jurusan->body(), true); // Dekode response menjadi array
         $data['list_jurusan'] = $response_jurusan['data']['items'];
 

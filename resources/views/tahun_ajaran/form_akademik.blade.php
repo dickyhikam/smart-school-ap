@@ -49,7 +49,7 @@
                                 <input type="text" id="tahun" name="tahun" class="form-control" value="{{ old('tahun', $data_row['tahun_ajaran'] ?? '') }}" placeholder="Masukkan tahun ajaran" required>
                             </div>
                         </div>
-                        <div class="row mb-3">
+                        <div class="row mb-3" hidden>
                             <label for="status_tahun" class="col-md-3 col-form-label">Status <span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <select name="status_tahun" id="status_tahun">
@@ -65,7 +65,7 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="d-grid gap-2">
-                                    <button type="button" class="btn btn-primary" id="btnTA" onclick="">Selanjutnya</button>
+                                    <button type="button" class="btn btn-primary" id="btnTA" onclick="submitTA();">Selanjutnya</button>
                                 </div>
                             </div>
                         </div>
@@ -88,5 +88,8 @@
 
 @section('javascript_custom')
 <script>
+    function submitTA() {
+        
+    }
 </script>
 @endsection

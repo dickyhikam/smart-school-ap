@@ -59,7 +59,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($list_data as $row)
+                                @if(count($list_data) > 0)
+                                @foreach ($list_data as $row)
                                 <tr>
                                     <td>
                                         @if ($row['gambar'])
@@ -103,12 +104,12 @@
                                         </button>
                                     </td>
                                 </tr>
-                                @empty
+                                @endforeach
+                                @else
                                 <tr>
-                                    <!-- Menyesuaikan colspan dengan jumlah kolom yang ada -->
                                     <td colspan="8" class="text-center">Tidak ada data yang tersedia</td>
                                 </tr>
-                                @endforelse
+                                @endif
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->

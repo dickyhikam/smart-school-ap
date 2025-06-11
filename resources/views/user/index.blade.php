@@ -53,6 +53,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(count($list_data) > 0)
                                 @foreach ($list_data as $row)
                                 <tr data-tahun="">
                                     <td>{{ $row['name'] }}</td>
@@ -112,6 +113,11 @@
                                     </td>
                                 </tr>
                                 @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="6" class="text-center">Tidak ada data yang tersedia</td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->

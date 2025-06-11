@@ -53,7 +53,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($list_data as $row)
+                                @if(count($list_data) > 0)
+                                @foreach ($list_data as $row)
                                 <tr>
                                     <td>{{ $row['nama'] }}</td>
                                     <td>
@@ -77,11 +78,12 @@
                                         </button>
                                     </td>
                                 </tr>
-                                @empty
+                                @endforeach
+                                @else
                                 <tr>
                                     <td colspan="2" class="text-center">Tidak ada data yang tersedia</td>
                                 </tr>
-                                @endforelse
+                                @endif
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive -->

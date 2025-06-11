@@ -5,7 +5,7 @@
             <div class="col-md-6 text-center text-md-start">
                 <script>
                     document.write(new Date().getFullYear())
-                </script> © Adminto - By <span class="fw-bold text-decoration-underline text-uppercase text-reset fs-12">Coderthemes</span>
+                </script> © Adminto - By <a class="fw-bold text-decoration-underline text-uppercase text-reset fs-12" href="https://bina-inspirasi.id/">BiG-N</a>
             </div>
         </div>
     </div>

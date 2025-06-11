@@ -28,7 +28,7 @@
                             <label class="col-md-3 col-form-label" for="tahun_terbit">Tahun Terbit <span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <select id="tahun_terbit" name="tahun_terbit" class="form-control select2" data-toggle="select2" required>
-                                    <option value="">Pilih Tahun Terbit</option>
+                                    <option value="" disabled>Pilih Tahun Terbit</option>
                                     <?php
                                     $current_year = date('Y');
                                     for ($year = $current_year; $year >= 1900; $year--) {
@@ -62,7 +62,7 @@
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="jumlah">Jumlah <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <input type="number" id="jumlah" name="jumlah" class="form-control" placeholder="Masukkan jumlah" value="{{ old('jumlah', $data_row['jumlah'] ?? '') }}" required>
+                                <input id="jumlah" name="jumlah" class="form-control" placeholder="Masukkan jumlah" value="{{ old('jumlah', $data_row['jumlah'] ?? '') }}" onkeypress="return hanyaAngka(event, true);" required>
                             </div>
                         </div>
 
@@ -76,8 +76,8 @@
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="pengarang_id">Pengarang <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <select id="pengarang_id" name="pengarang_id" class="form-control select2" required>
-                                    <option value="">Pilih Pengarang</option>
+                                <select id="pengarang_id" name="pengarang_id" class="form-control select2" data-toggle="select2" required>
+                                    <option value="" disabled>Pilih Pengarang</option>
                                     <?php foreach ($list_pengarang as $pengarang): ?>
                                         <option value="<?= $pengarang['id']; ?>"
                                             <?= (old('pengarang_id') == $pengarang['id'] || ($data_row['pengarang']['nama'] ?? '') == $pengarang['nama']) ? 'selected' : ''; ?>>
@@ -91,8 +91,8 @@
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="penerbit_id">Penerbit <span class="text-danger">*</span></label>
                             <div class="col-md-9">
-                                <select id="penerbit_id" name="penerbit_id" class="form-control select2" required>
-                                    <option value="">Pilih Penerbit</option>
+                                <select id="penerbit_id" name="penerbit_id" class="form-control select2" data-toggle="select2" required>
+                                    <option value="" disabled>Pilih Penerbit</option>
                                     <?php foreach ($list_penerbit as $penerbit): ?>
                                         <option value="<?= $penerbit['id']; ?>"
                                             <?= (old('penerbit_id') == $penerbit['id'] || ($data_row['penerbit']['nama'] ?? '') == $penerbit['nama']) ? 'selected' : ''; ?>>
