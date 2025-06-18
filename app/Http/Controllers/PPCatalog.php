@@ -41,10 +41,6 @@ class PPCatalog extends Controller
         $response_pengarang = json_decode($response_pengarang->body(), true); // Dekode response menjadi array
         $data['list_pengarang'] = $response_pengarang['data']['items'];
 
-        // $data['list_penerbit'] = [];
-        // $data['list_category'] = [];
-        // $data['list_pengarang'] = [];
-
         return view('library.catalog.index', $data);
     }
 }

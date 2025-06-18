@@ -30,6 +30,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [AuthController::class, 'index'])->name('pageAuth');
 Route::get('/login', [AuthController::class, 'index'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('actionLogin');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::get('/perpustakaan/catalog', [PPCatalog::class, 'index'])->name('pageCatalog');
 
 // Protected routes
@@ -144,7 +146,7 @@ Route::middleware('APIAuth')->group(function () {
     Route::get('/tahun-ajaran/tambah', [TahunAjaranController::class, 'index_form'])->name('pageFormTahunAjaran');
     Route::get('/tahun-ajaran/edit/{id?}', [TahunAjaranController::class, 'index_form'])->name('pageFormEditTahunAjaran');
     Route::post('/tahun-ajaran/tambah', [TahunAjaranController::class, 'store'])->name('actionAddTahunAjaran');
-    Route::put('/tahun-ajaran/edit/{id?}', [TahunAjaranController::class, 'store_update'])->name('actionEditTahunAjaran');
+    Route::put('/tahun-ajaran/edit-action', [TahunAjaranController::class, 'store_update'])->name('actionEditTahunAjaran');
     Route::delete('/tahun-ajaran/hapus/{id?}', [TahunAjaranController::class, 'destroy'])->name('actionDeleteTahunAjaran');
 
     Route::get('/sub-kelas', [KelasSubController::class, 'index'])->name('pageKelasSub');

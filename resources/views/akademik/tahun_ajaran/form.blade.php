@@ -31,7 +31,13 @@
                         <div class="row mb-3" hidden>
                             <label for="tahun" class="col-md-3 col-form-label">An</label>
                             <div class="col-md-9">
-                                <input readonly id="st_ta" name="status" class="form-control" value="{{ old('status', $data_row['status']['value'] ?? '0') }}" placeholder="Masukkan tahun ajaran">
+                                <input readonly id="st_ta" name="status" class="form-control" value="{{ old('status', $data_row['status']['value'] ?? '0') }}">
+                            </div>
+                        </div>
+                        <div class="row mb-3" hidden>
+                            <label for="id" class="col-md-3 col-form-label">An</label>
+                            <div class="col-md-9">
+                                <input readonly id="id" name="id" class="form-control" value="{{ old('id', $data_row['id'] ?? '0') }}">
                             </div>
                         </div>
 

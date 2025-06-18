@@ -201,13 +201,16 @@
                     <p id="statusMessage"></p>
                 </div>
                 <div class="modal-footer">
-                    <form id="statusChangeForm" method="PUT" action="{{ route('actionEditTahunAjaran', ['id' => '']) }}">
+                    <form id="statusChangeForm" method="POST" action="{{ route('actionEditTahunAjaran') }}">
                         @csrf
-                        <input type="text" name="th_name" id="th_name" readonly>
-                        <input type="text" name="is_active" id="is_active" readonly>
+                        @method('PUT') <!-- Method Spoofing to PUT -->
+                        <input type="text" name="id" id="th_id" readonly hidden>
+                        <input type="text" name="tahun" id="th_name" readonly hidden>
+                        <input type="text" name="status" id="is_active" readonly hidden>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tidak</button>
                         <button type="submit" class="btn btn-primary">Ya</button>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -234,6 +237,7 @@
 
     // Event listener to handle modal show
     var myModal = document.getElementById('modalKonfirmStatus');
+    var baseActionUrl = "{{ route('actionEditTahunAjaran') }}"; // Define the base URL here
     myModal.addEventListener('show.bs.modal', function(event) {
         var button = event.relatedTarget; // Button that triggered the modal
         var status = button.getAttribute('data-status'); // Extract the status
@@ -242,23 +246,24 @@
 
         document.getElementById('is_active').value = status;
         document.getElementById('th_name').value = name;
+        document.getElementById('th_id').value = id;
 
         // Set the form action URL dynamically by adding the ID to the URL
-        var form = document.getElementById('statusChangeForm');
-        form.action = "{{ route('actionEditTahunAjaran', ['id' => '']) }}/" + id;
+        // var form = document.getElementById('statusChangeForm');
+        // form.action = baseActionUrl + '/' + id; // Use the base URL and append the dynamic ID
 
         // Set the modal content dynamically
         var statusMessage = document.getElementById('statusMessage');
         statusMessage.innerHTML = `
-            <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
-                <p style="font-weight: bold; color: #333;">Apakah Anda yakin ingin mengubah status tahun ajaran <span style="color: #007bff;">${name}</span> menjadi "<span style="color: #28a745;">Aktif</span>"?</p>
-                <hr style="border: 1px solid #ddd; margin: 10px 0;">
-                <p style="font-size: 14px; color: #555;">
-                    <i style="color: #f39c12;" class="fa fa-info-circle"></i>
-                    Catatan: Tahun ajaran yang diaktifkan akan berubah sepenuhnya pada proses belajar mengajar. Pastikan semua persiapan sudah matang sebelum melanjutkan.
-                </p>
-            </div>
-        `;
+        <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6;">
+            <p style="font-weight: bold; color: #333;">Apakah Anda yakin ingin mengubah status tahun ajaran <span style="color: #007bff;">${name}</span> menjadi "<span style="color: #28a745;">Aktif</span>"?</p>
+            <hr style="border: 1px solid #ddd; margin: 10px 0;">
+            <p style="font-size: 14px; color: #555;">
+                <i style="color: #f39c12;" class="fa fa-info-circle"></i>
+                Catatan: Tahun ajaran yang diaktifkan akan berubah sepenuhnya pada proses belajar mengajar. Pastikan semua persiapan sudah matang sebelum melanjutkan.
+            </p>
+        </div>
+    `;
     });
 </script>
 @endsection

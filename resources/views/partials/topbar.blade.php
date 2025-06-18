@@ -249,10 +249,11 @@
                         </a>
 
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item active fw-semibold text-danger">
+                        <a href="{{ route('logout') }}" class="dropdown-item active fw-semibold text-danger">
                             <i class="ri-logout-box-line me-1 fs-16 align-middle"></i>
                             <span class="align-middle">Sign Out</span>
                         </a>
+
                     </div>
                 </div>
             </div>

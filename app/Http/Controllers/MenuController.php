@@ -88,18 +88,16 @@ class MenuController extends Controller
         $apiUrl = env('API_URL') . '/api/menus'; // External API URL for the menu
         $response = Http::withToken(session('token'))
             ->post($apiUrl, $data);
+        $resultMessage = json_decode($response->body(), true);
 
         // Check if the request was successful
         if ($response->successful()) {
             // If successful, redirect with success message
-            return redirect()->route('pageMenu')->with(['alert-type' => 'success', 'message' => 'Menu berhasil disimpan!']);
+            return redirect()->route('pageMenu')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
 
-        // If there was an error, capture the error message
-        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
-
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
     }
 
     public function store_update(Request $request, $id)
@@ -118,18 +116,16 @@ class MenuController extends Controller
         $apiUrl = env('API_URL') . '/api/menus/' . $id; // API URL for updating the menu by ID
         $response = Http::withToken(session('token'))
             ->put($apiUrl, $data);
+        $resultMessage = json_decode($response->body(), true);
 
         // Check if the request was successful
         if ($response->successful()) {
             // If successful, redirect with success message
-            return redirect()->route('pageMenu')->with(['alert-type' => 'success', 'message' => 'Menu berhasil diperbarui!']);
+            return redirect()->route('pageMenu')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
 
-        // If there was an error, capture the error message
-        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
-
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan pembaruan data.']);
     }
 
     public function destroy($id)
@@ -139,17 +135,15 @@ class MenuController extends Controller
 
         // Send DELETE request to the API
         $response = Http::withToken(session('token'))->delete($apiUrl);
+        $resultMessage = json_decode($response->body(), true);
 
         // Check if the request was successful
         if ($response->successful()) {
             // If successful, redirect with success message
-            return redirect()->route('pageMenu')->with(['alert-type' => 'success', 'message' => 'Menu berhasil dihapus!']);
+            return redirect()->route('pageMenu')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
 
-        // If there was an error, capture the error message
-        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
-
         // If the request failed, redirect back with error message
-        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        return back()->with(['alert-type' => 'error', 'message' => $resultMessage['message']  ?? 'Terjadi kesalahan saat melakukan penghapusan data.']);
     }
 }

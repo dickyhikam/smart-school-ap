@@ -39,7 +39,7 @@ class TahunAjaranController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
-        return view('tahun_ajaran.index', $data);
+        return view('akademik.tahun_ajaran.index', $data);
     }
 
     public function index_form($id = null)
@@ -67,7 +67,7 @@ class TahunAjaranController extends Controller
             $data['method'] = 'POST'; // Menggunakan metode POST untuk create
         }
 
-        return view('tahun_ajaran.form', $data);
+        return view('akademik.tahun_ajaran.form', $data);
     }
 
     public function index_form_akademik($id = null)
@@ -95,7 +95,7 @@ class TahunAjaranController extends Controller
             $data['method'] = 'POST'; // Menggunakan metode POST untuk create
         }
 
-        return view('tahun_ajaran.form_akademik', $data);
+        return view('akademik.tahun_ajaran.form_akademik', $data);
     }
 
     public function store(Request $request)
@@ -117,12 +117,13 @@ class TahunAjaranController extends Controller
             // If successful, redirect with success message
             return redirect()->route('pageTahunAjaran')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
+        dd($response);
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
     }
 
-    public function store_update(Request $request, $id)
+    public function store_update(Request $request)
     {
         // Prepare data for sending to the API
         $data = [
@@ -131,7 +132,7 @@ class TahunAjaranController extends Controller
         ];
 
         // Send data to the external API using PUT (for updating)
-        $apiUrl = env('API_URL') . '/api/akademik/tahun-ajaran/' . $id; // API URL for updating the menu by ID
+        $apiUrl = env('API_URL') . '/api/akademik/tahun-ajaran/' . $request->id; // API URL for updating the menu by ID
         $response = Http::withToken(session('token'))
             ->put($apiUrl, $data);
         $resultMessage = json_decode($response->body(), true);
@@ -143,7 +144,7 @@ class TahunAjaranController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan pembaruan data.']);
     }
 
     public function destroy($id)
@@ -163,6 +164,6 @@ class TahunAjaranController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penghapusan data.']);
     }
 }

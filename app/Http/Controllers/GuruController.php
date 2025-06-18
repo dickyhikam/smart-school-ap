@@ -72,23 +72,6 @@ class GuruController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi form
-        // $validated = $request->validate([
-        //     'nama_lengkap' => 'required|string|max:255',
-        //     'nip' => 'required|string|max:255',
-        //     'tempat_lahir' => 'required|string|max:255',
-        //     'tanggal_lahir' => 'required|date',
-        //     'jenis_kelamin' => 'required|in:L,P',
-        //     'agama' => 'required|string|max:100',
-        //     'alamat' => 'required|string',
-        //     'nomor_telepon' => 'required|string',
-        //     'email' => 'required|email',
-        //     'status_kepegawaian' => 'required|string',
-        //     'tahun_masuk' => 'required|integer',
-        //     'mata_pelajaran' => 'required|string',
-        //     'foto_guru' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        // ]);
-
         // Menyimpan foto jika diupload
         if ($request->hasFile('foto_guru')) {
             $imagePath = $request->file('foto_guru')->store('public/foto_guru');
@@ -115,6 +98,7 @@ class GuruController extends Controller
         $apiUrl = env('API_URL') . '/api/guru'; // URL API eksternal Anda
         $response = Http::withToken(session('token'))
             ->post($apiUrl, $data);
+        $resultMessage = json_decode($response->body(), true);
 
         // Cek jika berhasil
         if ($response->successful()) {
@@ -122,36 +106,11 @@ class GuruController extends Controller
             $guruData = $response->json();
             $guruId = $guruData['data']['id']; // Ambil ID siswa dari respons API
 
-            // Persiapkan data untuk dikirim ke API
-            // $dataUsers = [
-            //     'name' => $request->nama_lengkap,
-            //     'username' => $request->nip,
-            //     'email' => $request->email,
-            //     'pengguna_id' => $guruId,
-            //     'pengguna_type' => "guru",
-            //     'role' => "guru",
-            // ];
-            // // Kirim data ke API
-            // $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
-            // $responseUser = Http::withToken(session('token'))
-            //     ->post($apiUrlUser, $dataUsers);
-
-            // Cek jika response untuk ayah berhasil atau gagal
-            // if ($responseUser->failed()) {
-            //     // Menampilkan pesan error dari API
-            //     $errorMessage = $responseUser->json()['message'] . ' (Data Login)' ?? 'Gagal menyimpan data login guru';
-            //     return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage]);
-            // }
-
-            return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => 'Data Guru berhasil disimpan!']);
+            return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
 
-        // Cek alasan kegagalan
-        $errorMessage = json_decode($response->body(), true);  // Mengambil pesan error dari response body
-        dd($response->body());
-
-        // Jika gagal menyimpan data siswa
-        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
     }
 
     public function store_update(Request $request, $id = null)
@@ -182,16 +141,14 @@ class GuruController extends Controller
         $apiUrl = env('API_URL') . '/api/guru/' . $id; // URL API eksternal Anda
         $response = Http::withToken(session('token'))
             ->post($apiUrl, $data);
+        $resultMessage = json_decode($response->body(), true);
 
         // Cek jika berhasil
         if ($response->successful()) {
-            return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => 'Data Guru berhasil disimpan!']);
+            return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
 
-        // Cek alasan kegagalan
-        $errorMessage = json_decode($response->body(), true);  // Mengambil pesan error dari response body
-
-        // Jika gagal menyimpan data siswa
-        return back()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        // If the request failed, redirect back with error message
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan pembaruan data.']);
     }
 }

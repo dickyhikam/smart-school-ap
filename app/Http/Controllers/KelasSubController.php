@@ -23,9 +23,15 @@ class KelasSubController extends Controller
                     'status' => 1,
                 ]);
             $response_ta = json_decode($response_ta->body(), true); // Dekode response menjadi array
+
+            // Langsung cek jika tidak ada data, alihkan ke route pageTahunAjaran
+            if (empty($response_ta['data']['items'])) {
+                return redirect()->route('pageTahunAjaran')->with(['alert-type' => 'error', 'message' => "Data tahun ajaran tidak ditemukan. Mohon menginputkan data tahun ajaran terlebih dahulu!"]);
+            }
+
             $tahun_ajaran = $response_ta['data']['items'][0]['tahun_ajaran'];
             $ta_code = $response_ta['data']['items'][0]['id'];
-            $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'];
+            $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'] ?? '';
             $tahun_ajaran_next = $response_ta['data']['additional_years'][1]['tahun_ajaran'] ?? '';
             $tahun_ajaran_status = $response_ta['data']['items'][0]['status']['label'];
 
@@ -34,11 +40,11 @@ class KelasSubController extends Controller
             $tahun_ajaran_prev_pisah = explode("/", $tahun_ajaran_prev);
             if ($tahun_ajaran_next == '') {
                 if ($tahun_ajaran_pisah[0] > $tahun_ajaran_prev_pisah[0]) {
-                    $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'];
+                    $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'] ?? '';
                     $tahun_ajaran_next = '';
                 } else {
                     $tahun_ajaran_prev = '';
-                    $tahun_ajaran_next = $response_ta['data']['additional_years'][0]['tahun_ajaran'];
+                    $tahun_ajaran_next = $response_ta['data']['additional_years'][0]['tahun_ajaran'] ?? '';
                 }
             }
         } else {
@@ -47,9 +53,15 @@ class KelasSubController extends Controller
                     'tahun' => $tahun_ajaran,
                 ]);
             $response_ta = json_decode($response_ta->body(), true); // Dekode response menjadi array
+
+            // Langsung cek jika tidak ada data, alihkan ke route pageTahunAjaran
+            if (empty($response_ta['data']['items'])) {
+                return redirect()->route('pageTahunAjaran')->with(['alert-type' => 'error', 'message' => "Data tahun ajaran tidak ditemukan. Mohon menginputkan data tahun ajaran terlebih dahulu!"]);
+            }
+
             $tahun_ajaran = $response_ta['data']['items'][0]['tahun_ajaran'];
             $ta_code = $response_ta['data']['items'][0]['id'];
-            $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'];
+            $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'] ?? '';
             $tahun_ajaran_next = $response_ta['data']['additional_years'][1]['tahun_ajaran'] ?? '';
             $tahun_ajaran_status = $response_ta['data']['items'][0]['status']['label'];
 
@@ -58,11 +70,11 @@ class KelasSubController extends Controller
             $tahun_ajaran_prev_pisah = explode("/", $tahun_ajaran_prev);
             if ($tahun_ajaran_next == '') {
                 if ($tahun_ajaran_pisah[0] > $tahun_ajaran_prev_pisah[0]) {
-                    $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'];
+                    $tahun_ajaran_prev = $response_ta['data']['additional_years'][0]['tahun_ajaran'] ?? '';
                     $tahun_ajaran_next = '';
                 } else {
                     $tahun_ajaran_prev = '';
-                    $tahun_ajaran_next = $response_ta['data']['additional_years'][0]['tahun_ajaran'];
+                    $tahun_ajaran_next = $response_ta['data']['additional_years'][0]['tahun_ajaran'] ?? '';
                 }
             }
         }
@@ -173,7 +185,7 @@ class KelasSubController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
     }
 
     public function store_update(Request $request, $id)
@@ -202,6 +214,6 @@ class KelasSubController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan pembaruan data.']);
     }
 }

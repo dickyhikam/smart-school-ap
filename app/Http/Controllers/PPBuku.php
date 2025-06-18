@@ -10,13 +10,6 @@ use Spatie\LaravelPdf\Facades\Pdf;
 
 class PPBuku extends Controller
 {
-    // protected $pdf;
-
-    // // Inject the PDF service into the controller
-    // public function __construct(PDF $pdf)
-    // {
-    //     $this->pdf = $pdf;
-    // }
 
     public function index(Request $request)
     {
@@ -157,19 +150,16 @@ class PPBuku extends Controller
             $response = Http::withToken(session('token'))
                 ->$method($apiUrl, $data);
         }
+        $resultMessage = json_decode($response->body(), true);
 
         // Check if the request was successful
         if ($response->successful()) {
             // If successful, redirect with success message
-            $message = $id ? 'Buku berhasil diperbarui!' : 'Buku berhasil disimpan!';
-            return redirect()->route('pagePerpusBuku')->with(['alert-type' => 'success', 'message' => $message]);
+            return redirect()->route('pagePerpusBuku')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
         }
 
-        // If there was an error, capture the error message
-        $errorMessage = json_decode($response->body(), true);  // Capture the error message from the response body
-
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $errorMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
     }
 
     public function printBuku($id)
@@ -180,12 +170,6 @@ class PPBuku extends Controller
         $response = json_decode($response->body(), true); // Dekode response menjadi array
 
         $data['data_buku'] = $response['data'];
-        // $buku = Buku::findOrFail($id); // Get the Buku data by id
-
-        // $pdf = $this->pdf->loadView('library.data_master.buku.print', $data); // Load view and pass data to it
-
-        // // return $pdf->download('kode_buku_' . $id . '.pdf'); // Return the PDF for download
-        // return $pdf->stream('preview_buku_' . $id . '.pdf'); // Return PDF for preview in the browser
 
         return Pdf::view('library.data_master.buku.print', $data)
             ->format('a4')

@@ -94,7 +94,7 @@ class MapelController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
     }
 
     public function store_update(Request $request, $id)
@@ -118,7 +118,7 @@ class MapelController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan pembaruan data.']);
     }
 
     public function destroy($id)
@@ -138,6 +138,6 @@ class MapelController extends Controller
         }
 
         // If the request failed, redirect back with error message
-        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message']]);
+        return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessage['message'] ?? 'Terjadi kesalahan saat melakukan penghapusan data.']);
     }
 }

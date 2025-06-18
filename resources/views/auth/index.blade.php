@@ -34,7 +34,7 @@
         </div>
     </form>
 
-    <p class="text-muted fs-14 mb-0">Login sebagai?
+    <p class="text-muted fs-14 mb-0" hidden>Login sebagai?
         <a href="auth-register.php" class="fw-semibold text-danger ms-1">Siswa</a> |<a href="auth-register.php" class="fw-semibold text-danger ms-1">Orang Tua</a>
     </p>
 

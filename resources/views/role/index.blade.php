@@ -61,9 +61,49 @@
                                     <td>{{ $row['name'] }}</td>
                                     <td>{{ $row['allowed_platforms'] }}</td>
                                     <td>
-                                        <ul class="m-0 p-0 list-unstyled">
-                                            @foreach ($row['permissions'] as $row2)
-                                            <li>- {{ $row2 }}</li>
+                                        <ul>
+                                            @php
+                                            // Mapping untuk mengganti nilai action
+                                            $actionMap = [
+                                            'index' => 'Page',
+                                            'store' => 'Tambah',
+                                            'show' => 'Tabel',
+                                            'update' => 'Update',
+                                            'destroy' => 'Hapus',
+                                            'activate' => 'Aktivasi',
+                                            ];
+
+                                            // Inisialisasi array untuk menyimpan hasil pengelompokan
+                                            $groupedPermissions = [];
+
+                                            // Loop untuk memproses setiap permission
+                                            foreach ($row['permissions'] as $row2) {
+                                            // Pisahkan bagian depan dan belakang berdasarkan titik pertama
+                                            $parts = explode('.', $row2, 2);
+
+                                            if (str_contains($parts[1], '.')) {
+                                            $parts2 = explode('.', $parts[1], 2);
+                                            // Jika bagian depan belum ada, tambahkan ke array
+                                            if (!isset($groupedPermissions[$parts[0] . '-' . $parts2[0]])) {
+                                            $groupedPermissions[$parts[0] . '-' . $parts2[0]] = [];
+                                            }
+
+                                            // Tambahkan bagian belakang (action) ke grup yang sesuai
+                                            $groupedPermissions[$parts[0] . '-' . $parts2[0]][] = $actionMap[$parts2[1]];
+                                            } else {
+                                            // Jika bagian depan belum ada, tambahkan ke array
+                                            if (!isset($groupedPermissions[$parts[0]])) {
+                                            $groupedPermissions[$parts[0]] = [];
+                                            }
+
+                                            // Tambahkan bagian belakang (action) ke grup yang sesuai
+                                            $groupedPermissions[$parts[0]][] = $actionMap[$parts[1]];
+                                            }
+                                            }
+                                            @endphp
+
+                                            @foreach ($groupedPermissions as $group => $actions)
+                                            <li> {{ $group }} ({{ implode(', ', $actions) }})</li>
                                             @endforeach
                                         </ul>
                                     </td>

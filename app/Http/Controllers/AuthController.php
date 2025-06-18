@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
@@ -73,5 +74,20 @@ class AuthController extends Controller
         // Menampilkan pesan error dari API
         $errorMessage = $response->json()['message'] ?? 'NIP/NIS atau Password Salah';
         return back()->with(['alert-type' => 'error', 'message' => $errorMessage])->withInput();
+    }
+
+    public function logout(Request $request)
+    {
+        // Hapus sesi dan cookie yang terkait dengan token akses
+        Session::forget('token');
+        Session::forget('role');
+        Session::forget('permissions');
+        Session::forget('user');
+
+        // Hapus cookie 'access_token' jika ada
+        Cookie::queue(Cookie::forget('access_token'));
+
+        // Redirect ke halaman login atau halaman lain setelah logout
+        return redirect()->route('login');
     }
 }

@@ -39,6 +39,37 @@ class RoleController extends Controller
             'prev_page_url' => $response['data']['prev_page_url'],
         ];
 
+        foreach ($response['data']['items'] as $row) {
+            // Inisialisasi array untuk menyimpan hasil pengelompokan
+            $groupedPermissions = [];
+
+            // Loop untuk memproses setiap permission
+            foreach ($row['permissions'] as $row2) {
+                // Pisahkan bagian depan dan belakang berdasarkan titik pertama
+                $parts = explode('.', $row2, 2);
+
+                if (str_contains($parts[1], '.')) {
+                    $parts2 = explode('.', $parts[1], 2);
+                    // Jika bagian depan belum ada, tambahkan ke array
+                    if (!isset($groupedPermissions[$parts[0] . '-' . $parts2[0]])) {
+                        $groupedPermissions[$parts[0] . '-' . $parts2[0]] = [];
+                    }
+
+                    // Tambahkan bagian belakang (action) ke grup yang sesuai
+                    $groupedPermissions[$parts[0] . '-' . $parts2[0]][] = $parts2[1];
+                } else {
+                    // Jika bagian depan belum ada, tambahkan ke array
+                    if (!isset($groupedPermissions[$parts[0]])) {
+                        $groupedPermissions[$parts[0]] = [];
+                    }
+
+                    // Tambahkan bagian belakang (action) ke grup yang sesuai
+                    $groupedPermissions[$parts[0]][] = $parts[1];
+                }
+            }
+            // dd($groupedPermissions);
+        }
+
         return view('role.index', $data);
     }
 
