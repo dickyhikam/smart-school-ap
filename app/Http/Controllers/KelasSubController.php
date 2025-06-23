@@ -141,10 +141,18 @@ class KelasSubController extends Controller
         $response_kelas = json_decode($response_kelas->body(), true); // Dekode response menjadi array
         $data['list_kelas'] = $response_kelas['data']['items'];
 
-        //get guru
-        $response_guru = Http::withToken(session('token'))->get($apiUrl . '/api/guru');
+        //get guru 'has_pagination': '0'
+        $response_guru = Http::withToken(session('token'))->get($apiUrl . '/api/guru', [
+            'status' => 1,
+            'has_pagination' => 1,
+            'sort_by' => 'nama_lengkap',
+            'sort_as' => 'asc',
+            'tahun_ajaran_id' => $th,
+            'is_wali_kelas' => 0
+        ]);
         $response_guru = json_decode($response_guru->body(), true); // Dekode response menjadi array
-        $data['list_guru'] = $response_guru['data']['items'];
+        // dd($response_guru);
+        $data['list_guru'] = $response_guru['data'];
 
         //get data tahun ajaran
         $response_ta = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/tahun-ajaran/' . $th);

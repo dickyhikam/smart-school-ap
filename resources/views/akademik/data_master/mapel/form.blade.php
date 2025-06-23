@@ -400,6 +400,7 @@
                             }).includes(row.nip); // Memastikan NIP yang tidak ada dalam data_pengajar
                         })
                         .forEach(function(row) {
+
                             resultsHtml += `<li class="list-group-item clickable row" id="${row.id}" onclick="moveGuru(this)">
                             <div class="col-sm-6"><span class="nisn">${row.nip}</span></div>
                             <div class="col-sm-6"><span class="nama">${row.nama_lengkap}</span></div>

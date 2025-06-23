@@ -233,6 +233,58 @@
                 }
             });
         }
+
+        function notif_alert(status, message) {
+            var alertType, alertIcon, alertTitle;
+
+            // Determine alert type based on response
+            if (status === 'success') {
+                alertType = 'success';
+                alertIcon = `<svg class="text-success" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24">
+                                <g fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5" />
+                                </g>
+                            </svg>`;
+                alertTitle = 'Berhasil';
+            } else if (status === 'warning') {
+                alertType = 'warning';
+                alertIcon = `<svg class="text-warning" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24">
+                                <g fill="none">
+                                    <path stroke="currentColor" stroke-width="2" d="M3 10.417c0-3.198 0-4.797.378-5.335c.377-.537 1.88-1.052 4.887-2.081l.573-.196C10.405 2.268 11.188 2 12 2s1.595.268 3.162.805l.573.196c3.007 1.029 4.51 1.544 4.887 2.081C21 5.62 21 7.22 21 10.417v1.574c0 5.638-4.239 8.375-6.899 9.536C13.38 21.842 13.02 22 12 22s-1.38-.158-2.101-.473C7.239 20.365 3 17.63 3 11.991z" />
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 8v4" />
+                                    <circle cx="12" cy="15" r="1" fill="currentColor" />
+                                </g>
+                            </svg>`;
+                alertTitle = 'Peringatan!';
+            } else if (status === 'info') {
+                alertType = 'info';
+                alertIcon = `<svg class="text-info" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24">
+                                <g fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5l2 2l5-5" />
+                                </g>
+                            </svg>`;
+                alertTitle = 'Informasi';
+            } else {
+                alertType = 'error';
+                alertIcon = `<svg class="text-warning" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24">
+                                <g fill="none">
+                                    <path stroke="currentColor" stroke-width="2" d="M3 10.417c0-3.198 0-4.797.378-5.335c.377-.537 1.88-1.052 4.887-2.081l.573-.196C10.405 2.268 11.188 2 12 2s1.595.268 3.162.805l.573.196c3.007 1.029 4.51 1.544 4.887 2.081C21 5.62 21 7.22 21 10.417v1.574c0 5.638-4.239 8.375-6.899 9.536C13.38 21.842 13.02 22 12 22s-1.38-.158-2.101-.473C7.239 20.365 3 17.63 3 11.991z" />
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M12 8v4" />
+                                    <circle cx="12" cy="15" r="1" fill="currentColor" />
+                                </g>
+                            </svg>`;
+                alertTitle = 'Gagal';
+            }
+
+            // Set the modal content dynamically
+            $('#alert-icon2').html(alertIcon);
+            $('#alert-title2').text(alertTitle);
+            $('#alert-message2').text(message || 'Terjadi kesalahan saat menyimpan data.');
+            // Show the modal
+            $('#alert-modal2').modal('show');
+        }
     </script>
 
     @yield('javascript_custom')

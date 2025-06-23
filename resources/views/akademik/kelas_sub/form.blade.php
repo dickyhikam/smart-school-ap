@@ -81,9 +81,10 @@
                             <label for="wali_kelas" class="col-md-3 col-form-label">Wali Kelas <span class="text-danger">*</span></label>
                             <div class="col-md-9">
                                 <select class="form-control select2" data-toggle="select2" id="wali_kelas" name="wali_kelas" required>
-                                    <option value="" disabled selected>Pilih wali kelas</option>
+                                    <option value="" disabled {{ old('wali_kelas') ? '' : 'selected' }}>Pilih wali kelas</option>
                                     @foreach($list_guru as $row)
-                                    <option value="{{ $row['id'] }}" {{ old('wali_kelas') == $row['id'] ? 'selected' : '' }} {{ $data_row['wali_kelas']['nama_lengkap'] ?? '' == $row['nama_lengkap'] ? 'selected' : '' }}>
+                                    <option value="{{ $row['id'] }}"
+                                        {{ (old('wali_kelas') == $row['id'] || (isset($data_row['wali_kelas']['nama_lengkap']) && $data_row['wali_kelas']['nama_lengkap'] == $row['nama_lengkap'])) ? 'selected' : '' }}>
                                         {{ $row['nama_lengkap'] }}
                                     </option>
                                     @endforeach

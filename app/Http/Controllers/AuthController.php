@@ -15,14 +15,14 @@ class AuthController extends Controller
         $data['nama_menu'] = 'Auth';
 
         // Periksa apakah token ada di sesi atau cookie
-        // $token = session('token') ?? $request->cookie('access_token');
+        $token = session('token') ?? $request->cookie('access_token');
 
-        // // Jika token ada, anggap pengguna sudah login
-        // if ($token) {
-        //     // Pengguna sudah login, bisa menampilkan dashboard atau halaman lainnya
-        //     // Anda bisa mengganti view sesuai kebutuhan Anda, misalnya 'dashboard.index'
-        //     return redirect()->route('pageDashboard'); // Misalnya, mengarahkan ke dashboard
-        // }
+        // Jika token ada, anggap pengguna sudah login
+        if ($token) {
+            // Pengguna sudah login, bisa menampilkan dashboard atau halaman lainnya
+            // Anda bisa mengganti view sesuai kebutuhan Anda, misalnya 'dashboard.index'
+            return redirect()->route('pageDashboard'); // Misalnya, mengarahkan ke dashboard
+        }
 
         // Jika token tidak ada, pengguna belum login, tetap tampilkan halaman login
         return view('auth.index', $data);

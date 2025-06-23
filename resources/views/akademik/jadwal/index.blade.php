@@ -158,7 +158,7 @@
         handleButtonClick('prev-btn', 'prev-icon', `{{ $tahun_ajaran_prev == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_prev }}`);
         handleButtonClick('next-btn', 'next-icon', `{{ $tahun_ajaran_next == '' ? 'javascript:void(0)' : '?th=' . $tahun_ajaran_next }}`);
 
-        calendarShow();
+        // calendarShow();
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -211,7 +211,41 @@
                             end: "2025-05-29T09:00:00"
                         }
                         // Add more events as needed
-                    ]
+                    ],
+                    select: function(info) {
+                        // Format tanggal dan waktu menggunakan toLocaleString
+                        var tmstart = info.start.toLocaleString('id-ID', { // Locale Indonesia
+                            weekday: 'long', // Day of the week (e.g., Senin)
+                            hour: '2-digit', // Hour in 2-digit format (e.g., 07)
+                            minute: '2-digit', // Minute in 2-digit format (e.g., 30)
+                            hour12: false // 24-hour format
+                        });
+                        var tmend = info.end.toLocaleString('id-ID', {
+                            weekday: 'long',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        });
+
+                        var stdate = info.start.toLocaleString('id-ID', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        });
+                        var endate = info.end.toLocaleString('id-ID', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                        });
+                        if (stdate == endate) {
+                            // Trigger modal when a date range is selected
+                            alert(tmstart + '|' + tmend);
+                        } else {
+                            notif_alert('warning', 'Tanggal yang dipilih tidak valid. Pastikan tanggal yang dipilih harus sama.');
+                        }
+
+
+                    }
                 });
 
                 calendar.render();
