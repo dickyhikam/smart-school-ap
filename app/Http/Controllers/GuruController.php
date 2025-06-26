@@ -105,8 +105,26 @@ class GuruController extends Controller
             // simpan ke table users
             $guruData = $response->json();
             $guruId = $guruData['data']['id']; // Ambil ID siswa dari respons API
+            $userData = [
+                'name' => $request->nama_lengkap,
+                'username' => strtolower(str_replace(' ', '.', $request->nama_lengkap)),
+                'email' => $request->email,
+                'password' => 'DiSekolahJogja2025',
+                'pengguna_id' => $guruId,
+                'pengguna_type' => 'App\Models\Guru',
+            ];
+            // Kirim data ke API
+            $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
+            $responseUser = Http::withToken(session('token'))
+                ->post($apiUrlUser, $userData);
+            $resultMessageUser = json_decode($responseUser->body(), true);
+            // Cek jika berhasil
+            if ($resultMessageUser->successful()) {
+                return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
+            }
 
-            return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
+            // If the request failed, redirect back with error message
+            return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessageUser['message'] ?? 'Terjadi kesalahan saat melakukan penambahan data.']);
         }
 
         // If the request failed, redirect back with error message

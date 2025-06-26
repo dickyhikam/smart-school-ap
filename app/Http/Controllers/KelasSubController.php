@@ -117,25 +117,6 @@ class KelasSubController extends Controller
         $data['nama_menu'] = $menu;
         $apiUrl = env('API_URL'); // URL API Anda
 
-        if ($id) {
-            // Jika $id ada, berarti ini adalah halaman Edit
-            $data['nama_menu2'] = 'Form Edit ' . $menu;
-
-            // URL API dengan parameter halaman
-            $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/sub-kelas/' . $id);
-            $response = json_decode($response->body(), true); // Dekode response menjadi array
-            $data['data_row'] = $response['data'];
-
-            $data['action'] = route('actionEditKelasSub', $id); // Arahkan ke update
-            $data['method'] = 'PUT'; // Menggunakan metode PUT untuk update
-        } else {
-            $data['nama_menu2'] = 'Form Tambah ' . $menu;
-
-            // Jika tidak ada $id, berarti ini adalah halaman Create
-            $data['action'] = route('actionAddKelasSub'); // Arahkan ke store
-            $data['method'] = 'POST'; // Menggunakan metode POST untuk create
-        }
-
         //get kelas
         $response_kelas = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/kelas');
         $response_kelas = json_decode($response_kelas->body(), true); // Dekode response menjadi array
@@ -148,21 +129,73 @@ class KelasSubController extends Controller
             'sort_by' => 'nama_lengkap',
             'sort_as' => 'asc',
             'tahun_ajaran_id' => $th,
-            'is_wali_kelas' => 0
+            'is_wali_kelas' => 1
         ]);
         $response_guru = json_decode($response_guru->body(), true); // Dekode response menjadi array
         // dd($response_guru);
-        $data['list_guru'] = $response_guru['data'];
+        $list_guru = $response_guru['data'];
 
         //get data tahun ajaran
         $response_ta = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/tahun-ajaran/' . $th);
         $response_ta = json_decode($response_ta->body(), true); // Dekode response menjadi array
         $data['data_ta'] = $response_ta['data'];
 
+        //get data sub kelas
+        $response_sk = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/sub-kelas', [
+            'tahun_ajaran' => $data['data_ta']['tahun_ajaran'],
+            'has_pagination' => 1
+        ]);
+        $response_sk = json_decode($response_sk->body(), true); // Dekode response menjadi array
+
+        // Ambil nama wali kelas dari data sub-kelas
+        $listWaliKelasNama = array_column(array_map(function ($subKelas) {
+            return $subKelas['wali_kelas']; // Mendapatkan data wali kelas
+        }, $response_sk['data']), 'nama_lengkap'); // Ambil nama lengkap wali kelas
+
         //get jurusan
         $response_jurusan = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/jurusan?status=1');
         $response_jurusan = json_decode($response_jurusan->body(), true); // Dekode response menjadi array
         $data['list_jurusan'] = $response_jurusan['data']['items'];
+
+        if ($id) {
+            // Jika $id ada, berarti ini adalah halaman Edit
+            $data['nama_menu2'] = 'Form Edit ' . $menu;
+
+            // URL API dengan parameter halaman
+            $response = Http::withToken(session('token'))->get($apiUrl . '/api/akademik/sub-kelas/' . $id);
+            $response = json_decode($response->body(), true); // Dekode response menjadi array
+            $data['data_row'] = $response['data'];
+            $data_walkes = $response['data']['wali_kelas']['nama_lengkap'];
+
+            // Filter data guru untuk menampilkan hanya guru yang tidak ada di sub-kelas sebagai wali kelas
+            $filteredGuru = array_filter($list_guru, function ($guru) use ($listWaliKelasNama, $data_walkes) {
+                // Jika nama guru yang sedang dipilih sebagai wali kelas, biarkan tetap muncul
+                if ($data_walkes === $guru['nama_lengkap']) {
+                    return true;
+                }
+
+                // Periksa apakah nama guru tidak ada dalam list nama wali kelas yang lain
+                return !in_array($guru['nama_lengkap'], $listWaliKelasNama);
+            });
+
+            $data['action'] = route('actionEditKelasSub', $id); // Arahkan ke update
+            $data['method'] = 'PUT'; // Menggunakan metode PUT untuk update
+        } else {
+            $data['nama_menu2'] = 'Form Tambah ' . $menu;
+
+            // Filter data guru untuk menampilkan hanya guru yang tidak ada di sub-kelas sebagai wali kelas
+            $filteredGuru = array_filter($list_guru, function ($guru) use ($listWaliKelasNama) {
+                // Periksa apakah nama guru tidak ada dalam list nama wali kelas
+                return !in_array($guru['nama_lengkap'], $listWaliKelasNama);
+            });
+
+            // Jika tidak ada $id, berarti ini adalah halaman Create
+            $data['action'] = route('actionAddKelasSub'); // Arahkan ke store
+            $data['method'] = 'POST'; // Menggunakan metode POST untuk create
+        }
+
+        // Reset indeks array setelah di-filter
+        $data['list_guru'] = array_values($filteredGuru);
 
         return view('akademik.kelas_sub.form', $data);
     }
