@@ -21,6 +21,13 @@
                         @method('PUT') <!-- Menandakan bahwa ini adalah update -->
                         @endif
 
+                        <div class="row mb-3" hidden>
+                            <label class="col-md-3 col-form-label" for="id_user">ID</label>
+                            <div class="col-md-9">
+                                <input type="text" id="id_user" name="id_user" class="form-control" value="{{ old('id_user', $data_row['user']['id'] ?? '') }}" readonly>
+                            </div>
+                        </div>
+
                         <!-- Nama Lengkap -->
                         <div class="row mb-3">
                             <label class="col-md-3 col-form-label" for="nama_lengkap">Nama Lengkap <span class="text-danger">*</span></label>

@@ -254,15 +254,19 @@
             url: '{{ env("API_URL") . "/api/siswa" }}',
             method: 'GET',
             data: {
-                'search': searchTerm
+                'search': searchTerm,
+                'status_pendidikan': 'Aktif',
+                'has_pagination': 1
             },
             headers: {
                 'Authorization': 'Bearer {{ $apiToken }}'
             },
             success: function(response) {
-                if (response.data.items.length > 0) {
+                console.log(response.data);
+
+                if (response.data.length > 0) {
                     let resultsHtml = '';
-                    response.data.items.forEach(function(row) {
+                    response.data.forEach(function(row) {
                         resultsHtml += `
                         <li class="list-group-item clickable row" id="siswaSearch${row.id}" onclick="moveToLeft(this)">
                             <div class="col-sm-6"><span class="nisn">${row.nisn}</span></div> 

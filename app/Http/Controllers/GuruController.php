@@ -72,11 +72,6 @@ class GuruController extends Controller
 
     public function store(Request $request)
     {
-        // Menyimpan foto jika diupload
-        if ($request->hasFile('foto_guru')) {
-            $imagePath = $request->file('foto_guru')->store('public/foto_guru');
-        }
-
         // Persiapkan data untuk dikirim ke API
         $data = [
             'nama_lengkap' => $request->nama_lengkap,
@@ -91,13 +86,25 @@ class GuruController extends Controller
             'status_kepegawaian' => $request->status_kepegawaian,
             'tahun_masuk' => $request->tahun_masuk,
             'mata_pelajaran' => $request->mata_pelajaran ?? null, // jika tidak ada mata pelajaran
-            'foto_guru' => $imagePath ?? null, // jika ada foto
         ];
 
         // Kirim data ke API
         $apiUrl = env('API_URL') . '/api/guru'; // URL API eksternal Anda
-        $response = Http::withToken(session('token'))
-            ->post($apiUrl, $data);
+
+        // Check if there is a photo file and upload the photo if present
+        if ($request->hasFile('foto_guru')) {
+            // Get the image file
+            $file = $request->file('foto_guru');
+
+            // Send a POST or PUT request to the API with the photo as binary data (multipart/form-data)
+            $response = Http::withToken(session('token'))
+                ->attach('foto_guru', file_get_contents($file), $file->getClientOriginalName()) // Attach the image as binary
+                ->post($apiUrl, $data);
+        } else {
+            // If no photo is provided, send data without the photo
+            $response = Http::withToken(session('token'))
+                ->post($apiUrl, $data);
+        }
         $resultMessage = json_decode($response->body(), true);
 
         // Cek jika berhasil
@@ -111,7 +118,8 @@ class GuruController extends Controller
                 'email' => $request->email,
                 'password' => 'DiSekolahJogja2025',
                 'pengguna_id' => $guruId,
-                'pengguna_type' => 'App\Models\Guru',
+                'pengguna_type' => 'guru',
+                'role' => 'guru',
             ];
             // Kirim data ke API
             $apiUrlUser = env('API_URL') . '/api/users'; // URL API eksternal Anda
@@ -133,10 +141,6 @@ class GuruController extends Controller
 
     public function store_update(Request $request, $id = null)
     {
-        // Menyimpan foto jika diupload
-        if ($request->hasFile('foto_guru')) {
-            $imagePath = $request->file('foto_guru')->store('public/foto_guru');
-        }
 
         // Persiapkan data untuk dikirim ke API
         $data = [
@@ -152,18 +156,46 @@ class GuruController extends Controller
             'status_kepegawaian' => $request->status_kepegawaian,
             'tahun_masuk' => $request->tahun_masuk,
             'mata_pelajaran' => $request->mata_pelajaran ?? null, // jika tidak ada mata pelajaran
-            'foto_guru' => $imagePath ?? null, // jika ada foto
         ];
 
         // Kirim data ke API
         $apiUrl = env('API_URL') . '/api/guru/' . $id; // URL API eksternal Anda
-        $response = Http::withToken(session('token'))
-            ->post($apiUrl, $data);
+        // Check if there is a photo file and upload the photo if present
+        if ($request->hasFile('foto_guru')) {
+            // Get the image file
+            $file = $request->file('foto_guru');
+
+            // Send a POST or PUT request to the API with the photo as binary data (multipart/form-data)
+            $response = Http::withToken(session('token'))
+                ->attach('foto_guru', file_get_contents($file), $file->getClientOriginalName()) // Attach the image as binary
+                ->post($apiUrl, $data);
+        } else {
+            // If no photo is provided, send data without the photo
+            $response = Http::withToken(session('token'))
+                ->post($apiUrl, $data);
+        }
         $resultMessage = json_decode($response->body(), true);
 
         // Cek jika berhasil
         if ($response->successful()) {
-            return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => $resultMessage['message']]);
+            $userData = [
+                'name' => $request->nama_lengkap,
+                'username' => strtolower(str_replace(' ', '.', $request->nama_lengkap)),
+                'email' => $request->email,
+                'role' => 'guru',
+            ];
+            // Kirim data ke API
+            $apiUrlUser = env('API_URL') . '/api/users/' . $request->id_user; // URL API eksternal Anda
+            $responseUser = Http::withToken(session('token'))
+                ->put($apiUrlUser, $userData);
+            $resultMessageUser = json_decode($responseUser->body(), true);
+            // Cek jika berhasil
+            if ($responseUser->successful()) {
+                return redirect()->route('pageGuru')->with(['alert-type' => 'success', 'message' => $resultMessageUser['message']]);
+            }
+
+            // If the request failed, redirect back with error message
+            return back()->withInput()->with(['alert-type' => 'error', 'message' => $resultMessageUser['message'] ?? 'Terjadi kesalahan saat melakukan pembaruan data.']);
         }
 
         // If the request failed, redirect back with error message
